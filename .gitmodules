@@ -1,0 +1,3 @@
+[submodule "svunit"]
+	path = svunit
+	url = git@github.com:svunit/svunit.git
