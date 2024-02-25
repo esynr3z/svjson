@@ -2,6 +2,7 @@
 
 module json_basic_unit_test;
   import svunit_pkg::svunit_testcase;
+  import json_pkg::*;
 
   string name = "json_basic_ut";
   svunit_testcase svunit_ut;
