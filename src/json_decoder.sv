@@ -15,7 +15,7 @@ virtual class json_decoder;
   extern static function json_value load_file(string path);
 
   // Scan string symbol by symbol to encounter and extract JSON value.
-  extern protected static function json_result#(json_value) scan_until_value(
+  extern protected static function json_result#(json_value) parse_value(
     const ref string str,
     input int unsigned start_idx=0,
     output int unsigned end_idx
@@ -80,7 +80,7 @@ endclass : json_decoder
 function json_result#(json_value) json_decoder::try_load_string(const ref string str);
   int unsigned dummy_end_idx;
   // Start recursive process of string scanning
-  return scan_until_value(str, .end_idx(dummy_end_idx));
+  return parse_value(str, .end_idx(dummy_end_idx));
 endfunction : try_load_string
 
 
@@ -134,7 +134,7 @@ function json_value json_decoder::load_file(string path);
 endfunction : load_file
 
 
-function json_result#(json_value) json_decoder::scan_until_value(
+function json_result#(json_value) json_decoder::parse_value(
   const ref string str,
   input int unsigned start_idx=0,
   output int unsigned end_idx
@@ -147,11 +147,7 @@ function json_result#(json_value) json_decoder::scan_until_value(
   // Skip all whitespaces
   char_search_result = find_first_non_whitespace(str, idx);
   if (char_search_result.is_err()) begin
-    end_idx = str_len - 1;
-    return json_result#(json_value)::err(
-      char_search_result.err_kind,
-      "String is empty or consists only of whitespace characters!"
-    );
+    return json_result#(json_value)::err(char_search_result.err_kind, char_search_result.err_message);
   end else begin
     idx = char_search_result.value;
   end
@@ -168,12 +164,12 @@ function json_result#(json_value) json_decoder::scan_until_value(
     default: begin
       end_idx = idx;
       return json_result#(json_value)::err(
-        JSON_ERR_UNEXPECTED_SYMBOL,
+        JSON_ERR_DECODE,
         $sformatf("Unexpected symbol '%s' is not allowed here!", str[idx])
       );
     end
   endcase
-endfunction : scan_until_value
+endfunction : parse_value
 
 
 function json_result#(json_value) json_decoder::parse_object(
@@ -181,6 +177,35 @@ function json_result#(json_value) json_decoder::parse_object(
   input int unsigned start_idx=0,
   output int unsigned end_idx
 );
+  json_result#(int unsigned) char_search_result;
+  json_result#(json_value) value_result;
+
+  int unsigned str_len = str.len();
+  int unsigned idx = start_idx + 1; // start index is '{'
+
+  // Skip all whitespaces
+  char_search_result = find_first_non_whitespace(str, idx);
+  if (char_search_result.is_err()) begin
+    return json_result#(json_value)::err(char_search_result.err_kind, "Can not find pair token '}'!");
+  end else begin
+    idx = char_search_result.value;
+  end
+
+  // This non-whitespace character has to begin a JSON string
+  value_result = parse_string(str, idx, idx);
+  if (value_result.is_err()) begin
+    return value_result;
+  end
+
+  // Skip all whitespaces
+  char_search_result = find_first_non_whitespace(str, idx);
+  if (char_search_result.is_err()) begin
+    return json_result#(json_value)::err(char_search_result.err_kind, "Can not find token ':'!");
+  end else begin
+    idx = char_search_result.value;
+  end
+
+  // TODO
   return json_result#(json_value)::err(
     JSON_ERR_NOT_IMPLEMENTED,
     "Method `json_decoder::parse_object` is not implemented!"
@@ -260,7 +285,10 @@ function json_result#(int unsigned) json_decoder::find_first_non_whitespace(
   end
 
   if (idx == str.len()) begin
-    return json_result#(int unsigned)::err(JSON_ERR_NON_WHITESPACE_NOT_FOUND);
+    return json_result#(int unsigned)::err(
+      JSON_ERR_EMPTY_STRING,
+      "Expected to find non-whitespace character!"
+    );
   end else begin
     return json_result#(int unsigned)::ok(idx);
   end

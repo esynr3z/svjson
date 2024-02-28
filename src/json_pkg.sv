@@ -10,8 +10,8 @@ package json_pkg;
   typedef json_null;
 
   typedef enum {
-    JSON_ERR_NON_WHITESPACE_NOT_FOUND,
-    JSON_ERR_UNEXPECTED_SYMBOL,
+    JSON_ERR_EMPTY_STRING,
+    JSON_ERR_DECODE,
     JSON_ERR_OPEN_FILE,
     JSON_ERR_NOT_IMPLEMENTED
   } json_err_e;
