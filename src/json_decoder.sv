@@ -181,7 +181,10 @@ function json_result#(json_value) json_decoder::parse_object(
   input int unsigned start_idx=0,
   output int unsigned end_idx
 );
-
+  return json_result#(json_value)::err(
+    JSON_ERR_NOT_IMPLEMENTED,
+    "Method `json_decoder::parse_object` is not implemented!"
+  );
 endfunction : parse_object
 
 
@@ -190,7 +193,10 @@ function json_result#(json_value) json_decoder::parse_array(
   input int unsigned start_idx=0,
   output int unsigned end_idx
 );
-
+  return json_result#(json_value)::err(
+    JSON_ERR_NOT_IMPLEMENTED,
+    "Method `json_decoder::parse_array` is not implemented!"
+  );
 endfunction : parse_array
 
 
@@ -199,7 +205,10 @@ function json_result#(json_value) json_decoder::parse_string(
   input int unsigned start_idx=0,
   output int unsigned end_idx
 );
-
+  return json_result#(json_value)::err(
+    JSON_ERR_NOT_IMPLEMENTED,
+    "Method `json_decoder::parse_string` is not implemented!"
+  );
 endfunction : parse_string
 
 
@@ -208,7 +217,10 @@ function json_result#(json_value) json_decoder::parse_number(
   input int unsigned start_idx=0,
   output int unsigned end_idx
 );
-
+  return json_result#(json_value)::err(
+    JSON_ERR_NOT_IMPLEMENTED,
+    "Method `json_decoder::parse_number` is not implemented!"
+  );
 endfunction : parse_number
 
 
@@ -217,7 +229,10 @@ function json_result#(json_value) json_decoder::parse_bool(
   input int unsigned start_idx=0,
   output int unsigned end_idx
 );
-
+  return json_result#(json_value)::err(
+    JSON_ERR_NOT_IMPLEMENTED,
+    "Method `json_decoder::parse_bool` is not implemented!"
+  );
 endfunction : parse_bool
 
 
@@ -226,7 +241,10 @@ function json_result#(json_value) json_decoder::parse_null(
   input int unsigned start_idx=0,
   output int unsigned end_idx
 );
-
+  return json_result#(json_value)::err(
+    JSON_ERR_NOT_IMPLEMENTED,
+    "Method `json_decoder::parse_null` is not implemented!"
+  );
 endfunction : parse_null
 
 

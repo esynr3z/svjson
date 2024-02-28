@@ -12,11 +12,21 @@ package json_pkg;
   typedef enum {
     JSON_ERR_NON_WHITESPACE_NOT_FOUND,
     JSON_ERR_UNEXPECTED_SYMBOL,
-    JSON_ERR_OPEN_FILE
+    JSON_ERR_OPEN_FILE,
+    JSON_ERR_NOT_IMPLEMENTED
   } json_err_e;
   `include "json_result.sv"
 
+  typedef enum {
+    JSON_VALUE_OBJECT,
+    JSON_VALUE_ARRAY,
+    JSON_VALUE_STRING,
+    JSON_VALUE_NUMBER,
+    JSON_VALUE_BOOL,
+    JSON_VALUE_NULL
+  } json_value_e;
   `include "json_value.sv"
+
   `include "json_object.sv"
   `include "json_array.sv"
   `include "json_string.sv"
