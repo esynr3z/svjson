@@ -33,25 +33,50 @@ module json_decoder_basic_unit_test;
 
   `SVUNIT_TESTS_BEGIN
 
-  `SVTEST(find_non_whitespace)
+  `SVTEST(find_non_whitespace_test)
     string test = "  1";
     json_result#(int unsigned) result = json_decoder_wrp::find_first_non_whitespace_pub(test);
     `FAIL_IF(result.is_err())
     `FAIL_IF(result.value != 2)
   `SVTEST_END
 
-  `SVTEST(find_non_whitespace_variants)
+  `SVTEST(find_non_whitespace_variants_test)
     string test = "\t\n\r 1";
     json_result#(int unsigned) result = json_decoder_wrp::find_first_non_whitespace_pub(test);
     `FAIL_IF(result.is_err())
     `FAIL_IF(result.value != 4)
   `SVTEST_END
 
-  `SVTEST(find_non_whitespace_first)
+  `SVTEST(find_non_whitespace_first_test)
     string test = "1";
     json_result#(int unsigned) result = json_decoder_wrp::find_first_non_whitespace_pub(test);
     `FAIL_IF(result.is_err())
     `FAIL_IF(result.value != 0)
+  `SVTEST_END
+
+  `SVTEST(find_non_whitespace_from_middle_test)
+    string test = "1 2";
+    json_result#(int unsigned) result = json_decoder_wrp::find_first_non_whitespace_pub(test, 1);
+    `FAIL_IF(result.is_err())
+    `FAIL_IF(result.value != 2)
+  `SVTEST_END
+
+  `SVTEST(find_non_whitespace_fail_test)
+    string test = "\t\n\r \n ";
+    json_result#(int unsigned) result = json_decoder_wrp::find_first_non_whitespace_pub(test);
+    `FAIL_IF(result.is_ok())
+  `SVTEST_END
+
+  `SVTEST(find_non_whitespace_bounds_fail_test)
+    string test = "0 1";
+    json_result#(int unsigned) result = json_decoder_wrp::find_first_non_whitespace_pub(test, 3);
+    `FAIL_IF(result.is_ok())
+  `SVTEST_END
+
+  `SVTEST(find_non_whitespace_empty_fail_test)
+    string test = "";
+    json_result#(int unsigned) result = json_decoder_wrp::find_first_non_whitespace_pub(test);
+    `FAIL_IF(result.is_ok())
   `SVTEST_END
 
   `SVUNIT_TESTS_END
