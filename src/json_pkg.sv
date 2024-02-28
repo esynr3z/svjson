@@ -9,6 +9,11 @@ package json_pkg;
   typedef json_bool;
   typedef json_null;
 
+  typedef enum {
+    JSON_ERR_NON_WHITESPACE_NOT_FOUND,
+    JSON_ERR_UNEXPECTED_SYMBOL,
+    JSON_ERR_OPEN_FILE
+  } json_err_e;
   `include "json_result.sv"
 
   `include "json_value.sv"

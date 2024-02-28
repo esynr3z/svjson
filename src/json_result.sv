@@ -4,21 +4,20 @@
 // FIXME: Verilator does not allow to create extern with parameterized result (verilator#4924),
 // that's why some methods are not externs.
 class json_result#(type VALUE_T=int);
-  typedef enum {
+  local typedef enum {
     OK,
     ERR
   } status_e;
+  local status_e status;
 
-  status_e status;
   VALUE_T value;
   string err_message;
+  json_err_e err_kind;
 
   // Is result OK?
   extern function bit is_ok();
   // Is result ERR?
   extern function bit is_err();
-
-
 
   // Create OK result
   static function json_result#(VALUE_T) ok(VALUE_T value);
@@ -31,10 +30,11 @@ class json_result#(type VALUE_T=int);
   endfunction : ok
 
   // Create ERR result
-  static function json_result#(VALUE_T) err(string message);
+  static function json_result#(VALUE_T) err(json_err_e kind, string message="");
     json_result#(VALUE_T) result = new();
 
     result.status = ERR;
+    result.err_kind = kind;
     result.err_message = message;
 
     return result;

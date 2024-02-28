@@ -1,9 +1,17 @@
 // JSON decoder to extract JSON values recursively from string or file.
 virtual class json_decoder;
-  // Create JSON value from string
+  // Try to create JSON value from string. Error can be handled manually in case of failure.
+  extern static function json_result#(json_value) try_load_string(const ref string str);
+
+  // Create JSON value from string.
+  // Basicly, wrapper over `try_load_string` that throws a fatal message in case of failure.
   extern static function json_value load_string(const ref string str);
 
-  // Create JSON value from file
+  // Try to create JSON value from file. Error can be handled manually in case of failure.
+  extern static function json_result#(json_value) try_load_file(string path);
+
+  // Create JSON value from file.
+  // Basicly, wrapper over `try_load_file` that throws a fatal message in case of failure.
   extern static function json_value load_file(string path);
 
   // Scan string symbol by symbol to encounter and extract JSON value
@@ -86,28 +94,37 @@ virtual class json_decoder;
 endclass : json_decoder
 
 
-function json_value json_decoder::load_string(const ref string str);
+function json_result#(json_value) json_decoder::try_load_string(const ref string str);
   int unsigned dummy_end_idx;
+  // Start recursive process of string scanning
+  return scan_until_value(str, .end_idx(dummy_end_idx));
+endfunction : try_load_string
+
+
+function json_value json_decoder::load_string(const ref string str);
   json_result#(json_value) result;
 
-  // Start recursive process of string scanning
-  result = this.scan_until_value(str, .end_idx(dummy_end_idx));
+  // Try to load string and handle possible error
+  result = try_load_string(str);
   if (result.is_err()) begin
-    $fatal(result.err_message);
+    $fatal("%s: %s", result.err_kind.name(), result.err_message);
   end
 
   return result.value;
 endfunction : load_string
 
 
-function json_value json_decoder::load_file(string path);
+function json_result#(json_value) json_decoder::try_load_file(string path);
   int file_descr;
   string file_text;
 
   // Try to open file
   file_descr = $fopen(path, "r");
   if (file_descr == 0) begin
-    $fatal("Failed to open the file '%s'", path);
+    return json_result#(json_value)::err(
+      JSON_ERR_OPEN_FILE,
+      $sformatf("Failed to open the file '%s'!", path)
+    );
   end
 
   // Read lines until the end of the file
@@ -117,7 +134,20 @@ function json_value json_decoder::load_file(string path);
     file_text = {file_text, line};
   end
 
-  return load_string(file_text);
+  return try_load_string(file_text);
+endfunction : try_load_file
+
+
+function json_value json_decoder::load_file(string path);
+  json_result#(json_value) result;
+
+  // Try to load file and handle possible error
+  result = try_load_file(path);
+  if (result.is_err()) begin
+    $fatal("%s: %s", result.err_kind.name(), result.err_message);
+  end
+
+  return result.value;
 endfunction : load_file
 
 
@@ -135,7 +165,10 @@ function json_result#(json_value) json_decoder::scan_until_value(
   char_search_result = find_first_non_whitespace(str, idx);
   if (char_search_result.is_err()) begin
     end_idx = str_len - 1;
-    return json_result#(json_value)::err("String is empty or consists only of whitespace characters!");
+    return json_result#(json_value)::err(
+      char_search_result.err_kind,
+      "String is empty or consists only of whitespace characters!"
+    );
   end else begin
     idx = char_search_result.value;
   end
@@ -152,6 +185,7 @@ function json_result#(json_value) json_decoder::scan_until_value(
     default: begin
       end_idx = idx;
       return json_result#(json_value)::err(
+        JSON_ERR_UNEXPECTED_SYMBOL,
         $sformatf("Unexpected symbol '%s' is not allowed here!", str[idx])
       );
     end
@@ -225,7 +259,7 @@ function json_result#(int unsigned) json_decoder::find_first_non_whitespace(
   end
 
   if (idx == str.len()) begin
-    return json_result#(int unsigned)::err("Cannot find any non whitespace symbol!");
+    return json_result#(int unsigned)::err(JSON_ERR_NON_WHITESPACE_NOT_FOUND);
   end else begin
     return json_result#(int unsigned)::ok(idx);
   end
