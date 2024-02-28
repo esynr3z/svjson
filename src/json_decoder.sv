@@ -1,4 +1,4 @@
-// JSON decoder to extract JSON values recursively from string or file.
+// JSON decoder to extract JSON values recursively from string or file
 virtual class json_decoder;
   // Try to create JSON value from string. Error can be handled manually in case of failure.
   extern static function json_result#(json_value) try_load_string(const ref string str);
@@ -14,82 +14,65 @@ virtual class json_decoder;
   // Basicly, wrapper over `try_load_file` that throws a fatal message in case of failure.
   extern static function json_value load_file(string path);
 
-  // Scan string symbol by symbol to encounter and extract JSON value
+  // Scan string symbol by symbol to encounter and extract JSON value.
   extern protected static function json_result#(json_value) scan_until_value(
-    // Input string that won't be modified. Reference is used to avoid copying large strings.
     const ref string str,
-    // Position of character to start scanning
     input int unsigned start_idx=0,
-    // Position of the last character used to end JSON value extraction
     output int unsigned end_idx
   );
 
-  // Parse JSON object from provided string
+  // Parse JSON object from provided string.
+  // String must start from '{' (`start_idx`) and consist a pair symbol '}' (`end_idx`).
   extern protected static function json_result#(json_value) parse_object(
-    // Input string that won't be modified. Reference is used to avoid copying large strings.
     const ref string str,
-    // Position of character to start scanning - must be '{'
     input int unsigned start_idx=0,
-    // Position of the last character used to end JSON object parsing ('}')
     output int unsigned end_idx
   );
 
-  // Parse JSON array from provided string
+  // Parse JSON array from provided string.
+  // String must start from '[' (`start_idx`) and consist a pair symbol ']' (`end_idx`).
   extern protected static function json_result#(json_value) parse_array(
-    // Input string that won't be modified. Reference is used to avoid copying large strings.
     const ref string str,
-    // Position of character to start scanning - must be '['
     input int unsigned start_idx=0,
-    // Position of the last character used to end JSON array parsing (']')
     output int unsigned end_idx
   );
 
-  // Parse JSON string from provided string
+  // Parse JSON string from provided string.
+  // String must start from '"' (`start_idx`) and consist a pair symbol '"' (`end_idx`).
   extern protected static function json_result#(json_value) parse_string(
-    // Input string that won't be modified. Reference is used to avoid copying large strings.
     const ref string str,
-    // Position of character to start scanning - must be '"'
     input int unsigned start_idx=0,
-    // Position of the last character used to end JSON string parsing ('"')
     output int unsigned end_idx
   );
 
-  // Parse JSON number from provided string
+  // Parse JSON number from provided string.
+  // Number must start from `start_idx` and will end at `end_idx`.
   extern protected static function json_result#(json_value) parse_number(
-    // Input string that won't be modified. Reference is used to avoid copying large strings.
     const ref string str,
-    // Position of character to start scanning
     input int unsigned start_idx=0,
-    // Position of the last character used to end JSON number parsing
     output int unsigned end_idx
   );
 
-  // Parse JSON bool from provided string
+  // Parse JSON bool from provided string.
+  // Boolean must start from `start_idx` and will end at `end_idx`.
   extern protected static function json_result#(json_value) parse_bool(
-    // Input string that won't be modified. Reference is used to avoid copying large strings.
     const ref string str,
-    // Position of character to start scanning
     input int unsigned start_idx=0,
-    // Position of the last character used to end JSON bool parsing
     output int unsigned end_idx
   );
 
-  // Parse JSON null from provided string
+  // Parse JSON null from provided string.
+  // Mull must start from `start_idx` and will end at `end_idx`.
   extern protected static function json_result#(json_value) parse_null(
-    // Input string that won't be modified. Reference is used to avoid copying large strings.
     const ref string str,
-    // Position of character to start scanning
     input int unsigned start_idx=0,
-    // Position of the last character used to end JSON null parsing
     output int unsigned end_idx
   );
 
   // Utility method to find first non-whitespace symbol
   extern protected static function json_result#(int unsigned) find_first_non_whitespace(
-    // Input string that won't be modified. Reference is used to avoid copying large strings.
     const ref string str,
-    // Position of character to start search
-    input int unsigned start_idx
+    input int unsigned start_idx=0
   );
 endclass : json_decoder
 
