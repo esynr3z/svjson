@@ -139,17 +139,15 @@ function json_result#(json_value) json_decoder::parse_value(
   input int unsigned start_idx=0,
   output int unsigned end_idx
 );
-  json_result#(int unsigned) char_search_result;
-
-  int unsigned str_len = str.len();
+  json_result#(int unsigned) non_ws_pos;
   int unsigned idx = start_idx;
 
   // Skip all whitespaces
-  char_search_result = find_first_non_whitespace(str, idx);
-  if (char_search_result.is_err()) begin
-    return json_result#(json_value)::err(char_search_result.err_kind, char_search_result.err_message);
+  non_ws_pos = find_first_non_whitespace(str, idx);
+  if (non_ws_pos.is_err()) begin
+    return json_result#(json_value)::err(non_ws_pos.err_kind, non_ws_pos.err_message);
   end else begin
-    idx = char_search_result.value;
+    idx = non_ws_pos.value;
   end
 
   // This non-whitespace character has to begin a JSON value
@@ -162,7 +160,6 @@ function json_result#(json_value) json_decoder::parse_value(
     "-", ["0":"9"]: return parse_number(str, idx, idx);
 
     default: begin
-      end_idx = idx;
       return json_result#(json_value)::err(
         JSON_ERR_DECODE,
         $sformatf("Unexpected symbol '%s' is not allowed here!", str[idx])
@@ -177,32 +174,34 @@ function json_result#(json_value) json_decoder::parse_object(
   input int unsigned start_idx=0,
   output int unsigned end_idx
 );
-  json_result#(int unsigned) char_search_result;
-  json_result#(json_value) value_result;
-
-  int unsigned str_len = str.len();
+  json_result#(int unsigned) non_ws_pos;
+  json_result#(json_value) result;
+  string key;
+  json_value values [string];
   int unsigned idx = start_idx + 1; // start index is '{'
 
   // Skip all whitespaces
-  char_search_result = find_first_non_whitespace(str, idx);
-  if (char_search_result.is_err()) begin
-    return json_result#(json_value)::err(char_search_result.err_kind, "Can not find pair token '}'!");
+  non_ws_pos = find_first_non_whitespace(str, idx);
+  if (non_ws_pos.is_err()) begin
+    return json_result#(json_value)::err(non_ws_pos.err_kind, "Can not find pair token '}'!");
   end else begin
-    idx = char_search_result.value;
+    idx = non_ws_pos.value;
   end
 
   // This non-whitespace character has to begin a JSON string
-  value_result = parse_string(str, idx, idx);
-  if (value_result.is_err()) begin
-    return value_result;
+  result = parse_string(str, idx, idx);
+  if (result.is_err()) begin
+    return result;
+  end else begin
+    key = result.value;
   end
 
   // Skip all whitespaces
-  char_search_result = find_first_non_whitespace(str, idx);
-  if (char_search_result.is_err()) begin
-    return json_result#(json_value)::err(char_search_result.err_kind, "Can not find token ':'!");
+  non_ws_pos = find_first_non_whitespace(str, idx);
+  if (non_ws_pos.is_err()) begin
+    return json_result#(json_value)::err(non_ws_pos.err_kind, "Can not find token ':'!");
   end else begin
-    idx = char_search_result.value;
+    idx = non_ws_pos.value;
   end
 
   // TODO
