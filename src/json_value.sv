@@ -37,12 +37,11 @@ virtual class json_value;
     output int unsigned end_idx
   );
 
-  local static function json_result parse_array(
+  extern local static function json_result parse_array(
     const ref string str,
     input int unsigned start_idx,
     output int unsigned end_idx
   );
-  endfunction
 
   local static function json_result parse_string(
     const ref string str,
@@ -153,14 +152,11 @@ function json_result json_value::parse_object(
   output int unsigned end_idx
 );
   enum {
-    EXPECT_QUOTE_OR_RIGHT_CURLY,
     PARSE_KEY,
     EXPECT_COLON,
     PARSE_VALUE,
-    EXPECT_COMMA_OR_RIGHT_CURLY,
-    RETURN_OK,
-    RETURN_ERR
-  } state = EXPECT_QUOTE_OR_RIGHT_CURLY;
+    EXPECT_COMMA_OR_RIGHT_CURLY
+  } state = PARSE_KEY;
 
   string key;
   json_value values [string];
@@ -170,35 +166,27 @@ function json_result json_value::parse_object(
 
   forever begin
     case (state)
-      EXPECT_QUOTE_OR_RIGHT_CURLY: begin
-        if (!scan_until_token(str, idx, idx, scan_err, '{"\"", "}"})) begin
+      PARSE_KEY: begin
+        json_result result = parse_string(str, idx, idx);
+
+        if (result.is_err()) begin
           case (scan_err)
-            JSON_ERR_EXPECTED_TOKEN: begin
-              return `JSON_SYNTAX_ERR(JSON_ERR_INVALID_OBJECT_KEY, str, idx);
+            JSON_ERR_EXPECTED_DOUBLE_QUOTE: begin
+              if (str[idx] == "}") begin
+                if (trailing_comma) begin
+                  return `JSON_SYNTAX_ERR(JSON_ERR_TRAILING_COMMA, str, idx);
+                end else begin
+                  break;
+                end
+              end else begin
+                return result;
+              end
             end
-            JSON_ERR_EOF_VALUE: begin
-              return `JSON_SYNTAX_ERR(JSON_ERR_EOF_OBJECT, str, idx);
+            JSON_ERR_EOF_STRING: begin
+              return result;
             end
             default: return `JSON_INTERNAL_ERR("Unreachable case branch");
           endcase
-        end
-
-        if (str[idx] == "}") begin
-          if (trailing_comma) begin
-            return `JSON_SYNTAX_ERR(JSON_ERR_TRAILING_COMMA, str, idx);
-          end else begin
-            break;
-          end
-        end else begin
-          trailing_comma = 0;
-          state = PARSE_KEY;
-        end
-      end
-
-      PARSE_KEY: begin
-        json_result result = parse_string(str, idx, idx);
-        if (result.is_err()) begin
-          return result;
         end else begin
           key = result.value.as_json_string().unwrap();
           idx++; // move from last string token
@@ -251,7 +239,7 @@ function json_result json_value::parse_object(
           break;
         end else begin
           trailing_comma = 1;
-          state = EXPECT_QUOTE_OR_RIGHT_CURLY;
+          state = PARSE_KEY;
         end
       end
     endcase
@@ -260,6 +248,75 @@ function json_result json_value::parse_object(
   end_idx = idx;
   return json_result::ok(json_object::create(values));
 endfunction : parse_object
+
+
+function json_result json_value::parse_array(
+  const ref string str,
+  input int unsigned start_idx,
+  output int unsigned end_idx
+);
+  enum {
+    PARSE_VALUE,
+    EXPECT_COMMA_OR_RIGHT_BRACE
+  } state = PARSE_VALUE;
+
+  json_value values[$];
+  json_err_e scan_err;
+  int unsigned idx = start_idx;
+  bit trailing_comma = 0;
+
+  forever begin
+    case (state)
+      PARSE_VALUE: begin
+        json_result result = parse_value(str, idx, idx);
+
+        if (result.is_err()) begin
+          case (scan_err)
+            JSON_ERR_EXPECTED_VALUE: begin
+              if ((str[idx] == "]") && !trailing_comma) begin
+                break;
+              end else begin
+                return result;
+              end
+            end
+            JSON_ERR_EOF_VALUE: begin
+              return `JSON_SYNTAX_ERR(JSON_ERR_EOF_ARRAY, str, idx);
+            end
+            default: return `JSON_INTERNAL_ERR("Unreachable case branch");
+          endcase
+        end else begin
+          values.push_back(result.value);
+          idx++; // move from last value token
+          state = EXPECT_COMMA_OR_RIGHT_BRACE;
+        end
+      end
+
+      EXPECT_COMMA_OR_RIGHT_BRACE: begin
+        if (!scan_until_token(str, idx, idx, scan_err, '{",", "]"})) begin
+          case (scan_err)
+            JSON_ERR_EXPECTED_TOKEN: begin
+              return `JSON_SYNTAX_ERR(JSON_ERR_EXPECTED_OBJECT_COMMA_OR_END, str, idx);
+            end
+            JSON_ERR_EOF_VALUE: begin
+              return `JSON_SYNTAX_ERR(JSON_ERR_EOF_ARRAY, str, idx);
+            end
+            default: return `JSON_INTERNAL_ERR("Unreachable case branch");
+          endcase
+        end
+
+        if (str[idx] == "]") begin
+          break;
+        end else begin
+          trailing_comma = 1;
+          state = PARSE_VALUE;
+        end
+      end
+    endcase
+  end
+
+  end_idx = idx;
+  return json_result::ok(json_array::create(values));
+endfunction : parse_array
 
 
 function bit json_value::scan_until_token(
