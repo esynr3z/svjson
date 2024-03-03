@@ -5,9 +5,14 @@ package json_pkg;
   typedef json_object;
   typedef json_array;
   typedef json_string;
-  typedef json_number;
+  typedef json_int;
+  typedef json_real;
   typedef json_bool;
   typedef json_null;
+
+  // Additional aliases for aggregate types
+  typedef json_value json_value_queue_t[$];
+  typedef json_value json_value_map_t[string];
 
   // All types of JSON related errors
   typedef enum {
@@ -72,7 +77,8 @@ package json_pkg;
   `include "json_object.sv"
   `include "json_array.sv"
   `include "json_string.sv"
-  `include "json_number.sv"
+  `include "json_int.sv"
+  `include "json_real.sv"
   `include "json_bool.sv"
   `include "json_null.sv"
 

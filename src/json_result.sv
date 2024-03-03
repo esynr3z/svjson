@@ -18,12 +18,16 @@ class json_result;
 
   // Is result OK?
   extern function bit is_ok();
+
   // Is result ERR?
   extern function bit is_err();
+
   // Construct error message
   extern function string get_err_message();
+
   // Create OK result
   extern static function json_result ok(json_value value);
+  
   // Create result for generic error
   extern static function json_result err(
     json_err_e kind,
