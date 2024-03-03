@@ -9,6 +9,7 @@ package json_pkg;
   typedef json_bool;
   typedef json_null;
 
+  // All types of JSON related errors
   typedef enum {
     // JSON syntax errors
     JSON_ERR_EOF_VALUE,                     // EOF while parsing some JSON value
@@ -34,25 +35,8 @@ package json_pkg;
     JSON_ERR_NOT_IMPLEMENTED,               // Feature is not implemented
     JSON_ERR_INTERNAL                       // Unspecified internal error
   } json_err_e;
-  `include "json_result.sv"
 
-  `define JSON_SYNTAX_ERR(KIND, STR, IDX, DESCR="")\
-    json_result::err( \
-      .kind(KIND), \
-      .description(DESCR), \
-      .json_str(STR), \
-      .json_str_idx(IDX), \
-      .source_file(`__FILE__), \
-      .source_line(`__LINE__) \
-    )
-  `define JSON_INTERNAL_ERR(DESCR="")\
-    json_result::err( \
-      .kind(JSON_ERR_INTERNAL), \
-      .description(DESCR), \
-      .source_file(`__FILE__), \
-      .source_line(`__LINE__) \
-    )
-
+  // All kinds of JSON value
   typedef enum {
     JSON_VALUE_OBJECT,
     JSON_VALUE_ARRAY,
@@ -62,8 +46,29 @@ package json_pkg;
     JSON_VALUE_BOOL,
     JSON_VALUE_NULL
   } json_value_e;
-  `include "json_value.sv"
 
+  // Alias to raise syntax errors in a more compact way
+  `define JSON_SYNTAX_ERR(KIND, STR, IDX, DESCR="")\
+    json_result::err( \
+      .kind(KIND), \
+      .description(DESCR), \
+      .json_str(STR), \
+      .json_str_idx(IDX), \
+      .source_file(`__FILE__), \
+      .source_line(`__LINE__) \
+    )
+
+  // Alias to raise internal error in a more compact way
+  `define JSON_INTERNAL_ERR(DESCR="")\
+    json_result::err( \
+      .kind(JSON_ERR_INTERNAL), \
+      .description(DESCR), \
+      .source_file(`__FILE__), \
+      .source_line(`__LINE__) \
+    )
+
+  `include "json_result.sv"
+  `include "json_value.sv"
   `include "json_object.sv"
   `include "json_array.sv"
   `include "json_string.sv"
