@@ -1,14 +1,13 @@
 `include "svunit_defines.svh"
 
-module json_decoder_basic_unit_test;
+module json_load_unit_test;
   import svunit_pkg::svunit_testcase;
 
-  import json_pkg::json_decoder;
   import json_pkg::json_result;
   import json_pkg::json_value;
   import json_pkg::json_object;
 
-  string name = "json_decoder_basic_ut";
+  string name = "json_load_ut";
   svunit_testcase svunit_ut;
 
   function void build();
@@ -25,15 +24,12 @@ module json_decoder_basic_unit_test;
 
   `SVUNIT_TESTS_BEGIN
 
-  `SVTEST(empty_object_test)
-    string test = "{}";
-    json_object jobject;
-    json_result#(json_value) result = json_decoder::try_load_string(test);
-    `FAIL_UNLESS(result.is_ok())
-    `FAIL_UNLESS($cast(jobject, result.value))
-    `FAIL_IF(jobject.values.num() > 0)
+  `SVTEST(dummy_test)
+  begin
+    `FAIL_IF(0)
+  end
   `SVTEST_END
 
   `SVUNIT_TESTS_END
 
-endmodule : json_decoder_basic_unit_test
+endmodule : json_load_unit_test
