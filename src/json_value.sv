@@ -187,7 +187,7 @@ function json_result json_value::parse_object(
           if (trailing_comma) begin
             return `JSON_SYNTAX_ERR(JSON_ERR_TRAILING_COMMA, str, idx);
           end else begin
-            return json_result::ok(json_object::create(values));
+            break;
           end
         end else begin
           trailing_comma = 0;
@@ -248,7 +248,7 @@ function json_result json_value::parse_object(
         end
 
         if (str[idx] == "}") begin
-          return json_result::ok(json_object::create(values));
+          break;
         end else begin
           trailing_comma = 1;
           state = EXPECT_QUOTE_OR_RIGHT_CURLY;
@@ -256,6 +256,9 @@ function json_result json_value::parse_object(
       end
     endcase
   end
+
+  end_idx = idx;
+  return json_result::ok(json_object::create(values));
 endfunction : parse_object
 
 
