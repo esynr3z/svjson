@@ -1,5 +1,10 @@
 // JSON decoder
 class json_decoder;
+
+  //----------------------------------------------------------------------------
+  // Private properties
+  //----------------------------------------------------------------------------
+
   local const byte escape_chars[] = '{"\"", "\\", "/", "b", "f", "n", "r", "t"};
 
   local const byte hex_chars[] = '{
@@ -153,21 +158,15 @@ function json_result json_decoder::parse_object(
         json_result result = parse_string(str, idx, idx);
 
         if (result.is_err()) begin
-          case (scan_err)
-            JSON_ERR_EXPECTED_DOUBLE_QUOTE: begin
-              if (str[idx] == "}") begin
-                if (trailing_comma) begin
-                  return `JSON_SYNTAX_ERR(JSON_ERR_TRAILING_COMMA, str, idx);
-                end else begin
-                  break;
-                end
-              end else begin
-                return result;
+          if (result.err_kind == JSON_ERR_EXPECTED_DOUBLE_QUOTE) begin
+            if (str[idx] == "}") begin
+              if (trailing_comma) begin
+                return `JSON_SYNTAX_ERR(JSON_ERR_TRAILING_COMMA, str, idx);
               end
+              break; // empty object parsed
             end
-            JSON_ERR_EOF_STRING: return result;
-            default: return `JSON_INTERNAL_ERR("Unreachable case branch");
-          endcase
+          end
+          return result;
         end else begin
           key = result.value.as_json_string().unwrap();
           idx++; // move from last string token
@@ -290,8 +289,6 @@ function json_result json_decoder::parse_string(
   input int unsigned start_idx,
   output int unsigned end_idx
 );
-
-
   enum {
     EXPECT_DOUBLE_QUOTE,
     SCAN_CHARS,
