@@ -6,7 +6,7 @@ class json_string extends json_value;
 
   // Static constructor using type
   extern static function json_string create(string value);
-  
+
   // Get native string type
   extern virtual function string unwrap();
 endclass : json_string

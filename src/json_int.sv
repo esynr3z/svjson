@@ -6,7 +6,7 @@ class json_int extends json_value;
 
   // Static constructor using type
   extern static function json_int create(longint value);
-  
+
   // Get native longint type
   extern virtual function real unwrap();
 endclass : json_int

@@ -27,7 +27,7 @@ class json_result;
 
   // Create OK result
   extern static function json_result ok(json_value value);
-  
+
   // Create result for generic error
   extern static function json_result err(
     json_err_e kind,

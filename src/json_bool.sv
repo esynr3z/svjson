@@ -6,7 +6,7 @@ class json_bool extends json_value;
 
   // Static constructor using type
   extern static function json_bool create(bit value);
-  
+
   // Get native bit type
   extern virtual function bit unwrap();
 endclass : json_bool

@@ -82,6 +82,8 @@ package json_pkg;
   `include "json_bool.sv"
   `include "json_null.sv"
 
+  `include "json_decoder.sv"
+
   `undef JSON_SYNTAX_ERR
   `undef JSON_INTERNAL_ERR
 endpackage : json_pkg

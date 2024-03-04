@@ -6,7 +6,7 @@ class json_object extends json_value;
 
   // Static constructor using type
   extern static function json_object create(json_value_map_t values);
-  
+
   // Get native map type
   extern virtual function json_value_map_t unwrap();
 endclass : json_object
