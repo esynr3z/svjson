@@ -8,7 +8,6 @@ package json_pkg;
   typedef json_int;
   typedef json_real;
   typedef json_bool;
-  typedef json_null;
 
   // Additional aliases for aggregate types
   typedef json_value json_value_queue_t[$];
@@ -21,16 +20,16 @@ package json_pkg;
     JSON_ERR_EOF_OBJECT,                    // EOF while parsing an object
     JSON_ERR_EOF_ARRAY,                     // EOF while parsing an array
     JSON_ERR_EOF_STRING,                    // EOF while parsing a string
+    JSON_ERR_EOF_LITERAL,                   // EOF while parsing a literal
     JSON_ERR_EXPECTED_TOKEN,                // Current character should be some expected token
     JSON_ERR_EXPECTED_COLON,                // Current character should be ':'
     JSON_ERR_EXPECTED_OBJECT_COMMA_OR_END,  // Current character should be either ',' or '}'
     JSON_ERR_EXPECTED_ARRAY_COMMA_OR_END,   // Current character should be either ',' or ']'
     JSON_ERR_EXPECTED_DOUBLE_QUOTE,         // Current character should be '"'
-    JSON_ERR_EXPECTED_BOOL,                 // Current character should start either 'true' or 'false' sequence
-    JSON_ERR_EXPECTED_NULL,                 // Current character should start 'null' sequence
     JSON_ERR_EXPECTED_VALUE,                // Current character should start some JSON value
     JSON_ERR_INVALID_ESCAPE,                // Invaid escape code
     JSON_ERR_INVALID_UNICODE,               // Invaid characters in unicode
+    JSON_ERR_INVALID_LITERAL,               // Invaid number
     JSON_ERR_INVALID_NUMBER,                // Invaid number
     JSON_ERR_INVALID_OBJECT_KEY,            // String must be used as a key
     JSON_ERR_TRAILING_COMMA,                // Unexpected comma after the last value of object/array
@@ -48,8 +47,7 @@ package json_pkg;
     JSON_VALUE_STRING,
     JSON_VALUE_INT,
     JSON_VALUE_REAL,
-    JSON_VALUE_BOOL,
-    JSON_VALUE_NULL
+    JSON_VALUE_BOOL
   } json_value_e;
 
   // Alias to raise syntax errors in a more compact way
@@ -80,7 +78,6 @@ package json_pkg;
   `include "json_int.sv"
   `include "json_real.sv"
   `include "json_bool.sv"
-  `include "json_null.sv"
 
   `include "json_decoder.sv"
 

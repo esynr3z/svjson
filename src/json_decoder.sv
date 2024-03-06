@@ -66,13 +66,7 @@ class json_decoder;
     output int unsigned end_idx
   );
 
-  extern local function json_result parse_bool(
-    const ref string str,
-    input int unsigned start_idx,
-    output int unsigned end_idx
-  );
-
-  extern local function json_result parse_null(
+  extern local function json_result parse_literal(
     const ref string str,
     input int unsigned start_idx,
     output int unsigned end_idx
@@ -125,8 +119,7 @@ function json_result json_decoder::parse_value(
     "{": return parse_value(str, idx, end_idx);
     "[": return parse_array(str, idx, end_idx);
     "\"": return parse_value(str, idx, end_idx);
-    "n": return parse_null(str, idx, end_idx);
-    "t", "f": return parse_bool(str, idx, end_idx);
+    "n", "t", "f": return parse_literal(str, idx, end_idx);
     "-", ["0":"9"]: return parse_number(str, idx, end_idx);
 
     default: return `JSON_SYNTAX_ERR(JSON_ERR_EXPECTED_VALUE, str, idx);
@@ -376,20 +369,47 @@ function json_result parse_number(
 endfunction : parse_number
 
 
-function json_result parse_bool(
+function json_result json_decoder::parse_literal(
   const ref string str,
   input int unsigned start_idx,
   output int unsigned end_idx
 );
-endfunction : parse_bool
+  string literal;
+  string literal_expected;
+  json_result ok_result;
+  int unsigned idx = start_idx;
 
+  case (str[idx])
+    "t": begin
+      end_idx = idx + 3;
+      literal_expected = "true";
+      ok_result = json_result::ok(json_bool::create(1));
+    end
 
-function json_result parse_null(
-  const ref string str,
-  input int unsigned start_idx,
-  output int unsigned end_idx
-);
-endfunction : parse_null
+    "f": begin
+      end_idx = idx + 4;
+      literal_expected = "false";
+      ok_result = json_result::ok(json_bool::create(0));
+    end
+
+    "n": begin
+      end_idx = idx + 3;
+      literal_expected = "null";
+      ok_result = json_result::ok(null);
+    end
+
+    default: return `JSON_INTERNAL_ERR("Unreachable case branch");
+  endcase
+
+  literal = str.substr(idx, end_idx);
+  if (literal == "") begin
+    return `JSON_SYNTAX_ERR(JSON_ERR_EOF_LITERAL, str, idx);
+  end else if (literal != literal_expected)begin
+    return `JSON_SYNTAX_ERR(JSON_ERR_INVALID_LITERAL, str, idx);
+  end else begin
+    return ok_result;
+  end
+endfunction : parse_literal
 
 
 function bit json_decoder::scan_until_token(
