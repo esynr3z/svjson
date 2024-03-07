@@ -116,9 +116,9 @@ function json_result json_decoder::parse_value(
 
   // Current character must start a value
   case (str[idx]) inside
-    "{": return parse_value(str, idx, end_idx);
+    "{": return parse_object(str, idx, end_idx);
     "[": return parse_array(str, idx, end_idx);
-    "\"": return parse_value(str, idx, end_idx);
+    "\"": return parse_string(str, idx, end_idx);
     "n", "t", "f": return parse_literal(str, idx, end_idx);
     "-", ["0":"9"]: return parse_number(str, idx, end_idx);
 
@@ -361,7 +361,7 @@ function json_result json_decoder::parse_string(
 endfunction : parse_string
 
 
-function json_result parse_number(
+function json_result json_decoder::parse_number(
   const ref string str,
   input int unsigned start_idx,
   output int unsigned end_idx
