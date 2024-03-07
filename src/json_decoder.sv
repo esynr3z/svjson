@@ -243,10 +243,11 @@ function json_result json_decoder::parse_array(
         if (result.is_err()) begin
           case (scan_err)
             JSON_ERR_EXPECTED_VALUE: begin
-              if ((str[idx] == "]") && !trailing_comma) begin
-                break;
-              end else begin
-                return result;
+              if (str[idx] == "]") begin
+                if (trailing_comma) begin
+                  return `JSON_SYNTAX_ERR(JSON_ERR_TRAILING_COMMA, str, idx);
+                end
+                break; // empty array parsed
               end
             end
             JSON_ERR_EOF_VALUE: return `JSON_SYNTAX_ERR(JSON_ERR_EOF_ARRAY, str, idx);
