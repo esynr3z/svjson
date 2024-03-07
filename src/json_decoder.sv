@@ -5,6 +5,8 @@ class json_decoder;
   // Private properties
   //----------------------------------------------------------------------------
 
+  local const byte whitespace_chars[] = '{" ", "\t", "\n", "\r"};
+
   local const byte escape_chars[] = '{"\"", "\\", "/", "b", "f", "n", "r", "t"};
 
   local const byte hex_chars[] = '{
@@ -14,6 +16,10 @@ class json_decoder;
 
   local const byte value_start_chars[] = '{
     "{", "[", "\"", "n", "t", "f", "-", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9"
+  };
+
+  local const byte number_chars[] = '{
+    ".", "-", "+", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "e", "E"
   };
 
   //----------------------------------------------------------------------------
@@ -336,9 +342,6 @@ function json_result json_decoder::parse_string(
         end else begin
           return `JSON_SYNTAX_ERR(JSON_ERR_INVALID_ESCAPE, str, idx);
         end
-        if (idx == len) begin
-          return `JSON_SYNTAX_ERR(JSON_ERR_EOF_STRING, str, idx - 1);
-        end
       end
 
       PARSE_UNICODE: begin
@@ -366,6 +369,25 @@ function json_result json_decoder::parse_number(
   input int unsigned start_idx,
   output int unsigned end_idx
 );
+  real real_value;
+  longint int_value;
+  string value = "";
+  int unsigned len = str.len();
+  int unsigned idx = start_idx;
+
+  while ((str[idx] inside {this.number_chars}) && (idx < len)) begin
+    value = {value, str[idx]};
+    idx++;
+  end
+  end_idx = idx - 1;
+
+  if ($sscanf(value, "%d", int_value) > 0) begin
+    return json_result::ok(json_int::create(int_value));
+  end else if ($sscanf(value, "%f", real_value) > 0) begin
+    return json_result::ok(json_real::create(real_value));
+  end else begin
+    return `JSON_SYNTAX_ERR(JSON_ERR_INVALID_NUMBER, str, end_idx);
+  end
 endfunction : parse_number
 
 
@@ -419,11 +441,10 @@ function bit json_decoder::scan_until_token(
   output json_err_e err_kind,
   input byte expected_tokens [] = '{}
 );
-  const byte whitespaces [] = '{" ", "\t", "\n", "\r"};
   int unsigned len = str.len();
   int unsigned idx = start_idx;
 
-  while ((str[idx] inside {whitespaces}) && (idx < len)) begin
+  while ((str[idx] inside {this.whitespace_chars}) && (idx < len)) begin
     idx++;
   end
 
