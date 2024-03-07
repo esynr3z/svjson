@@ -1,87 +1,86 @@
 // Result class to facilitate error handling.
 // Inspired by Result<T, E> enumeration and a common way to propagate errors in Rust.
-class json_result;
-  local typedef enum {
-    OK,
-    ERR
-  } status_e;
-  local status_e status;
+// Additional generic K is added to resolve error kind enumeration.
+class json_result#(type T=json_value, type E=json_error, type K=json_error::kind_e);
+  local T value;
+  local E error;
 
-  json_value value;
-
-  json_err_e err_kind;
-  string err_description;
-  string err_file;
-  int err_line;
-  string err_json_str;
-  int err_json_str_idx;
+  // Private constructor to force using `ok()` or `err()`
+  extern local function new();
 
   // Is result OK?
   extern function bit is_ok();
 
-  // Is result ERR?
+  // Is result error?
   extern function bit is_err();
 
-  // Construct error message
-  extern function string get_err_message();
+  // Match result with OK and return value object and 1 on success
+  extern function bit matches_ok(output T value);
+
+  // Match result with specific error and return error object and 1 on success
+  extern function bit matches_err(input K kind, output E error);
+
+  // Match result with any error and return error object and 1 on success
+  extern function bit matches_any_err(output E error);
 
   // Create OK result
-  extern static function json_result ok(json_value value);
+  static function json_result#(T, E, K) ok(T value);
+    json_result#(T, E, K) result = new();
+    result.value = value;
+    return result;
+  endfunction : ok
 
-  // Create result for generic error
-  extern static function json_result err(
-    json_err_e kind,
-    string description="",
-    string json_str="",
-    int json_str_idx=-1,
-    string source_file="",
-    int source_line=-1
-  );
+  // Create error result
+  static function json_result#(T, E, K) err(E error);
+    json_result#(T, E, K) result = new();
+    result.error = error;
+    return result;
+  endfunction : err
 endclass : json_result
 
 
+function json_result::new();
+endfunction : new
+
+
 function bit json_result::is_ok();
-  return this.status == OK;
+  return this.error == null;
 endfunction : is_ok
 
 
 function bit json_result::is_err();
-  return this.status == ERR;
+  return !this.is_ok();
 endfunction : is_err
 
 
-function json_result json_result::ok(json_value value);
-  json_result result = new();
-
-  result.status = OK;
-  result.value = value;
-
-  return result;
-endfunction : ok
-
-
-function json_result json_result::err(
-  json_err_e kind,
-  string description="",
-  string json_str="",
-  int json_str_idx=-1,
-  string source_file="",
-  int source_line=-1
-);
-  json_result result = new();
-
-  result.status = ERR;
-  result.err_kind = kind;
-  result.err_description = description;
-  result.err_json_str = json_str;
-  result.err_json_str_idx = json_str_idx;
-  result.err_file = source_file;
-  result.err_line = source_line;
-
-  return result;
-endfunction : err
+function bit json_result::matches_ok(output T value);
+  if (this.is_ok()) begin
+    value = this.value;
+    return 1;
+  end else begin
+    value = null;
+    return 0;
+  end
+endfunction : matches_ok
 
 
-function string json_result::get_err_message();
-  return "get_err_message() is not implemented yet";
-endfunction : get_err_message
+function bit json_result::matches_err(input K kind, output E error);
+  if (this.is_err() && (this.error.kind == kind)) begin
+    error = this.error;
+    return 1;
+  end else begin
+    error = null;
+    return 0;
+  end
+endfunction : matches_err
+
+
+function bit json_result::matches_any_err(output E error);
+  if (this.is_err()) begin
+    error = this.error;
+    return 1;
+  end else begin
+    error = null;
+    return 0;
+  end
+endfunction : matches_any_err

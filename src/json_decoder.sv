@@ -4,6 +4,12 @@ class json_decoder;
   //----------------------------------------------------------------------------
   // Private properties
   //----------------------------------------------------------------------------
+  local typedef struct {
+    json_value   value;
+    int unsigned end_pos;
+  } parsed_s;
+
+  local typedef json_result#(parsed_s) parser_result;
 
   local const byte whitespace_chars[] = '{" ", "\t", "\n", "\r"};
 
@@ -37,57 +43,86 @@ class json_decoder;
   //----------------------------------------------------------------------------
 
   // Private constructor
-  extern local function new();
+  extern function new();
 
   // Scan string symbol by symbol to encounter and extract JSON values recursively.
-  extern local function json_result parse_value(
-    const ref string str,
-    input int unsigned start_idx,
-    output int unsigned end_idx
-  );
+  local function parser_result parse_value(const ref string str, input int unsigned start_pos);
+    parser_result scan_result;
+    json_error scan_error;
+    parsed_s scan_value;
+    int unsigned idx = start_pos;
 
-  // Parse JSON object from provided string.
-  // String must start from '{' (`start_idx`) and consist a pair symbol '}' (`end_idx`).
-  extern local function json_result parse_object(
-    const ref string str,
-    input int unsigned start_idx,
-    output int unsigned end_idx
-  );
+    // Skip all whitespaces until valid token
+    scan_result = scan_until_token(str, idx, this.value_start_chars);
+    case (1)
+      scan_result.matches_err(json_error::EXPECTED_TOKEN, scan_error):
+        return `JSON_SYNTAX_ERR(json_error::EXPECTED_VALUE, str, scan_error.json_idx);
 
-  extern local function json_result parse_array(
-    const ref string str,
-    input int unsigned start_idx,
-    output int unsigned end_idx
-  );
+      scan_result.matches_err(json_error::EOF_VALUE, scan_error):
+        return `JSON_SYNTAX_ERR(json_error::EOF_VALUE, str, scan_error.json_idx);
 
-  extern local function json_result parse_string(
-    const ref string str,
-    input int unsigned start_idx,
-    output int unsigned end_idx
-  );
+      scan_result.matches_ok(scan_value): idx = scan_value.end_pos;
 
-  extern local function json_result parse_number(
-    const ref string str,
-    input int unsigned start_idx,
-    output int unsigned end_idx
-  );
+      default: return `JSON_INTERNAL_ERR("Unreachable case branch");
+    endcase
 
-  extern local function json_result parse_literal(
-    const ref string str,
-    input int unsigned start_idx,
-    output int unsigned end_idx
-  );
+    // Current character must start a value
+    case (str[idx]) inside
+      "{": return parse_object(str, idx);
+      "[": return parse_array(str, idx);
+      "\"": return parse_string(str, idx);
+      "n", "t", "f": return parse_literal(str, idx);
+      "-", ["0":"9"]: return parse_number(str, idx);
+
+      default: return `JSON_SYNTAX_ERR(json_error::EXPECTED_VALUE, str, idx);
+    endcase
+  endfunction : parse_value
+
+
+  local function parser_result parse_object(const ref string str, input int unsigned start_pos);
+  endfunction : parse_object
+
+
+  local function parser_result parse_array(const ref string str, input int unsigned start_pos);
+  endfunction : parse_array
+
+
+  local function parser_result parse_string(const ref string str, input int unsigned start_pos);
+  endfunction : parse_string
+
+
+  local function parser_result parse_number(const ref string str, input int unsigned start_pos);
+  endfunction : parse_number
+
+
+  local function parser_result parse_literal(const ref string str, input int unsigned start_pos);
+  endfunction : parse_literal
 
   // Scan input string char by char ignoring any whitespaces and stop at first non-whitespace char.
-  // Return 0 and error code if non-whitespace char was not found or do not match expected ones.
-  // Return 1 and position of found char within string otherwise.
-  extern local function bit scan_until_token(
+  // Return error with last char position if non-whitespace char was not found or do not match expected ones.
+  // Return OK and position of found char within string otherwise.
+  local function parser_result scan_until_token(
     const ref string str,
-    input int unsigned start_idx,
-    output int unsigned end_idx,
-    output json_err_e err_kind,
-    input byte expected_tokens [] = '{}
+    int unsigned start_pos,
+    byte expected_tokens [] = '{}
   );
+    int unsigned len = str.len();
+    int unsigned idx = start_pos;
+
+    while ((str[idx] inside {this.whitespace_chars}) && (idx < len)) begin
+      idx++;
+    end
+
+    if (idx == str.len()) begin
+      return parser_result::err(json_error::create(json_error::EOF_VALUE, .json_idx(idx - 1)));
+    end else if ((expected_tokens.size() > 0) && !(str[idx] inside {expected_tokens})) begin
+      return parser_result::err(json_error::create(json_error::EXPECTED_TOKEN, .json_idx(idx)));
+    end else begin
+      parsed_s res;
+      res.end_pos = idx;
+      return parser_result::ok(res);
+    end
+  endfunction : scan_until_token
 endclass : json_decoder
 
 
@@ -103,40 +138,11 @@ function json_decoder::new();
 endfunction : new
 
 
-function json_result json_decoder::parse_value(
-  const ref string str,
-  input int unsigned start_idx=0,
-  output int unsigned end_idx
-);
-  json_err_e scan_err;
-  int unsigned idx = start_idx;
-
-  // Skip all whitespaces until valid token
-  if (!scan_until_token(str, idx, idx, scan_err, this.value_start_chars)) begin
-    case (scan_err)
-      JSON_ERR_EXPECTED_TOKEN: return `JSON_SYNTAX_ERR(JSON_ERR_EXPECTED_VALUE, str, idx);
-      JSON_ERR_EOF_VALUE: return `JSON_SYNTAX_ERR(JSON_ERR_EOF_VALUE, str, idx);
-      default: return `JSON_INTERNAL_ERR("Unreachable case branch");
-    endcase
-  end
-
-  // Current character must start a value
-  case (str[idx]) inside
-    "{": return parse_object(str, idx, end_idx);
-    "[": return parse_array(str, idx, end_idx);
-    "\"": return parse_string(str, idx, end_idx);
-    "n", "t", "f": return parse_literal(str, idx, end_idx);
-    "-", ["0":"9"]: return parse_number(str, idx, end_idx);
-
-    default: return `JSON_SYNTAX_ERR(JSON_ERR_EXPECTED_VALUE, str, idx);
-  endcase
-endfunction : parse_value
-
-
+/*
 function json_result json_decoder::parse_object(
   const ref string str,
-  input int unsigned start_idx,
-  output int unsigned end_idx
+  input int unsigned start_pos,
+  output int unsigned end_pos
 );
   enum {
     PARSE_KEY,
@@ -147,14 +153,37 @@ function json_result json_decoder::parse_object(
 
   string key;
   json_value values [string];
-  json_err_e scan_err;
-  int unsigned idx = start_idx;
+  json_result#(int unsigned) scan_result;
+  json_error scan_error;
+  int unsigned idx = start_pos;
   bit trailing_comma = 0;
 
   forever begin
     case (state)
       PARSE_KEY: begin
+        json_error error;
+        json_string value;
         json_result result = parse_string(str, idx, idx);
+
+        case(1)
+          scan_result.matches_err(json_error::EXPECTED_DOUBLE_QUOTE, error): begin
+            if (str[error.json_idx] == "}") begin
+              if (trailing_comma) begin
+                return `JSON_SYNTAX_ERR(json_error::TRAILING_COMMA, str, error.json_idx);
+              end
+              break; // empty object parsed
+            end
+          end
+
+          result.matches_any_err(error): return result;
+
+          result.matches_ok(error): begin
+            key = result.value.as_json_string().unwrap();
+            idx++; // move from last string token
+            state = EXPECT_COLON;
+          end
+
+        endcase
 
         if (result.is_err()) begin
           if (result.err_kind == JSON_ERR_EXPECTED_DOUBLE_QUOTE) begin
@@ -215,15 +244,15 @@ function json_result json_decoder::parse_object(
     endcase
   end
 
-  end_idx = idx;
+  end_pos = idx;
   return json_result::ok(json_object::create(values));
 endfunction : parse_object
 
 
 function json_result json_decoder::parse_array(
   const ref string str,
-  input int unsigned start_idx,
-  output int unsigned end_idx
+  input int unsigned start_pos,
+  output int unsigned end_pos
 );
   enum {
     PARSE_VALUE,
@@ -232,7 +261,7 @@ function json_result json_decoder::parse_array(
 
   json_value values[$];
   json_err_e scan_err;
-  int unsigned idx = start_idx;
+  int unsigned idx = start_pos;
   bit trailing_comma = 0;
 
   forever begin
@@ -279,15 +308,15 @@ function json_result json_decoder::parse_array(
     endcase
   end
 
-  end_idx = idx;
+  end_pos = idx;
   return json_result::ok(json_array::create(values));
 endfunction : parse_array
 
 
 function json_result json_decoder::parse_string(
   const ref string str,
-  input int unsigned start_idx,
-  output int unsigned end_idx
+  input int unsigned start_pos,
+  output int unsigned end_pos
 );
   enum {
     EXPECT_DOUBLE_QUOTE,
@@ -298,7 +327,7 @@ function json_result json_decoder::parse_string(
 
   string value;
   json_err_e scan_err;
-  int unsigned idx = start_idx;
+  int unsigned idx = start_pos;
   int unsigned len = str.len();
 
   forever begin
@@ -322,7 +351,7 @@ function json_result json_decoder::parse_string(
             state = PARSE_ESCAPE;
             break;
           end else if (str[idx] == "\"") begin
-            end_idx = idx;
+            end_pos = idx;
             return json_result::ok(json_string::create(value));
           end else begin
             value = {value, str[idx++]};
@@ -367,56 +396,56 @@ endfunction : parse_string
 
 function json_result json_decoder::parse_number(
   const ref string str,
-  input int unsigned start_idx,
-  output int unsigned end_idx
+  input int unsigned start_pos,
+  output int unsigned end_pos
 );
   real real_value;
   longint int_value;
   string value = "";
   int unsigned len = str.len();
-  int unsigned idx = start_idx;
+  int unsigned idx = start_pos;
 
   while ((str[idx] inside {this.number_chars}) && (idx < len)) begin
     value = {value, str[idx]};
     idx++;
   end
-  end_idx = idx - 1;
+  end_pos = idx - 1;
 
   if ($sscanf(value, "%d", int_value) > 0) begin
     return json_result::ok(json_int::create(int_value));
   end else if ($sscanf(value, "%f", real_value) > 0) begin
     return json_result::ok(json_real::create(real_value));
   end else begin
-    return `JSON_SYNTAX_ERR(JSON_ERR_INVALID_NUMBER, str, end_idx);
+    return `JSON_SYNTAX_ERR(JSON_ERR_INVALID_NUMBER, str, end_pos);
   end
 endfunction : parse_number
 
 
 function json_result json_decoder::parse_literal(
   const ref string str,
-  input int unsigned start_idx,
-  output int unsigned end_idx
+  input int unsigned start_pos,
+  output int unsigned end_pos
 );
   string literal;
   string literal_expected;
   json_result ok_result;
-  int unsigned idx = start_idx;
+  int unsigned idx = start_pos;
 
   case (str[idx])
     "t": begin
-      end_idx = idx + 3;
+      end_pos = idx + 3;
       literal_expected = "true";
       ok_result = json_result::ok(json_bool::create(1));
     end
 
     "f": begin
-      end_idx = idx + 4;
+      end_pos = idx + 4;
       literal_expected = "false";
       ok_result = json_result::ok(json_bool::create(0));
     end
 
     "n": begin
-      end_idx = idx + 3;
+      end_pos = idx + 3;
       literal_expected = "null";
       ok_result = json_result::ok(null);
     end
@@ -424,7 +453,7 @@ function json_result json_decoder::parse_literal(
     default: return `JSON_INTERNAL_ERR("Unreachable case branch");
   endcase
 
-  literal = str.substr(idx, end_idx);
+  literal = str.substr(idx, end_pos);
   if (literal == "") begin
     return `JSON_SYNTAX_ERR(JSON_ERR_EOF_LITERAL, str, idx);
   end else if (literal != literal_expected)begin
@@ -434,31 +463,4 @@ function json_result json_decoder::parse_literal(
   end
 endfunction : parse_literal
 
-
-function bit json_decoder::scan_until_token(
-  const ref string str,
-  input int unsigned start_idx,
-  output int unsigned end_idx,
-  output json_err_e err_kind,
-  input byte expected_tokens [] = '{}
-);
-  int unsigned len = str.len();
-  int unsigned idx = start_idx;
-
-  while ((str[idx] inside {this.whitespace_chars}) && (idx < len)) begin
-    idx++;
-  end
-
-  if (idx == str.len()) begin
-    end_idx = idx - 1;
-    err_kind = JSON_ERR_EOF_VALUE;
-    return 0;
-  end else if ((expected_tokens.size() > 0) && !(str[idx] inside {expected_tokens})) begin
-    end_idx = idx;
-    err_kind = JSON_ERR_EXPECTED_TOKEN;
-    return 0;
-  end else begin
-    end_idx = idx;
-    return 1;
-  end
-endfunction : scan_until_token
+*/
