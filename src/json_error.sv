@@ -37,7 +37,7 @@ class json_error;
   extern function new();
 
   // Create error
-  extern function json_error create(
+  extern static function json_error create(
     kind_e kind,
     string description="",
     string json_str="",

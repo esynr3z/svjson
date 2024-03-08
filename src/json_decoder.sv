@@ -55,10 +55,10 @@ class json_decoder;
     // Skip all whitespaces until valid token
     scan_result = scan_until_token(str, idx, this.value_start_chars);
     case (1)
-      scan_result.matches_err(json_error::EXPECTED_TOKEN, scan_error):
+      scan_result.matches_err_eq(json_error::EXPECTED_TOKEN, scan_error):
         return `JSON_SYNTAX_ERR(json_error::EXPECTED_VALUE, str, scan_error.json_idx);
 
-      scan_result.matches_err(json_error::EOF_VALUE, scan_error):
+      scan_result.matches_err_eq(json_error::EOF_VALUE, scan_error):
         return `JSON_SYNTAX_ERR(json_error::EOF_VALUE, str, scan_error.json_idx);
 
       scan_result.matches_ok(scan_value): idx = scan_value.end_pos;
