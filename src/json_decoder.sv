@@ -33,17 +33,22 @@ class json_decoder;
   //----------------------------------------------------------------------------
 
   // Load and decode string into JSON value
-  extern static function json_result load_string(string str);
+  static function json_result load_string(string str);
+  endfunction : load_string
+
 
   // Load and decode file into JSON value
-  extern static function json_result load_file(string path);
+  static function json_result load_file(string path);
+  endfunction : load_file
 
   //----------------------------------------------------------------------------
   // Private methods
   //----------------------------------------------------------------------------
 
   // Private constructor
-  extern function new();
+  local function new();
+  endfunction : new
+
 
   // Scan string symbol by symbol to encounter and extract JSON values recursively.
   local function parser_result parse_value(const ref string str, input int unsigned start_pos);
@@ -375,6 +380,41 @@ class json_decoder;
 
 
   local function parser_result parse_literal(const ref string str, input int unsigned start_pos);
+    string literal;
+    string literal_expected;
+    parsed_s parsed;
+    int unsigned curr_pos = start_pos;
+
+    case (str[curr_pos])
+      "t": begin
+        literal_expected = "true";
+        parsed.end_pos = curr_pos + 3;
+        parsed.value = json_bool::create(1);
+      end
+
+      "f": begin
+        literal_expected = "false";
+        parsed.end_pos = curr_pos + 4;
+        parsed.value = json_bool::create(0);
+      end
+
+      "n": begin
+        literal_expected = "null";
+        parsed.end_pos = curr_pos + 3;
+        parsed.value = null;
+      end
+
+      default: return `JSON_INTERNAL_ERR("Unreachable case branch");
+    endcase
+
+    literal = str.substr(curr_pos, parsed.end_pos);
+    if (literal == "") begin
+      return `JSON_SYNTAX_ERR(json_error::EOF_LITERAL, str, curr_pos);
+    end else if (literal != literal_expected)begin
+      return `JSON_SYNTAX_ERR(json_error::INVALID_LITERAL, str, curr_pos);
+    end else begin
+      return parser_result::ok(parsed);
+    end
   endfunction : parse_literal
 
   // Scan input string char by char ignoring any whitespaces and stop at first non-whitespace char.
@@ -403,62 +443,3 @@ class json_decoder;
     end
   endfunction : scan_until_token
 endclass : json_decoder
-
-
-function json_result json_decoder::load_string(string str);
-endfunction : load_string
-
-
-function json_result json_decoder::load_file(string path);
-endfunction : load_file
-
-
-function json_decoder::new();
-endfunction : new
-
-
-/*
-
-function json_result json_decoder::parse_literal(
-  const ref string str,
-  input int unsigned start_pos,
-  output int unsigned end_pos
-);
-  string literal;
-  string literal_expected;
-  json_result ok_result;
-  int unsigned idx = start_pos;
-
-  case (str[idx])
-    "t": begin
-      end_pos = idx + 3;
-      literal_expected = "true";
-      ok_result = json_result::ok(json_bool::create(1));
-    end
-
-    "f": begin
-      end_pos = idx + 4;
-      literal_expected = "false";
-      ok_result = json_result::ok(json_bool::create(0));
-    end
-
-    "n": begin
-      end_pos = idx + 3;
-      literal_expected = "null";
-      ok_result = json_result::ok(null);
-    end
-
-    default: return `JSON_INTERNAL_ERR("Unreachable case branch");
-  endcase
-
-  literal = str.substr(idx, end_pos);
-  if (literal == "") begin
-    return `JSON_SYNTAX_ERR(json_error::EOF_LITERAL, str, idx);
-  end else if (literal != literal_expected)begin
-    return `JSON_SYNTAX_ERR(json_error::INVALID_LITERAL, str, idx);
-  end else begin
-    return ok_result;
-  end
-endfunction : parse_literal
-
-*/
