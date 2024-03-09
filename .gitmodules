@@ -1,3 +1,6 @@
 [submodule "svunit"]
 	path = contrib/svunit
 	url = git@github.com:svunit/svunit.git
+[submodule "contrib/json_test_suite"]
+	path = contrib/json_test_suite
+	url = git@github.com:nst/JSONTestSuite.git
