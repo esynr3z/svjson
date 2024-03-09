@@ -349,6 +349,28 @@ class json_decoder;
 
 
   local function parser_result parse_number(const ref string str, input int unsigned start_pos);
+    parsed_s parsed;
+    real real_value;
+    longint int_value;
+    string value = "";
+    int unsigned str_len = str.len();
+    int unsigned curr_pos = start_pos;
+
+    while ((str[curr_pos] inside {this.number_chars}) && (curr_pos < str_len)) begin
+      value = {value, str[curr_pos]};
+      curr_pos++;
+    end
+
+    parsed.end_pos = curr_pos - 1;
+    if ($sscanf(value, "%d", int_value) > 0) begin
+      parsed.value = json_int::create(int_value);
+      return parser_result::ok(parsed);
+    end else if ($sscanf(value, "%f", real_value) > 0) begin
+      parsed.value = json_real::create(real_value);
+      return parser_result::ok(parsed);
+    end else begin
+      return `JSON_SYNTAX_ERR(json_error::INVALID_NUMBER, str, parsed.end_pos);
+    end
   endfunction : parse_number
 
 
@@ -396,34 +418,6 @@ endfunction : new
 
 
 /*
-
-
-function json_result json_decoder::parse_number(
-  const ref string str,
-  input int unsigned start_pos,
-  output int unsigned end_pos
-);
-  real real_value;
-  longint int_value;
-  string value = "";
-  int unsigned len = str.len();
-  int unsigned idx = start_pos;
-
-  while ((str[idx] inside {this.number_chars}) && (idx < len)) begin
-    value = {value, str[idx]};
-    idx++;
-  end
-  end_pos = idx - 1;
-
-  if ($sscanf(value, "%d", int_value) > 0) begin
-    return json_result::ok(json_int::create(int_value));
-  end else if ($sscanf(value, "%f", real_value) > 0) begin
-    return json_result::ok(json_real::create(real_value));
-  end else begin
-    return `JSON_SYNTAX_ERR(json_error::INVALID_NUMBER, str, end_pos);
-  end
-endfunction : parse_number
-
 
 function json_result json_decoder::parse_literal(
   const ref string str,
