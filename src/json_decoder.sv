@@ -32,13 +32,40 @@ class json_decoder;
   // Public methods
   //----------------------------------------------------------------------------
 
-  // Load and decode string into JSON value
-  static function json_result load_string(string str);
+  // Try to load and decode string into JSON value
+  static function json_result load_string(const ref string str);
+    parsed_s parsed;
+    json_error error;
+    parser_result result;
+    json_decoder decoder = new();
+
+    result = decoder.parse_value(str, 0);
+    case (1)
+      result.matches_ok(parsed): return json_result#()::ok(parsed.value);
+      result.matches_err(error): return json_result#()::err(error);
+    endcase
   endfunction : load_string
 
 
-  // Load and decode file into JSON value
+  // Try to load and decode file into JSON value
   static function json_result load_file(string path);
+    int file_descr;
+    string file_text;
+
+    // Try to open file
+    file_descr = $fopen(path, "r");
+    if (file_descr == 0) begin
+      return `JSON_ERR(json_error::FILE_NOT_OPENED, $sformatf("Failed to open the file '%s'!", path));
+    end
+
+    // Read lines until the end of the file
+    while (!$feof(file_descr)) begin
+      string line;
+      $fgets(line, file_descr);
+      file_text = {file_text, line};
+    end
+
+    return load_string(file_text);
   endfunction : load_file
 
   //----------------------------------------------------------------------------
@@ -67,9 +94,9 @@ class json_decoder;
       result.matches_err_eq(json_error::EOF_VALUE, error):
         return `JSON_SYNTAX_ERR(json_error::EOF_VALUE, str, error.json_idx);
 
-      result.matches_ok(parsed): curr_pos = parsed.end_pos;
+      result.matches_err(error): return `JSON_INTERNAL_ERR($sformatf("Unexpected error %s", error.kind.name()));
 
-      default: return `JSON_INTERNAL_ERR("Unreachable case branch");
+      result.matches_ok(parsed): curr_pos = parsed.end_pos;
     endcase
 
     // Current character must start a value
@@ -124,8 +151,6 @@ class json_decoder;
               curr_pos++; // move from last string token
               state = EXPECT_COLON;
             end
-
-            default: return `JSON_INTERNAL_ERR("Unreachable case branch");
           endcase
         end
 
@@ -138,12 +163,12 @@ class json_decoder;
             result.matches_err_eq(json_error::EOF_VALUE, error):
               return `JSON_SYNTAX_ERR(json_error::EOF_OBJECT, str, error.json_idx);
 
+            result.matches_err(error): return `JSON_INTERNAL_ERR($sformatf("Unexpected error %s", error.kind.name()));
+
             result.matches_ok(parsed): begin
               curr_pos = parsed.end_pos + 1; // move from colon to next character
               state = PARSE_VALUE;
             end
-
-            default: return `JSON_INTERNAL_ERR("Unreachable case branch");
           endcase
         end
 
@@ -157,8 +182,6 @@ class json_decoder;
               curr_pos = parsed.end_pos + 1; // move from last value token
               state = EXPECT_COMMA_OR_RIGHT_CURLY;
             end
-
-            default: return `JSON_INTERNAL_ERR("Unreachable case branch");
           endcase
         end
 
@@ -171,6 +194,8 @@ class json_decoder;
             result.matches_err_eq(json_error::EOF_VALUE, error):
               return `JSON_SYNTAX_ERR(json_error::EOF_OBJECT, str, error.json_idx);
 
+            result.matches_err(error): return `JSON_INTERNAL_ERR($sformatf("Unexpected error %s", error.kind.name()));
+
             result.matches_ok(parsed): begin
               curr_pos = parsed.end_pos;
               if (str[curr_pos] == "}") begin
@@ -180,8 +205,6 @@ class json_decoder;
                 state = PARSE_KEY;
               end
             end
-
-            default: return `JSON_INTERNAL_ERR("Unreachable case branch");
           endcase
         end
       endcase
@@ -229,8 +252,6 @@ class json_decoder;
               curr_pos = parsed.end_pos + 1; // move from last value token
               state = EXPECT_COMMA_OR_RIGHT_BRACE;
             end
-
-            default: return `JSON_INTERNAL_ERR("Unreachable case branch");
           endcase
         end
 
@@ -243,6 +264,8 @@ class json_decoder;
             result.matches_err_eq(json_error::EOF_VALUE, error):
               return `JSON_SYNTAX_ERR(json_error::EOF_ARRAY, str, error.json_idx);
 
+            result.matches_err(error): return `JSON_INTERNAL_ERR($sformatf("Unexpected error %s", error.kind.name()));
+
             result.matches_ok(parsed): begin
               curr_pos = parsed.end_pos;
               if (str[curr_pos] == "]") begin
@@ -252,8 +275,6 @@ class json_decoder;
                 state = PARSE_VALUE;
               end
             end
-
-            default: return `JSON_INTERNAL_ERR("Unreachable case branch");
           endcase
         end
       endcase
@@ -293,12 +314,12 @@ class json_decoder;
             result.matches_err_eq(json_error::EOF_VALUE, error):
               return `JSON_SYNTAX_ERR(json_error::EOF_STRING, str, error.json_idx);
 
+            result.matches_err(error): return `JSON_INTERNAL_ERR($sformatf("Unexpected error %s", error.kind.name()));
+
             result.matches_ok(parsed): begin
               curr_pos = parsed.end_pos + 1;
               state = SCAN_CHARS;
             end
-
-            default: return `JSON_INTERNAL_ERR("Unreachable case branch");
           endcase
         end
 

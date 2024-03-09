@@ -47,6 +47,17 @@ package json_pkg;
       ) \
     )
 
+  // Alias to raise common error
+  `define JSON_ERR(KIND, DESCR="")\
+    json_result#()::err( \
+      json_error::create( \
+        .kind(KIND), \
+        .description(DESCR), \
+        .source_file(`__FILE__), \
+        .source_line(`__LINE__) \
+      ) \
+    )
+
   `include "json_error.sv"
   `include "json_result.sv"
   `include "json_value.sv"
@@ -61,4 +72,5 @@ package json_pkg;
 
   `undef JSON_SYNTAX_ERR
   `undef JSON_INTERNAL_ERR
+  `undef JSON_ERR
 endpackage : json_pkg
