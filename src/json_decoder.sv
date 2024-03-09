@@ -261,6 +261,90 @@ class json_decoder;
 
 
   local function parser_result parse_string(const ref string str, input int unsigned start_pos);
+    enum {
+      EXPECT_DOUBLE_QUOTE,
+      SCAN_CHARS,
+      PARSE_ESCAPE,
+      PARSE_UNICODE
+    } state = EXPECT_DOUBLE_QUOTE;
+
+    string value;
+
+    json_error error;
+    parser_result result;
+    parsed_s parsed;
+
+    int unsigned curr_pos = start_pos;
+    int unsigned str_len = str.len();
+
+    forever begin
+      case (state)
+        EXPECT_DOUBLE_QUOTE: begin
+          result = scan_until_token(str, curr_pos, '{"\""});
+          case (1)
+            result.matches_err_eq(json_error::EXPECTED_TOKEN, error):
+              return `JSON_SYNTAX_ERR(json_error::EXPECTED_DOUBLE_QUOTE, str, error.json_idx);
+
+            result.matches_err_eq(json_error::EOF_VALUE, error):
+              return `JSON_SYNTAX_ERR(json_error::EOF_STRING, str, error.json_idx);
+
+            result.matches_ok(parsed): begin
+              curr_pos = parsed.end_pos + 1;
+              state = SCAN_CHARS;
+            end
+
+            default: return `JSON_INTERNAL_ERR("Unreachable case branch");
+          endcase
+        end
+
+        SCAN_CHARS: begin
+          while (curr_pos < str_len) begin
+            if (str[curr_pos] == "\\") begin
+              value = {value, str[curr_pos++]};
+              state = PARSE_ESCAPE;
+              break;
+            end else if (str[curr_pos] == "\"") begin
+              parsed.value = json_string::create(value);
+              parsed.end_pos = curr_pos;
+              return parser_result::ok(parsed);
+            end else begin
+              value = {value, str[curr_pos++]};
+            end
+          end
+          if (curr_pos == str_len) begin
+            return `JSON_SYNTAX_ERR(json_error::EOF_STRING, str, curr_pos - 1);
+          end
+        end
+
+        PARSE_ESCAPE: begin
+          if (str[curr_pos] inside {this.escape_chars}) begin
+            value = {value, str[curr_pos++]};
+            state = SCAN_CHARS;
+          end else if (str[curr_pos] == "u") begin
+            value = {value, str[curr_pos++]};
+            state = PARSE_UNICODE;
+          end else begin
+            return `JSON_SYNTAX_ERR(json_error::INVALID_ESCAPE, str, curr_pos);
+          end
+        end
+
+        PARSE_UNICODE: begin
+          int unsigned unicode_char_cnt = 0;
+          while ((curr_pos < str_len) && (unicode_char_cnt < 4)) begin
+            if (str[curr_pos] inside {this.hex_chars}) begin
+              value = {value, str[curr_pos++]};
+            end else begin
+              return `JSON_SYNTAX_ERR(json_error::INVALID_UNICODE, str, curr_pos);
+            end
+            unicode_char_cnt++;
+          end
+          if (curr_pos == str_len) begin
+            return `JSON_SYNTAX_ERR(json_error::EOF_STRING, str, curr_pos - 1);
+          end
+          state = SCAN_CHARS;
+        end
+      endcase
+    end
   endfunction : parse_string
 
 
@@ -312,94 +396,6 @@ endfunction : new
 
 
 /*
-function json_result json_decoder::parse_array(
-  const ref string str,
-  input int unsigned start_pos,
-  output int unsigned end_pos
-);
- 
-endfunction : parse_array
-
-
-function json_result json_decoder::parse_string(
-  const ref string str,
-  input int unsigned start_pos,
-  output int unsigned end_pos
-);
-  enum {
-    EXPECT_DOUBLE_QUOTE,
-    SCAN_CHARS,
-    PARSE_ESCAPE,
-    PARSE_UNICODE
-  } state = EXPECT_DOUBLE_QUOTE;
-
-  string value;
-  json_err_e scan_err;
-  int unsigned idx = start_pos;
-  int unsigned len = str.len();
-
-  forever begin
-    case (state)
-      EXPECT_DOUBLE_QUOTE: begin
-        if (!scan_until_token(str, idx, idx, scan_err, '{"\""})) begin
-          case (scan_err)
-            json_error::EXPECTED_TOKEN: return `JSON_SYNTAX_ERR(json_error::EXPECTED_DOUBLE_QUOTE, str, idx);
-            json_error::EOF_VALUE: return `JSON_SYNTAX_ERR(json_error::EOF_STRING, str, idx);
-            default: return `JSON_INTERNAL_ERR("Unreachable case branch");
-          endcase
-        end
-        idx++;
-        state = SCAN_CHARS;
-      end
-
-      SCAN_CHARS: begin
-        while (idx < len) begin
-          if (str[idx] == "\\") begin
-            value = {value, str[idx++]};
-            state = PARSE_ESCAPE;
-            break;
-          end else if (str[idx] == "\"") begin
-            end_pos = idx;
-            return json_result::ok(json_string::create(value));
-          end else begin
-            value = {value, str[idx++]};
-          end
-        end
-        if (idx == len) begin
-          return `JSON_SYNTAX_ERR(json_error::EOF_STRING, str, idx - 1);
-        end
-      end
-
-      PARSE_ESCAPE: begin
-        if (str[idx] inside {this.escape_chars}) begin
-          value = {value, str[idx++]};
-          state = SCAN_CHARS;
-        end else if (str[idx] == "u") begin
-          value = {value, str[idx++]};
-          state = PARSE_UNICODE;
-        end else begin
-          return `JSON_SYNTAX_ERR(json_error::INVALID_ESCAPE, str, idx);
-        end
-      end
-
-      PARSE_UNICODE: begin
-        int unsigned unicode_char_cnt = 0;
-        while ((idx < len) && (unicode_char_cnt < 4)) begin
-          if (str[idx] inside {this.hex_chars}) begin
-            value = {value, str[idx++]};
-          end else begin
-            return `JSON_SYNTAX_ERR(json_error::INVALID_UNICODE, str, idx);
-          end
-          unicode_char_cnt++;
-        end
-        if (idx == len) begin
-          return `JSON_SYNTAX_ERR(json_error::EOF_STRING, str, idx - 1);
-        end
-        state = SCAN_CHARS;
-      end
-    endcase
-  end
-endfunction : parse_string
 
 
 function json_result json_decoder::parse_number(
