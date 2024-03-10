@@ -30,6 +30,15 @@ module json_decoder_load_string_unit_test;
   end
   `SVTEST_END
 
+  `SVTEST(empty_array_test)
+  begin
+    string str = "[]";
+    json_result result = json_decoder::load_string(str);
+    `FAIL_IF(result.is_err())
+    `FAIL_UNLESS(result.unwrap().as_json_array().size() == 0)
+  end
+  `SVTEST_END
+
   `SVUNIT_TESTS_END
 
 endmodule : json_decoder_load_string_unit_test

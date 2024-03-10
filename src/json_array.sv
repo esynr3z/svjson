@@ -9,6 +9,10 @@ class json_array extends json_value;
 
   // Get native queue type
   extern virtual function json_value_queue_t unwrap();
+
+  virtual function int unsigned size();
+    return this.values.size();
+  endfunction : size
 endclass : json_array
 
 

@@ -6,7 +6,7 @@ virtual class json_value;
 
   extern function json_value as_json_value();
   extern function json_object as_json_object();
-  //extern function json_array as_json_array();
+  extern function json_array as_json_array();
   extern function json_string as_json_string();
   //extern function json_int as_json_int();
   //extern function json_real as_json_real();
@@ -32,6 +32,11 @@ endfunction : as_json_value
 function json_object json_value::as_json_object();
   $cast(as_json_object, this);
 endfunction : as_json_object
+
+
+function json_array json_value::as_json_array();
+  $cast(as_json_array, this);
+endfunction : as_json_array
 
 
 function json_string json_value::as_json_string();
