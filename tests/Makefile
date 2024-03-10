@@ -10,7 +10,7 @@ test:
 	runSVUnit \
 		-s verilator \
 		-l run.log \
-		-c "--cc --timing -j$(nproc)" \
+		-c "--binary -j $$(nproc)" \
 		-f $(SV_JSON_ROOT)/src/filelist.f \
 		-o work
 

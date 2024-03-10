@@ -36,6 +36,14 @@ class json_result#(type VAL_T=json_value);
     result.error = error;
     return result;
   endfunction : err
+
+  // Create error result
+  virtual function VAL_T unwrap();
+    if (this.is_err()) begin
+      this.error.throw_fatal();
+    end
+    return this.value;
+  endfunction : unwrap
 endclass : json_result
 
 

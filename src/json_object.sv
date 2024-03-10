@@ -9,6 +9,10 @@ class json_object extends json_value;
 
   // Get native map type
   extern virtual function json_value_map_t unwrap();
+
+  virtual function int unsigned size();
+    return this.values.num();
+  endfunction : size
 endclass : json_object
 
 

@@ -101,8 +101,8 @@ class json_decoder;
 
     // Current character must start a value
     case (str[curr_pos]) inside
-      "{": return parse_object(str, curr_pos);
-      "[": return parse_array(str, curr_pos);
+      "{": return parse_object(str, curr_pos + 1);
+      "[": return parse_array(str, curr_pos + 1);
       "\"": return parse_string(str, curr_pos);
       "n", "t", "f": return parse_literal(str, curr_pos);
       "-", ["0":"9"]: return parse_number(str, curr_pos);
@@ -129,8 +129,9 @@ class json_decoder;
 
     int unsigned curr_pos = start_pos;
     bit trailing_comma = 0;
+    bit exit_parsing_loop = 0;
 
-    forever begin
+    while(!exit_parsing_loop) begin
       case (state)
         PARSE_KEY: begin
           result = parse_string(str, curr_pos);
@@ -140,7 +141,7 @@ class json_decoder;
                 if (trailing_comma) begin
                   return `JSON_SYNTAX_ERR(json_error::TRAILING_COMMA, str, error.json_idx);
                 end
-                break; // empty object parsed
+                exit_parsing_loop = 1; // empty object parsed
               end
             end
 
@@ -199,7 +200,7 @@ class json_decoder;
             result.matches_ok(parsed): begin
               curr_pos = parsed.end_pos;
               if (str[curr_pos] == "}") begin
-                break;
+                exit_parsing_loop = 1; // end of object
               end else begin
                 trailing_comma = 1;
                 state = PARSE_KEY;
@@ -230,8 +231,9 @@ class json_decoder;
 
     int unsigned curr_pos = start_pos;
     bit trailing_comma = 0;
+    bit exit_parsing_loop = 0;
 
-    forever begin
+    while(!exit_parsing_loop) begin
       case (state)
         PARSE_VALUE: begin
           result = parse_value(str, curr_pos);
@@ -241,7 +243,7 @@ class json_decoder;
                 if (trailing_comma) begin
                   return `JSON_SYNTAX_ERR(json_error::TRAILING_COMMA, str, error.json_idx);
                 end
-                break; // empty array parsed
+                exit_parsing_loop = 1; // empty array parsed
               end
             end
 
@@ -269,7 +271,7 @@ class json_decoder;
             result.matches_ok(parsed): begin
               curr_pos = parsed.end_pos;
               if (str[curr_pos] == "]") begin
-                break;
+                exit_parsing_loop = 1; // end of array
               end else begin
                 trailing_comma = 1;
                 state = PARSE_VALUE;
@@ -302,8 +304,9 @@ class json_decoder;
 
     int unsigned curr_pos = start_pos;
     int unsigned str_len = str.len();
+    bit exit_parsing_loop = 0;
 
-    forever begin
+    while(!exit_parsing_loop) begin
       case (state)
         EXPECT_DOUBLE_QUOTE: begin
           result = scan_until_token(str, curr_pos, '{"\""});
@@ -330,9 +333,7 @@ class json_decoder;
               state = PARSE_ESCAPE;
               break;
             end else if (str[curr_pos] == "\"") begin
-              parsed.value = json_string::create(value);
-              parsed.end_pos = curr_pos;
-              return parser_result::ok(parsed);
+              exit_parsing_loop = 1;
             end else begin
               value = {value, str[curr_pos++]};
             end
@@ -371,6 +372,10 @@ class json_decoder;
         end
       endcase
     end
+
+    parsed.value = json_string::create(value);
+    parsed.end_pos = curr_pos;
+    return parser_result::ok(parsed);
   endfunction : parse_string
 
 
