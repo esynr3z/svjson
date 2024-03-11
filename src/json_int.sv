@@ -9,6 +9,15 @@ class json_int extends json_value;
 
   // Get native longint type
   extern virtual function real to_native();
+
+  // Create full copy of a value
+  extern virtual function json_value clone();
+
+  // Compare with value
+  extern virtual function bit compare(json_value value);
+
+  // Get kind of current value
+  extern virtual function json_value_e kind();
 endclass : json_int
 
 
@@ -26,3 +35,18 @@ endfunction : create
 function real json_int::to_native();
   return this.value;
 endfunction : to_native
+
+
+function json_value json_int::clone();
+  return json_int::create(this.value);
+endfunction : clone
+
+
+function bit json_int::compare(json_value value);
+  return value.is_json_int() && (value.as_json_int().unwrap().to_native() == this.value);
+endfunction : compare
+
+
+function json_value_e json_int::kind();
+  return JSON_VALUE_INT;
+endfunction : kind
