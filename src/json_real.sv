@@ -6,7 +6,7 @@ class json_real extends json_value;
 
   // Static constructor using type
   extern static function json_real create(real value);
-  
+
   // Get native real type
   extern virtual function real unwrap();
 endclass : json_real

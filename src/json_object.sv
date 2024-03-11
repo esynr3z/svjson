@@ -10,9 +10,8 @@ class json_object extends json_value;
   // Get native map type
   extern virtual function json_value_map_t unwrap();
 
-  virtual function int unsigned size();
-    return this.values.num();
-  endfunction : size
+  // Get number of items within object
+  extern virtual function int unsigned size();
 endclass : json_object
 
 
@@ -30,3 +29,8 @@ endfunction : create
 function json_value_map_t json_object::unwrap();
   return this.values;
 endfunction : unwrap
+
+
+function int unsigned json_object::size();
+  return this.values.num();
+endfunction : size
