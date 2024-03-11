@@ -8,7 +8,7 @@ class json_bool extends json_value;
   extern static function json_bool create(bit value);
 
   // Get native bit type
-  extern virtual function bit unwrap();
+  extern virtual function bit to_native();
 endclass : json_bool
 
 
@@ -23,6 +23,6 @@ function json_bool json_bool::create(bit value);
 endfunction : create
 
 
-function bit json_bool::unwrap();
+function bit json_bool::to_native();
   return this.value;
-endfunction : unwrap
+endfunction : to_native

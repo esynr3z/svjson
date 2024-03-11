@@ -8,7 +8,7 @@ class json_int extends json_value;
   extern static function json_int create(longint value);
 
   // Get native longint type
-  extern virtual function real unwrap();
+  extern virtual function real to_native();
 endclass : json_int
 
 
@@ -23,6 +23,6 @@ function json_int json_int::create(longint value);
 endfunction : create
 
 
-function real json_int::unwrap();
+function real json_int::to_native();
   return this.value;
-endfunction : unwrap
+endfunction : to_native

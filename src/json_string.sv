@@ -8,7 +8,7 @@ class json_string extends json_value;
   extern static function json_string create(string value);
 
   // Get native string type
-  extern virtual function string unwrap();
+  extern virtual function string to_native();
 endclass : json_string
 
 
@@ -23,6 +23,6 @@ function json_string json_string::create(string value);
 endfunction : create
 
 
-function string json_string::unwrap();
+function string json_string::to_native();
   return this.value;
-endfunction : unwrap
+endfunction : to_native

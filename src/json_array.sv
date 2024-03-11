@@ -8,7 +8,7 @@ class json_array extends json_value;
   extern static function json_array create(json_value_queue_t values);
 
   // Get native queue type
-  extern virtual function json_value_queue_t unwrap();
+  extern virtual function json_value_queue_t to_native();
 
   // Get size of the array
   extern virtual function int unsigned size();
@@ -26,9 +26,9 @@ function json_array json_array::create(json_value_queue_t values);
 endfunction : create
 
 
-function json_value_queue_t json_array::unwrap();
+function json_value_queue_t json_array::to_native();
   return this.values;
-endfunction : unwrap
+endfunction : to_native
 
 
 function int unsigned json_array::size();

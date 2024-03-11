@@ -26,7 +26,7 @@ module json_decoder_load_string_unit_test;
     string str = "{}";
     json_result result = json_decoder::load_string(str);
     `FAIL_IF(result.is_err())
-    `FAIL_UNLESS(result.unwrap().as_json_object().size() == 0)
+    `FAIL_UNLESS(result.unwrap().as_json_object().unwrap().size() == 0)
   end
   `SVTEST_END
 
@@ -35,7 +35,7 @@ module json_decoder_load_string_unit_test;
     string str = "[]";
     json_result result = json_decoder::load_string(str);
     `FAIL_IF(result.is_err())
-    `FAIL_UNLESS(result.unwrap().as_json_array().size() == 0)
+    `FAIL_UNLESS(result.unwrap().as_json_array().unwrap().size() == 0)
   end
   `SVTEST_END
 

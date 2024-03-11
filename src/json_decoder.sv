@@ -175,7 +175,7 @@ function json_decoder::parser_result json_decoder::parse_object(const ref string
           result.matches_err(error): return result;
 
           result.matches_ok(parsed): begin
-            key = parsed.value.as_json_string().unwrap();
+            key = parsed.value.as_json_string().unwrap().to_native();
             curr_pos++; // move from last string token
             state = EXPECT_COLON;
           end
@@ -454,7 +454,7 @@ function json_decoder::parser_result json_decoder::parse_literal(const ref strin
     "n": begin
       literal_expected = "null";
       parsed.end_pos = curr_pos + 3;
-      parsed.value = null;
+      parsed.value = json_null::create();
     end
 
     default: return `JSON_INTERNAL_ERR("Unreachable case branch");

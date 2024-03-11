@@ -8,7 +8,7 @@ class json_real extends json_value;
   extern static function json_real create(real value);
 
   // Get native real type
-  extern virtual function real unwrap();
+  extern virtual function real to_native();
 endclass : json_real
 
 
@@ -23,6 +23,6 @@ function json_real json_real::create(real value);
 endfunction : create
 
 
-function real json_real::unwrap();
+function real json_real::to_native();
   return this.value;
-endfunction : unwrap
+endfunction : to_native

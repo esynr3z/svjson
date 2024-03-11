@@ -8,6 +8,7 @@ package json_pkg;
   typedef json_int;
   typedef json_real;
   typedef json_bool;
+  typedef json_null;
 
   // Additional aliases for aggregate types
   typedef json_value json_value_queue_t[$];
@@ -20,7 +21,8 @@ package json_pkg;
     JSON_VALUE_STRING,
     JSON_VALUE_INT,
     JSON_VALUE_REAL,
-    JSON_VALUE_BOOL
+    JSON_VALUE_BOOL,
+    JSON_VALUE_NULL
   } json_value_e;
 
   // Alias to raise syntax errors in a more compact way
@@ -48,8 +50,8 @@ package json_pkg;
     )
 
   // Alias to raise common error
-  `define JSON_ERR(KIND, DESCR="")\
-    json_result#()::err( \
+  `define JSON_ERR(KIND, DESCR="", VAL_T=json_value)\
+    json_result#(json_value)::err( \
       json_error::create( \
         .kind(KIND), \
         .description(DESCR), \
@@ -67,6 +69,7 @@ package json_pkg;
   `include "json_int.sv"
   `include "json_real.sv"
   `include "json_bool.sv"
+  `include "json_null.sv"
 
   `include "json_decoder.sv"
 
