@@ -27,6 +27,7 @@ module json_decoder_load_string_unit_test;
     json_result result = json_decoder::load_string(str);
     `FAIL_IF(result.is_err())
     `FAIL_UNLESS(result.unwrap().as_json_object().unwrap().size() == 0)
+    `FAIL_UNLESS(result.unwrap().as_json_object().unwrap().compare(json_object::create('{})))
   end
   `SVTEST_END
 
@@ -36,6 +37,7 @@ module json_decoder_load_string_unit_test;
     json_result result = json_decoder::load_string(str);
     `FAIL_IF(result.is_err())
     `FAIL_UNLESS(result.unwrap().as_json_array().unwrap().size() == 0)
+    `FAIL_UNLESS(result.unwrap().as_json_array().unwrap().compare(json_array::create('{})))
   end
   `SVTEST_END
 

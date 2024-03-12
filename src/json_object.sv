@@ -91,5 +91,5 @@ endfunction : compare
 
 
 function json_value_e json_object::kind();
-  return JSON_VALUE_STRING;
+  return JSON_VALUE_OBJECT;
 endfunction : kind

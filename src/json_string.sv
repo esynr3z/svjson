@@ -10,6 +10,9 @@ class json_string extends json_value;
   // Get native string type
   extern virtual function string to_native();
 
+  // Get string size
+  extern virtual function int unsigned size();
+
   // Create full copy of a value
   extern virtual function json_value clone();
 
@@ -35,6 +38,11 @@ endfunction : create
 function string json_string::to_native();
   return this.value;
 endfunction : to_native
+
+
+function int unsigned json_string::size();
+  return this.value.len();
+endfunction : size
 
 
 function json_value json_string::clone();
