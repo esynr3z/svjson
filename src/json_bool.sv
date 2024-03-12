@@ -9,6 +9,15 @@ class json_bool extends json_value;
 
   // Get native bit type
   extern virtual function bit to_native();
+
+  // Create full copy of a value
+  extern virtual function json_value clone();
+
+  // Compare with value
+  extern virtual function bit compare(json_value value);
+
+  // Get kind of current value
+  extern virtual function json_value_e kind();
 endclass : json_bool
 
 
@@ -26,3 +35,18 @@ endfunction : create
 function bit json_bool::to_native();
   return this.value;
 endfunction : to_native
+
+
+function json_value json_bool::clone();
+  return json_bool::create(this.value);
+endfunction : clone
+
+
+function bit json_bool::compare(json_value value);
+  return value.is_json_bool() && (value.as_json_bool().unwrap().to_native() == this.value);
+endfunction : compare
+
+
+function json_value_e json_bool::kind();
+  return JSON_VALUE_BOOL;
+endfunction : kind
