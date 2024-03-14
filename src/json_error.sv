@@ -92,5 +92,17 @@ endfunction : throw_fatal
 
 
 function string json_error::to_string();
-  $fatal(0, "not implemented");
+  string str = $sformatf("Error %s", this.kind.name());
+
+  if (this.file != "") begin
+    str = {str, $sformatf("\nat %s", this.file)};
+    if (this.line >= 0) begin
+      str = {str, $sformatf(":%0d", this.line)};
+    end
+  end
+
+  if (this.description != "") begin
+    str = {str, $sformatf("\n%s", this.description)};
+  end
+  return str;
 endfunction : to_string

@@ -361,6 +361,7 @@ function json_decoder::parser_result json_decoder::parse_string(const ref string
             break;
           end else if (str[curr_pos] == "\"") begin
             exit_parsing_loop = 1;
+            break;
           end else begin
             value = {value, str[curr_pos++]};
           end
@@ -411,20 +412,22 @@ function json_decoder::parser_result json_decoder::parse_number(const ref string
   real real_value;
   longint int_value;
   string value = "";
+  bit is_real = 0;
   int unsigned str_len = str.len();
   int unsigned curr_pos = start_pos;
 
   while ((str[curr_pos] inside {this.number_chars}) && (curr_pos < str_len)) begin
     value = {value, str[curr_pos]};
     curr_pos++;
+    is_real |= (str[curr_pos] == ".");
   end
 
   parsed.end_pos = curr_pos - 1;
-  if ($sscanf(value, "%d", int_value) > 0) begin
-    parsed.value = json_int::create(int_value);
-    return parser_result::ok(parsed);
-  end else if ($sscanf(value, "%f", real_value) > 0) begin
+  if (is_real && $sscanf(value, "%f", real_value) > 0) begin
     parsed.value = json_real::create(real_value);
+    return parser_result::ok(parsed);
+  end else if ($sscanf(value, "%d", int_value) > 0) begin
+    parsed.value = json_int::create(int_value);
     return parser_result::ok(parsed);
   end else begin
     return `JSON_SYNTAX_ERR(json_error::INVALID_NUMBER, str, parsed.end_pos);
