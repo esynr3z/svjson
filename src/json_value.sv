@@ -9,9 +9,6 @@ virtual class json_value;
   // Get kind of current value
   pure virtual function json_value_e kind();
 
-  // Cast current value to `json_value`
-  extern function json_result#(json_value) as_json_value();
-
   // Cast current value to `json_object`
   extern function json_result#(json_object) as_json_object();
 
@@ -32,6 +29,26 @@ virtual class json_value;
 
   // Cast current value to `json_null`
   extern function json_result#(json_null) as_json_null();
+
+  // Try to convert current value to map (associative array). Succesfull only for underlying `json_object`.
+  // FIXME: this return type does not work in Verilator currently
+  //extern function json_result#(json_value_map_t) to_map();
+
+  // Try to convert current value to queue. Succesfull only for underlying `json_array`.
+  // FIXME: this return type does not work in Verilator currently
+  //extern function json_result#(json_value_queue_t) to_queue();
+
+  // Try to convert current value to string. Succesfull only for underlying `json_string`.
+  extern function json_result#(string) to_string();
+
+  // Try to convert current value to integer. Succesfull only for underlying `json_int`.
+  extern function json_result#(longint) to_int();
+
+  // Try to convert current value to real. Succesfull only for underlying `json_real`.
+  extern function json_result#(real) to_real();
+
+  // Try to convert current value to 1-bit (bool). Succesfull only for underlying `json_bool`.
+  extern function json_result#(bit) to_bit();
 
   // Check if current value is `json_object`
   extern function bit is_json_object();
@@ -54,11 +71,6 @@ virtual class json_value;
   // Check if current value is `json_null`
   extern function bit is_json_null();
 endclass : json_value
-
-
-function json_result#(json_value) json_value::as_json_value();
-  return json_result#(json_value)::ok(this);
-endfunction : as_json_value
 
 
 function json_result#(json_object) json_value::as_json_object();
@@ -129,6 +141,50 @@ function json_result#(json_null) json_value::as_json_null();
     return json_result#(json_null)::err(json_error::create(json_error::CAST_FAILED));
   end
 endfunction : as_json_null
+
+
+function json_result#(string) json_value::to_string();
+  json_result#(json_string) result = this.as_json_string();
+  json_error err;
+  json_string value;
+  case (1)
+    result.matches_err(err): return json_result#(string)::err(err);
+    result.matches_ok(value): return json_result#(string)::ok(value.to_native());
+  endcase
+endfunction : to_string
+
+
+function json_result#(longint) json_value::to_int();
+  json_result#(json_int) result = this.as_json_int();
+  json_error err;
+  json_int value;
+  case (1)
+    result.matches_err(err): return json_result#(longint)::err(err);
+    result.matches_ok(value): return json_result#(longint)::ok(value.to_native());
+  endcase
+endfunction : to_int
+
+
+function json_result#(real) json_value::to_real();
+  json_result#(json_real) result = this.as_json_real();
+  json_error err;
+  json_real value;
+  case (1)
+    result.matches_err(err): return json_result#(real)::err(err);
+    result.matches_ok(value): return json_result#(real)::ok(value.to_native());
+  endcase
+endfunction : to_real
+
+
+function json_result#(bit) json_value::to_bit();
+  json_result#(json_bool) result = this.as_json_bool();
+  json_error err;
+  json_bool value;
+  case (1)
+    result.matches_err(err): return json_result#(bit)::err(err);
+    result.matches_ok(value): return json_result#(bit)::ok(value.to_native());
+  endcase
+endfunction : to_bit
 
 
 function bit json_value::is_json_object();
