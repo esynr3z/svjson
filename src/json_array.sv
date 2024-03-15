@@ -1,14 +1,11 @@
 class json_array extends json_value;
-  protected json_value_queue_t values;
+  json_value_queue_t values;
 
   // Normal constructor
   extern function new(json_value_queue_t values);
 
   // Create json_array from queue
   extern static function json_array from(json_value_queue_t values);
-
-  // Get native queue type
-  extern virtual function json_value_queue_t to_native();
 
   // Get size of the array
   extern virtual function int unsigned size();
@@ -36,11 +33,6 @@ function json_array json_array::from(json_value_queue_t values);
   json_array obj = new(values);
   return obj;
 endfunction : from
-
-
-function json_value_queue_t json_array::to_native();
-  return this.values;
-endfunction : to_native
 
 
 function int unsigned json_array::size();

@@ -175,7 +175,7 @@ function json_decoder::parser_result json_decoder::parse_object(const ref string
           result.matches_err(error): return result;
 
           result.matches_ok(parsed): begin
-            key = parsed.value.as_json_string().unwrap().to_native();
+            key = parsed.value.as_json_string().unwrap().value;
             curr_pos++; // move from last string token
             state = EXPECT_COLON;
           end

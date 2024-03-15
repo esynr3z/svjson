@@ -1,14 +1,11 @@
 class json_int extends json_value;
-  protected longint value;
+  longint value;
 
   // Normal constructor
   extern function new(longint value);
 
   // Create json_int from longint
   extern static function json_int from(longint value);
-
-  // Get native longint type
-  extern virtual function longint to_native();
 
   // Create full copy of a value
   extern virtual function json_value clone();
@@ -32,18 +29,13 @@ function json_int json_int::from(longint value);
 endfunction : from
 
 
-function longint json_int::to_native();
-  return this.value;
-endfunction : to_native
-
-
 function json_value json_int::clone();
   return json_int::from(this.value);
 endfunction : clone
 
 
 function bit json_int::compare(json_value value);
-  return value.is_json_int() && (value.as_json_int().unwrap().to_native() == this.value);
+  return value.is_json_int() && (value.as_json_int().unwrap().value == this.value);
 endfunction : compare
 
 

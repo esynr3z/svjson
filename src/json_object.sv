@@ -1,14 +1,11 @@
 class json_object extends json_value;
-  protected json_value_map_t values;
+  json_value_map_t values;
 
   // Normal constructor
   extern function new(json_value_map_t values);
 
   // Create json_object from associative array
   extern static function json_object from(json_value_map_t values);
-
-  // Get native map type
-  extern virtual function json_value_map_t to_native();
 
   // Get number of items within object
   extern virtual function int unsigned size();
@@ -39,11 +36,6 @@ function json_object json_object::from(json_value_map_t values);
   json_object obj = new(values);
   return obj;
 endfunction : from
-
-
-function json_value_map_t json_object::to_native();
-  return this.values;
-endfunction : to_native
 
 
 function int unsigned json_object::size();
