@@ -6,7 +6,7 @@ class json_null extends json_value;
   // Static constructor using type
   extern static function json_null create();
 
-  // Return current value (override default implementation)
+  // Return current object (override default implementation)
   extern virtual function json_result#(json_null) as_json_null();
 
 

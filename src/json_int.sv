@@ -7,8 +7,11 @@ class json_int extends json_value;
   // Create json_int from longint
   extern static function json_int from(longint value);
 
-  // Return current value (override default implementation)
+  // Return current object (override default implementation)
   extern virtual function json_result#(json_int) as_json_int();
+
+  // Return current value (override default implementation)
+  extern virtual function json_result#(longint) to_longint();
 
   // Create full copy of a value
   extern virtual function json_value clone();
@@ -35,6 +38,11 @@ endfunction : from
 function json_result#(json_int) json_int::as_json_int();
   return json_result#(json_int)::ok(this);
 endfunction : as_json_int
+
+
+function json_result#(longint) json_int::to_longint();
+  return json_result#(longint)::ok(this.value);
+endfunction : to_longint
 
 
 function json_value json_int::clone();

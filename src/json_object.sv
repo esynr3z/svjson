@@ -7,7 +7,7 @@ class json_object extends json_value;
   // Create json_object from associative array
   extern static function json_object from(json_value_map_t values);
 
-  // Return current value (override default implementation)
+  // Return current object (override default implementation)
   extern virtual function json_result#(json_object) as_json_object();
 
   // Get number of items within object

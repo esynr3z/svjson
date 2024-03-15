@@ -7,8 +7,11 @@ class json_string extends json_value;
   // Create json_string from string
   extern static function json_string from(string value);
 
-  // Return current value (override default implementation)
+  // Return current object (override default implementation)
   extern virtual function json_result#(json_string) as_json_string();
+
+  // Return current value (override default implementation)
+  extern virtual function json_result#(string) to_string();
 
   // Get string size
   extern virtual function int unsigned size();
@@ -38,6 +41,11 @@ endfunction : from
 function json_result#(json_string) json_string::as_json_string();
   return json_result#(json_string)::ok(this);
 endfunction : as_json_string
+
+
+function json_result#(string) json_string::to_string();
+  return json_result#(string)::ok(this.value);
+endfunction : to_string
 
 
 function int unsigned json_string::size();

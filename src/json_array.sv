@@ -7,7 +7,7 @@ class json_array extends json_value;
   // Create json_array from queue
   extern static function json_array from(json_value_queue_t values);
 
-  // Return current value (override default implementation)
+  // Return current object (override default implementation)
   extern virtual function json_result#(json_array) as_json_array();
 
   // Get size of the array

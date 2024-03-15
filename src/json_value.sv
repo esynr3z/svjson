@@ -42,7 +42,7 @@ virtual class json_value;
   extern virtual function json_result#(string) to_string();
 
   // Try to convert current value to integer. Succesfull only for underlying `json_int`.
-  extern virtual function json_result#(longint) to_int();
+  extern virtual function json_result#(longint) to_longint();
 
   // Try to convert current value to real. Succesfull only for underlying `json_real`.
   extern virtual function json_result#(real) to_real();
@@ -109,46 +109,22 @@ endfunction : as_json_null
 
 
 function json_result#(string) json_value::to_string();
-  json_result#(json_string) result = this.as_json_string();
-  json_error err;
-  json_string ok;
-  case (1)
-    result.matches_err(err): return json_result#(string)::err(err);
-    result.matches_ok(ok): return json_result#(string)::ok(ok.value);
-  endcase
+  return json_result#(string)::err(json_error::create(json_error::TYPE_CONVERSION));
 endfunction : to_string
 
 
-function json_result#(longint) json_value::to_int();
-  json_result#(json_int) result = this.as_json_int();
-  json_error err;
-  json_int ok;
-  case (1)
-    result.matches_err(err): return json_result#(longint)::err(err);
-    result.matches_ok(ok): return json_result#(longint)::ok(ok.value);
-  endcase
-endfunction : to_int
+function json_result#(longint) json_value::to_longint();
+  return json_result#(longint)::err(json_error::create(json_error::TYPE_CONVERSION));
+endfunction : to_longint
 
 
 function json_result#(real) json_value::to_real();
-  json_result#(json_real) result = this.as_json_real();
-  json_error err;
-  json_real ok;
-  case (1)
-    result.matches_err(err): return json_result#(real)::err(err);
-    result.matches_ok(ok): return json_result#(real)::ok(ok.value);
-  endcase
+  return json_result#(real)::err(json_error::create(json_error::TYPE_CONVERSION));
 endfunction : to_real
 
 
 function json_result#(bit) json_value::to_bit();
-  json_result#(json_bool) result = this.as_json_bool();
-  json_error err;
-  json_bool ok;
-  case (1)
-    result.matches_err(err): return json_result#(bit)::err(err);
-    result.matches_ok(ok): return json_result#(bit)::ok(ok.value);
-  endcase
+  return json_result#(bit)::err(json_error::create(json_error::TYPE_CONVERSION));
 endfunction : to_bit
 
 
