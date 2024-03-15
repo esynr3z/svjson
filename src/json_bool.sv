@@ -4,8 +4,8 @@ class json_bool extends json_value;
   // Normal constructor
   extern function new(bit value);
 
-  // Static constructor using type
-  extern static function json_bool create(bit value);
+  // Create json_bool from 1-bit value
+  extern static function json_bool from(bit value);
 
   // Get native bit type
   extern virtual function bit to_native();
@@ -26,10 +26,10 @@ function json_bool::new(bit value);
 endfunction : new
 
 
-function json_bool json_bool::create(bit value);
+function json_bool json_bool::from(bit value);
   json_bool obj = new(value);
   return obj;
-endfunction : create
+endfunction : from
 
 
 function bit json_bool::to_native();
@@ -38,7 +38,7 @@ endfunction : to_native
 
 
 function json_value json_bool::clone();
-  return json_bool::create(this.value);
+  return json_bool::from(this.value);
 endfunction : clone
 
 

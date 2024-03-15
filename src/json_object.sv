@@ -4,8 +4,8 @@ class json_object extends json_value;
   // Normal constructor
   extern function new(json_value_map_t values);
 
-  // Static constructor using type
-  extern static function json_object create(json_value_map_t values);
+  // Create json_object from associative array
+  extern static function json_object from(json_value_map_t values);
 
   // Get native map type
   extern virtual function json_value_map_t to_native();
@@ -35,10 +35,10 @@ function json_object::new(json_value_map_t values);
 endfunction : new
 
 
-function json_object json_object::create(json_value_map_t values);
+function json_object json_object::from(json_value_map_t values);
   json_object obj = new(values);
   return obj;
-endfunction : create
+endfunction : from
 
 
 function json_value_map_t json_object::to_native();
@@ -68,7 +68,7 @@ function json_value json_object::clone();
     new_values[key] = this.values[key].clone();
   end
 
-  return json_object::create(new_values);
+  return json_object::from(new_values);
 endfunction : clone
 
 

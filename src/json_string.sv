@@ -4,8 +4,8 @@ class json_string extends json_value;
   // Normal constructor
   extern function new(string value);
 
-  // Static constructor using type
-  extern static function json_string create(string value);
+  // Create json_string from string
+  extern static function json_string from(string value);
 
   // Get native string type
   extern virtual function string to_native();
@@ -29,10 +29,10 @@ function json_string::new(string value);
 endfunction : new
 
 
-function json_string json_string::create(string value);
+function json_string json_string::from(string value);
   json_string obj = new(value);
   return obj;
-endfunction : create
+endfunction : from
 
 
 function string json_string::to_native();
@@ -46,7 +46,7 @@ endfunction : size
 
 
 function json_value json_string::clone();
-  return json_string::create(this.value);
+  return json_string::from(this.value);
 endfunction : clone
 
 

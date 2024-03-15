@@ -4,8 +4,8 @@ class json_int extends json_value;
   // Normal constructor
   extern function new(longint value);
 
-  // Static constructor using type
-  extern static function json_int create(longint value);
+  // Create json_int from longint
+  extern static function json_int from(longint value);
 
   // Get native longint type
   extern virtual function longint to_native();
@@ -26,10 +26,10 @@ function json_int::new(longint value);
 endfunction : new
 
 
-function json_int json_int::create(longint value);
+function json_int json_int::from(longint value);
   json_int obj = new(value);
   return obj;
-endfunction : create
+endfunction : from
 
 
 function longint json_int::to_native();
@@ -38,7 +38,7 @@ endfunction : to_native
 
 
 function json_value json_int::clone();
-  return json_int::create(this.value);
+  return json_int::from(this.value);
 endfunction : clone
 
 

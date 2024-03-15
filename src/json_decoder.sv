@@ -238,7 +238,7 @@ function json_decoder::parser_result json_decoder::parse_object(const ref string
     endcase
   end
 
-  parsed.value = json_object::create(values);
+  parsed.value = json_object::from(values);
   parsed.end_pos = curr_pos;
   return parser_result::ok(parsed);
 endfunction : parse_object
@@ -309,7 +309,7 @@ function json_decoder::parser_result json_decoder::parse_array(const ref string 
     endcase
   end
 
-  parsed.value = json_array::create(values);
+  parsed.value = json_array::from(values);
   parsed.end_pos = curr_pos;
   return parser_result::ok(parsed);
 endfunction : parse_array
@@ -401,7 +401,7 @@ function json_decoder::parser_result json_decoder::parse_string(const ref string
     endcase
   end
 
-  parsed.value = json_string::create(value);
+  parsed.value = json_string::from(value);
   parsed.end_pos = curr_pos;
   return parser_result::ok(parsed);
 endfunction : parse_string
@@ -424,10 +424,10 @@ function json_decoder::parser_result json_decoder::parse_number(const ref string
 
   parsed.end_pos = curr_pos - 1;
   if (is_real && $sscanf(value, "%f", real_value) > 0) begin
-    parsed.value = json_real::create(real_value);
+    parsed.value = json_real::from(real_value);
     return parser_result::ok(parsed);
   end else if ($sscanf(value, "%d", int_value) > 0) begin
-    parsed.value = json_int::create(int_value);
+    parsed.value = json_int::from(int_value);
     return parser_result::ok(parsed);
   end else begin
     return `JSON_SYNTAX_ERR(json_error::INVALID_NUMBER, str, parsed.end_pos);
@@ -445,13 +445,13 @@ function json_decoder::parser_result json_decoder::parse_literal(const ref strin
     "t": begin
       literal_expected = "true";
       parsed.end_pos = curr_pos + 3;
-      parsed.value = json_bool::create(1);
+      parsed.value = json_bool::from(1);
     end
 
     "f": begin
       literal_expected = "false";
       parsed.end_pos = curr_pos + 4;
-      parsed.value = json_bool::create(0);
+      parsed.value = json_bool::from(0);
     end
 
     "n": begin

@@ -4,8 +4,8 @@ class json_real extends json_value;
   // Normal constructor
   extern function new(real value);
 
-  // Static constructor using type
-  extern static function json_real create(real value);
+  // Create json_real from real
+  extern static function json_real from(real value);
 
   // Get native real type
   extern virtual function real to_native();
@@ -26,10 +26,10 @@ function json_real::new(real value);
 endfunction : new
 
 
-function json_real json_real::create(real value);
+function json_real json_real::from(real value);
   json_real obj = new(value);
   return obj;
-endfunction : create
+endfunction : from
 
 
 function real json_real::to_native();
@@ -38,7 +38,7 @@ endfunction : to_native
 
 
 function json_value json_real::clone();
-  return json_real::create(this.value);
+  return json_real::from(this.value);
 endfunction : clone
 
 

@@ -28,9 +28,22 @@ module json_decoder_load_string_unit_test;
     json_result result = json_decoder::load_string(raw);
     `FAIL_IF(result.is_err())
     `FAIL_UNLESS(result.unwrap().as_json_object().unwrap().size() == 0)
-    `FAIL_UNLESS(result.unwrap().as_json_object().unwrap().compare(json_object::create('{})))
+    `FAIL_UNLESS(result.unwrap().as_json_object().unwrap().compare(json_object::from('{})))
   end
   `SVTEST_END
+
+  //`SVTEST(some_object_test)
+  //begin
+  //  string raw = "{\"foo\" : 42, \"bar\" : []}";
+  //  json_object golden = json_object::from('{
+  //    "foo": json_int::from(42),
+  //    "bar": json_array::from('{})
+  //  });
+  //  json_result result = json_decoder::load_string(raw);
+  //  `FAIL_IF(result.is_err())
+  //  `FAIL_UNLESS(result.unwrap().as_json_object().unwrap().compare(golden))
+  //end
+  //`SVTEST_END
 
   `SVTEST(empty_array_test)
   begin
@@ -38,7 +51,7 @@ module json_decoder_load_string_unit_test;
     json_result result = json_decoder::load_string(raw);
     `FAIL_IF(result.is_err())
     `FAIL_UNLESS(result.unwrap().as_json_array().unwrap().size() == 0)
-    `FAIL_UNLESS(result.unwrap().as_json_array().unwrap().compare(json_array::create('{})))
+    `FAIL_UNLESS(result.unwrap().as_json_array().unwrap().compare(json_array::from('{})))
   end
   `SVTEST_END
 
@@ -49,7 +62,7 @@ module json_decoder_load_string_unit_test;
     json_result result = json_decoder::load_string(raw);
     `FAIL_IF(result.is_err())
     `FAIL_UNLESS(result.unwrap().as_json_string().unwrap().size() == 0)
-    `FAIL_UNLESS(result.unwrap().as_json_string().unwrap().compare(json_string::create(golden)))
+    `FAIL_UNLESS(result.unwrap().as_json_string().unwrap().compare(json_string::from(golden)))
   end
   `SVTEST_END
 
@@ -59,7 +72,7 @@ module json_decoder_load_string_unit_test;
     string golden = "foo {bar} [baz]";
     json_result result = json_decoder::load_string(raw);
     `FAIL_IF(result.is_err())
-    `FAIL_UNLESS(result.unwrap().as_json_string().unwrap().compare(json_string::create(golden)))
+    `FAIL_UNLESS(result.unwrap().as_json_string().unwrap().compare(json_string::from(golden)))
   end
   `SVTEST_END
 
@@ -69,7 +82,7 @@ module json_decoder_load_string_unit_test;
     longint golden = 42;
     json_result result = json_decoder::load_string(raw);
     `FAIL_IF(result.is_err())
-    `FAIL_UNLESS(result.unwrap().as_json_int().unwrap().compare(json_int::create(golden)))
+    `FAIL_UNLESS(result.unwrap().as_json_int().unwrap().compare(json_int::from(golden)))
   end
   `SVTEST_END
 
@@ -79,7 +92,7 @@ module json_decoder_load_string_unit_test;
     longint golden = -777;
     json_result result = json_decoder::load_string(raw);
     `FAIL_IF(result.is_err())
-    `FAIL_UNLESS(result.unwrap().as_json_int().unwrap().compare(json_int::create(golden)))
+    `FAIL_UNLESS(result.unwrap().as_json_int().unwrap().compare(json_int::from(golden)))
   end
   `SVTEST_END
 
@@ -89,7 +102,7 @@ module json_decoder_load_string_unit_test;
     real golden = 3.14;
     json_result result = json_decoder::load_string(raw);
     `FAIL_IF(result.is_err())
-    `FAIL_UNLESS(result.unwrap().as_json_real().unwrap().compare(json_real::create(golden)))
+    `FAIL_UNLESS(result.unwrap().as_json_real().unwrap().compare(json_real::from(golden)))
   end
   `SVTEST_END
 
@@ -99,7 +112,7 @@ module json_decoder_load_string_unit_test;
     real golden = -0.1234567;
     json_result result = json_decoder::load_string(raw);
     `FAIL_IF(result.is_err())
-    `FAIL_UNLESS(result.unwrap().as_json_real().unwrap().compare(json_real::create(golden)))
+    `FAIL_UNLESS(result.unwrap().as_json_real().unwrap().compare(json_real::from(golden)))
   end
   `SVTEST_END
 
@@ -109,7 +122,7 @@ module json_decoder_load_string_unit_test;
     bit golden = 1;
     json_result result = json_decoder::load_string(raw);
     `FAIL_IF(result.is_err())
-    `FAIL_UNLESS(result.unwrap().as_json_bool().unwrap().compare(json_bool::create(golden)))
+    `FAIL_UNLESS(result.unwrap().as_json_bool().unwrap().compare(json_bool::from(golden)))
   end
   `SVTEST_END
 
@@ -119,7 +132,7 @@ module json_decoder_load_string_unit_test;
     bit golden = 0;
     json_result result = json_decoder::load_string(raw);
     `FAIL_IF(result.is_err())
-    `FAIL_UNLESS(result.unwrap().as_json_bool().unwrap().compare(json_bool::create(golden)))
+    `FAIL_UNLESS(result.unwrap().as_json_bool().unwrap().compare(json_bool::from(golden)))
   end
   `SVTEST_END
 
