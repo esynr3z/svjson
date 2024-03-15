@@ -21,7 +21,7 @@ class json_error;
     TRAILING_COMMA,                // Unexpected comma after the last value of object/array
     TRAILING_CHARS,                // Unexpected characters after the JSON value
     // IO and generic errors
-    CAST_FAILED,                   // Cast failed
+    TYPE_CONVERSION,               // Type conversion failed
     FILE_NOT_OPENED,               // File opening failed
     NOT_IMPLEMENTED,               // Feature is not implemented
     INTERNAL                       // Unspecified internal error

@@ -6,6 +6,10 @@ class json_null extends json_value;
   // Static constructor using type
   extern static function json_null create();
 
+  // Return current value (override default implementation)
+  extern virtual function json_result#(json_null) as_json_null();
+
+
   // Create full copy of a value
   extern virtual function json_value clone();
 
@@ -25,6 +29,11 @@ function json_null json_null::create();
   json_null obj = new();
   return obj;
 endfunction : create
+
+
+function json_result#(json_null) json_null::as_json_null();
+  return json_result#(json_null)::ok(this);
+endfunction : as_json_null
 
 
 function json_value json_null::clone();

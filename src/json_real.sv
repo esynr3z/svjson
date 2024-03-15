@@ -7,6 +7,9 @@ class json_real extends json_value;
   // Create json_real from real
   extern static function json_real from(real value);
 
+  // Return current value (override default implementation)
+  extern virtual function json_result#(json_real) as_json_real();
+
   // Create full copy of a value
   extern virtual function json_value clone();
 
@@ -27,6 +30,11 @@ function json_real json_real::from(real value);
   json_real obj = new(value);
   return obj;
 endfunction : from
+
+
+function json_result#(json_real) json_real::as_json_real();
+  return json_result#(json_real)::ok(this);
+endfunction : as_json_real
 
 
 function json_value json_real::clone();

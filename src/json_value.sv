@@ -9,137 +9,102 @@ virtual class json_value;
   // Get kind of current value
   pure virtual function json_value_e kind();
 
-  // Cast current value to `json_object`
-  extern function json_result#(json_object) as_json_object();
+  // Try to cast current value to `json_object`
+  extern virtual function json_result#(json_object) as_json_object();
 
-  // Cast current value to `json_array`
-  extern function json_result#(json_array) as_json_array();
+  // Try to cast current value to `json_array`
+  extern virtual function json_result#(json_array) as_json_array();
 
-  // Cast current value to `json_string`
-  extern function json_result#(json_string) as_json_string();
+  //Try to cast current value to `json_string`
+  extern virtual function json_result#(json_string) as_json_string();
 
-  // Cast current value to `json_int`
-  extern function json_result#(json_int) as_json_int();
+  // Try to cast current value to `json_int`
+  extern virtual function json_result#(json_int) as_json_int();
 
-  // Cast current value to `json_real`
-  extern function json_result#(json_real) as_json_real();
+  // Try to cast current value to `json_real`
+  extern virtual function json_result#(json_real) as_json_real();
 
-  // Cast current value to `json_bool`
-  extern function json_result#(json_bool) as_json_bool();
+  // Try to cast current value to `json_bool`
+  extern virtual function json_result#(json_bool) as_json_bool();
 
-  // Cast current value to `json_null`
-  extern function json_result#(json_null) as_json_null();
+  // Try to cast current value to `json_null`
+  extern virtual function json_result#(json_null) as_json_null();
 
   // Try to convert current value to map (associative array). Succesfull only for underlying `json_object`.
   // FIXME: this return type does not work in Verilator currently
-  //extern function json_result#(json_value_map_t) to_map();
+  //extern virtual function json_result#(json_value_map_t) to_map();
 
   // Try to convert current value to queue. Succesfull only for underlying `json_array`.
   // FIXME: this return type does not work in Verilator currently
-  //extern function json_result#(json_value_queue_t) to_queue();
+  //extern virtual function json_result#(json_value_queue_t) to_queue();
 
   // Try to convert current value to string. Succesfull only for underlying `json_string`.
-  extern function json_result#(string) to_string();
+  extern virtual function json_result#(string) to_string();
 
   // Try to convert current value to integer. Succesfull only for underlying `json_int`.
-  extern function json_result#(longint) to_int();
+  extern virtual function json_result#(longint) to_int();
 
   // Try to convert current value to real. Succesfull only for underlying `json_real`.
-  extern function json_result#(real) to_real();
+  extern virtual function json_result#(real) to_real();
 
   // Try to convert current value to 1-bit (bool). Succesfull only for underlying `json_bool`.
-  extern function json_result#(bit) to_bit();
+  extern virtual function json_result#(bit) to_bit();
 
   // Check if current value is `json_object`
-  extern function bit is_json_object();
+  extern virtual function bit is_json_object();
 
   // Check if current value is `json_array`
-  extern function bit is_json_array();
+  extern virtual function bit is_json_array();
 
   // Check if current value is `json_string`
-  extern function bit is_json_string();
+  extern virtual function bit is_json_string();
 
   // Check if current value is `json_int`
-  extern function bit is_json_int();
+  extern virtual function bit is_json_int();
 
   // Check if current value is `json_real`
-  extern function bit is_json_real();
+  extern virtual function bit is_json_real();
 
   // Check if current value is `json_bool`
-  extern function bit is_json_bool();
+  extern virtual function bit is_json_bool();
 
   // Check if current value is `json_null`
-  extern function bit is_json_null();
+  extern virtual function bit is_json_null();
 endclass : json_value
 
 
 function json_result#(json_object) json_value::as_json_object();
-  json_object val;
-  if ($cast(val, this)) begin
-    return json_result#(json_object)::ok(val);
-  end else begin
-    return json_result#(json_object)::err(json_error::create(json_error::CAST_FAILED));
-  end
+  return json_result#(json_object)::err(json_error::create(json_error::TYPE_CONVERSION));
 endfunction : as_json_object
 
 
 function json_result#(json_array) json_value::as_json_array();
-  json_array val;
-  if ($cast(val, this)) begin
-    return json_result#(json_array)::ok(val);
-  end else begin
-    return json_result#(json_array)::err(json_error::create(json_error::CAST_FAILED));
-  end
+  return json_result#(json_array)::err(json_error::create(json_error::TYPE_CONVERSION));
 endfunction : as_json_array
 
 
 function json_result#(json_string) json_value::as_json_string();
-  json_string val;
-  if ($cast(val, this)) begin
-    return json_result#(json_string)::ok(val);
-  end else begin
-    return json_result#(json_string)::err(json_error::create(json_error::CAST_FAILED));
-  end
+  return json_result#(json_string)::err(json_error::create(json_error::TYPE_CONVERSION));
 endfunction : as_json_string
 
 
 function json_result#(json_int) json_value::as_json_int();
-  json_int val;
-  if ($cast(val, this)) begin
-    return json_result#(json_int)::ok(val);
-  end else begin
-    return json_result#(json_int)::err(json_error::create(json_error::CAST_FAILED));
-  end
+  return json_result#(json_int)::err(json_error::create(json_error::TYPE_CONVERSION));
 endfunction : as_json_int
 
 
 function json_result#(json_real) json_value::as_json_real();
-  json_real val;
-  if ($cast(val, this)) begin
-    return json_result#(json_real)::ok(val);
-  end else begin
-    return json_result#(json_real)::err(json_error::create(json_error::CAST_FAILED));
-  end
+  return json_result#(json_real)::err(json_error::create(json_error::TYPE_CONVERSION));
 endfunction : as_json_real
 
 
 function json_result#(json_bool) json_value::as_json_bool();
-  json_bool val;
-  if ($cast(val, this)) begin
-    return json_result#(json_bool)::ok(val);
-  end else begin
-    return json_result#(json_bool)::err(json_error::create(json_error::CAST_FAILED));
-  end
+  return json_result#(json_bool)::err(json_error::create(json_error::TYPE_CONVERSION));
 endfunction : as_json_bool
 
 
 function json_result#(json_null) json_value::as_json_null();
-  json_null val;
-  if ($cast(val, this)) begin
-    return json_result#(json_null)::ok(val);
-  end else begin
-    return json_result#(json_null)::err(json_error::create(json_error::CAST_FAILED));
-  end
+  return json_result#(json_null)::err(json_error::create(json_error::TYPE_CONVERSION));
 endfunction : as_json_null
 
 

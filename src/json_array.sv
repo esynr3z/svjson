@@ -7,6 +7,9 @@ class json_array extends json_value;
   // Create json_array from queue
   extern static function json_array from(json_value_queue_t values);
 
+  // Return current value (override default implementation)
+  extern virtual function json_result#(json_array) as_json_array();
+
   // Get size of the array
   extern virtual function int unsigned size();
 
@@ -33,6 +36,11 @@ function json_array json_array::from(json_value_queue_t values);
   json_array obj = new(values);
   return obj;
 endfunction : from
+
+
+function json_result#(json_array) json_array::as_json_array();
+  return json_result#(json_array)::ok(this);
+endfunction : as_json_array
 
 
 function int unsigned json_array::size();

@@ -7,6 +7,9 @@ class json_object extends json_value;
   // Create json_object from associative array
   extern static function json_object from(json_value_map_t values);
 
+  // Return current value (override default implementation)
+  extern virtual function json_result#(json_object) as_json_object();
+
   // Get number of items within object
   extern virtual function int unsigned size();
 
@@ -36,6 +39,11 @@ function json_object json_object::from(json_value_map_t values);
   json_object obj = new(values);
   return obj;
 endfunction : from
+
+
+function json_result#(json_object) json_object::as_json_object();
+  return json_result#(json_object)::ok(this);
+endfunction : as_json_object
 
 
 function int unsigned json_object::size();

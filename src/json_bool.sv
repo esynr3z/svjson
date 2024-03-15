@@ -7,6 +7,9 @@ class json_bool extends json_value;
   // Create json_bool from 1-bit value
   extern static function json_bool from(bit value);
 
+  // Return current value (override default implementation)
+  extern virtual function json_result#(json_bool) as_json_bool();
+
   // Create full copy of a value
   extern virtual function json_value clone();
 
@@ -27,6 +30,11 @@ function json_bool json_bool::from(bit value);
   json_bool obj = new(value);
   return obj;
 endfunction : from
+
+
+function json_result#(json_bool) json_bool::as_json_bool();
+  return json_result#(json_bool)::ok(this);
+endfunction : as_json_bool
 
 
 function json_value json_bool::clone();
