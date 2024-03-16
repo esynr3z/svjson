@@ -31,18 +31,20 @@ module json_decoder_load_string_unit_test;
   end
   `SVTEST_END
 
-  //`SVTEST(some_object_test)
-  //begin
-  //  string raw = "{\"foo\" : 42, \"bar\" : []}";
-  //  json_object golden = json_object::from('{
-  //    "foo": json_int::from(42),
-  //    "bar": json_array::from('{})
-  //  });
-  //  json_result result = json_decoder::load_string(raw);
-  //  `FAIL_IF(result.is_err())
-  //  `FAIL_UNLESS(result.unwrap().as_json_object().unwrap().compare(golden))
-  //end
-  //`SVTEST_END
+
+  `SVTEST(some_object_test)
+  begin
+    string raw = "{\"foo\" : 42, \"bar\" : []}";
+    json_object golden = json_object::from('{
+      "foo": json_int::from(42),
+      "bar": json_array::from('{})
+    });
+    json_result result = json_decoder::load_string(raw);
+    `FAIL_IF(result.is_err())
+    `FAIL_UNLESS(result.unwrap().as_json_object().unwrap().compare(golden))
+  end
+  `SVTEST_END
+
 
   `SVTEST(empty_array_test)
   begin
@@ -52,6 +54,7 @@ module json_decoder_load_string_unit_test;
     `FAIL_UNLESS(result.unwrap().as_json_array().unwrap().compare(json_array::from('{})))
   end
   `SVTEST_END
+
 
   `SVTEST(empty_string_test)
   begin
@@ -63,6 +66,7 @@ module json_decoder_load_string_unit_test;
   end
   `SVTEST_END
 
+
   `SVTEST(some_string_test)
   begin
     string raw = "\"foo {bar} [baz]\"";
@@ -72,6 +76,7 @@ module json_decoder_load_string_unit_test;
     `FAIL_UNLESS(result.unwrap().as_json_string().unwrap().compare(json_string::from(golden)))
   end
   `SVTEST_END
+
 
   `SVTEST(some_positive_int_test)
   begin
@@ -83,6 +88,7 @@ module json_decoder_load_string_unit_test;
   end
   `SVTEST_END
 
+
   `SVTEST(some_negative_int_test)
   begin
     string raw = "-777";
@@ -92,6 +98,7 @@ module json_decoder_load_string_unit_test;
     `FAIL_UNLESS(result.unwrap().as_json_int().unwrap().compare(json_int::from(golden)))
   end
   `SVTEST_END
+
 
   `SVTEST(some_positive_real_test)
   begin
@@ -103,6 +110,7 @@ module json_decoder_load_string_unit_test;
   end
   `SVTEST_END
 
+
   `SVTEST(some_negative_real_test)
   begin
     string raw = "-0.1234567";
@@ -112,6 +120,7 @@ module json_decoder_load_string_unit_test;
     `FAIL_UNLESS(result.unwrap().as_json_real().unwrap().compare(json_real::from(golden)))
   end
   `SVTEST_END
+
 
   `SVTEST(true_bool_test)
   begin
@@ -123,6 +132,7 @@ module json_decoder_load_string_unit_test;
   end
   `SVTEST_END
 
+
   `SVTEST(false_bool_test)
   begin
     string raw = "false";
@@ -132,6 +142,7 @@ module json_decoder_load_string_unit_test;
     `FAIL_UNLESS(result.unwrap().as_json_bool().unwrap().compare(json_bool::from(golden)))
   end
   `SVTEST_END
+
 
   `SVTEST(null_test)
   begin

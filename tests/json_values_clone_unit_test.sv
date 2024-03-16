@@ -22,8 +22,78 @@ module json_values_clone_unit_test;
 
   `SVUNIT_TESTS_BEGIN
 
-  `SVTEST(dummy_test)
+  `SVTEST(clone_int_test)
   begin
+    `FAIL_IF(1)
+  end
+  `SVTEST_END
+
+
+  `SVTEST(clone_real_test)
+  begin
+    `FAIL_IF(1)
+  end
+  `SVTEST_END
+
+
+  `SVTEST(clone_bool_test)
+  begin
+    `FAIL_IF(1)
+  end
+  `SVTEST_END
+
+  `SVTEST(clone_string_test)
+  begin
+    `FAIL_IF(1)
+  end
+  `SVTEST_END
+
+
+  `SVTEST(clone_null_test)
+  begin
+    `FAIL_IF(1)
+  end
+  `SVTEST_END
+
+
+  `SVTEST(clone_array_test)
+  begin
+    `FAIL_IF(1)
+  end
+  `SVTEST_END
+
+
+  `SVTEST(clone_array_with_nulls_test)
+  begin
+    `FAIL_IF(1)
+  end
+  `SVTEST_END
+
+
+  `SVTEST(clone_array_complex_test)
+  begin
+    `FAIL_IF(1)
+  end
+  `SVTEST_END
+
+
+  `SVTEST(clone_object_test)
+  begin
+    `FAIL_IF(1)
+  end
+  `SVTEST_END
+
+
+  `SVTEST(clone_object_with_nulls_test)
+  begin
+    `FAIL_IF(1)
+  end
+  `SVTEST_END
+
+
+  `SVTEST(clone_object_complex_test)
+  begin
+    `FAIL_IF(1)
   end
   `SVTEST_END
 

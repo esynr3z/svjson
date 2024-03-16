@@ -11,7 +11,7 @@ test:
 		-s verilator \
 		-l run.log \
 		-c "--binary -j $$(nproc)" \
-		-f $(SV_JSON_ROOT)/src/filelist.f \
+		-f $(SV_JSON_ROOT)/src/filelist.f test_utils_pkg.sv \
 		-o work
 
 clean:

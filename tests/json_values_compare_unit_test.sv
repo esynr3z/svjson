@@ -22,8 +22,205 @@ module json_values_compare_unit_test;
 
   `SVUNIT_TESTS_BEGIN
 
-  `SVTEST(dummy_test)
+  `SVTEST(compare_int_ok_test)
   begin
+    `FAIL_IF(1)
+  end
+  `SVTEST_END
+
+
+  `SVTEST(compare_int_fail_test)
+  begin
+    `FAIL_IF(1)
+  end
+  `SVTEST_END
+
+
+  `SVTEST(compare_int_with_any_test)
+  begin
+    `FAIL_IF(1)
+  end
+  `SVTEST_END
+
+
+  `SVTEST(compare_int_with_null_test)
+  begin
+    `FAIL_IF(1)
+  end
+  `SVTEST_END
+
+
+  `SVTEST(compare_real_ok_test)
+  begin
+    `FAIL_IF(1)
+  end
+  `SVTEST_END
+
+
+  `SVTEST(compare_real_fail_test)
+  begin
+    `FAIL_IF(1)
+  end
+  `SVTEST_END
+
+
+  `SVTEST(compare_real_with_any_test)
+  begin
+    `FAIL_IF(1)
+  end
+  `SVTEST_END
+
+
+  `SVTEST(compare_real_with_null_test)
+  begin
+    `FAIL_IF(1)
+  end
+  `SVTEST_END
+
+
+  `SVTEST(compare_bool_ok_test)
+  begin
+    `FAIL_IF(1)
+  end
+  `SVTEST_END
+
+
+  `SVTEST(compare_bool_fail_test)
+  begin
+    `FAIL_IF(1)
+  end
+  `SVTEST_END
+
+
+  `SVTEST(compare_bool_with_any_test)
+  begin
+    `FAIL_IF(1)
+  end
+  `SVTEST_END
+
+
+  `SVTEST(compare_bool_with_null_test)
+  begin
+    `FAIL_IF(1)
+  end
+  `SVTEST_END
+
+
+  `SVTEST(compare_string_ok_test)
+  begin
+    `FAIL_IF(1)
+  end
+  `SVTEST_END
+
+
+  `SVTEST(compare_string_fail_test)
+  begin
+    `FAIL_IF(1)
+  end
+  `SVTEST_END
+
+
+  `SVTEST(compare_string_with_any_test)
+  begin
+    `FAIL_IF(1)
+  end
+  `SVTEST_END
+
+
+  `SVTEST(compare_string_with_null_test)
+  begin
+    `FAIL_IF(1)
+  end
+  `SVTEST_END
+
+
+  `SVTEST(compare_object_ok_test)
+  begin
+    `FAIL_IF(1)
+  end
+  `SVTEST_END
+
+
+  `SVTEST(compare_object_fail_test)
+  begin
+    `FAIL_IF(1)
+  end
+  `SVTEST_END
+
+
+  `SVTEST(compare_object_with_any_test)
+  begin
+    `FAIL_IF(1)
+  end
+  `SVTEST_END
+
+
+  `SVTEST(compare_object_with_null_test)
+  begin
+    `FAIL_IF(1)
+  end
+  `SVTEST_END
+
+
+  `SVTEST(compare_object_with_null_items_test)
+  begin
+    `FAIL_IF(1)
+  end
+  `SVTEST_END
+
+
+  `SVTEST(compare_array_ok_test)
+  begin
+    `FAIL_IF(1)
+  end
+  `SVTEST_END
+
+
+  `SVTEST(compare_array_fail_test)
+  begin
+    `FAIL_IF(1)
+  end
+  `SVTEST_END
+
+
+  `SVTEST(compare_array_with_any_test)
+  begin
+    `FAIL_IF(1)
+  end
+  `SVTEST_END
+
+
+  `SVTEST(compare_array_with_null_test)
+  begin
+    `FAIL_IF(1)
+  end
+  `SVTEST_END
+
+
+  `SVTEST(compare_array_with_null_items_test)
+  begin
+    `FAIL_IF(1)
+  end
+  `SVTEST_END
+
+
+  `SVTEST(compare_null_ok_test)
+  begin
+    `FAIL_IF(1)
+  end
+  `SVTEST_END
+
+
+  `SVTEST(compare_null_with_any_test)
+  begin
+    `FAIL_IF(1)
+  end
+  `SVTEST_END
+
+
+  `SVTEST(compare_null_with_native_null_test)
+  begin
+    `FAIL_IF(1)
   end
   `SVTEST_END
 
