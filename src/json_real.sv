@@ -10,6 +10,9 @@ class json_real extends json_value;
   // Return current object (override default implementation)
   extern virtual function json_result#(json_real) as_json_real();
 
+  // Check for current object type
+  extern virtual function bit is_json_real();
+
   // Return current value (override default implementation)
   extern virtual function json_result#(real) to_real();
 
@@ -58,3 +61,8 @@ endfunction : compare
 function json_value_e json_real::kind();
   return JSON_VALUE_REAL;
 endfunction : kind
+
+
+function bit json_real::is_json_real();
+  return 1;
+endfunction : is_json_real

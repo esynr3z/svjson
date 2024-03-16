@@ -15,7 +15,7 @@ virtual class json_value;
   // Try to cast current value to `json_array`
   extern virtual function json_result#(json_array) as_json_array();
 
-  //Try to cast current value to `json_string`
+  // Try to cast current value to `json_string`
   extern virtual function json_result#(json_string) as_json_string();
 
   // Try to cast current value to `json_int`
@@ -129,35 +129,35 @@ endfunction : to_bit
 
 
 function bit json_value::is_json_object();
-  return (this.kind() == JSON_VALUE_OBJECT);
+  return 0;
 endfunction : is_json_object
 
 
 function bit json_value::is_json_array();
-  return (this.kind() == JSON_VALUE_ARRAY);
+  return 0;
 endfunction : is_json_array
 
 
 function bit json_value::is_json_string();
-  return (this.kind() == JSON_VALUE_STRING);
+  return 0;
 endfunction : is_json_string
 
 
 function bit json_value::is_json_int();
-  return (this.kind() == JSON_VALUE_INT);
+  return 0;
 endfunction : is_json_int
 
 
 function bit json_value::is_json_real();
-  return (this.kind() == JSON_VALUE_REAL);
+  return 0;
 endfunction : is_json_real
 
 
 function bit json_value::is_json_bool();
-  return (this.kind() == JSON_VALUE_BOOL);
+  return 0;
 endfunction : is_json_bool
 
 
 function bit json_value::is_json_null();
-  return (this.kind() == JSON_VALUE_NULL);
+  return 0;
 endfunction : is_json_null

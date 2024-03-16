@@ -10,6 +10,9 @@ class json_bool extends json_value;
   // Return current object (override default implementation)
   extern virtual function json_result#(json_bool) as_json_bool();
 
+  // Check for current object type
+  extern virtual function bit is_json_bool();
+
   // Return current value (override default implementation)
   extern virtual function json_result#(bit) to_bit();
 
@@ -58,3 +61,8 @@ endfunction : compare
 function json_value_e json_bool::kind();
   return JSON_VALUE_BOOL;
 endfunction : kind
+
+
+function bit json_bool::is_json_bool();
+  return 1;
+endfunction : is_json_bool

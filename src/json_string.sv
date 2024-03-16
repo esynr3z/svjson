@@ -10,6 +10,9 @@ class json_string extends json_value;
   // Return current object (override default implementation)
   extern virtual function json_result#(json_string) as_json_string();
 
+  // Check for current object type
+  extern virtual function bit is_json_string();
+
   // Return current value (override default implementation)
   extern virtual function json_result#(string) to_string();
 
@@ -66,3 +69,8 @@ endfunction : compare
 function json_value_e json_string::kind();
   return JSON_VALUE_STRING;
 endfunction : kind
+
+
+function bit json_string::is_json_string();
+  return 1;
+endfunction : is_json_string

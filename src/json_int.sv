@@ -10,6 +10,9 @@ class json_int extends json_value;
   // Return current object (override default implementation)
   extern virtual function json_result#(json_int) as_json_int();
 
+  // Check for current object type
+  extern virtual function bit is_json_int();
+
   // Return current value (override default implementation)
   extern virtual function json_result#(longint) to_longint();
 
@@ -58,3 +61,8 @@ endfunction : compare
 function json_value_e json_int::kind();
   return JSON_VALUE_INT;
 endfunction : kind
+
+
+function bit json_int::is_json_int();
+  return 1;
+endfunction : is_json_int

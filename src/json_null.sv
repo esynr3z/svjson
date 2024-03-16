@@ -9,6 +9,8 @@ class json_null extends json_value;
   // Return current object (override default implementation)
   extern virtual function json_result#(json_null) as_json_null();
 
+  // Check for current object type
+  extern virtual function bit is_json_null();
 
   // Create full copy of a value
   extern virtual function json_value clone();
@@ -49,3 +51,8 @@ endfunction : compare
 function json_value_e json_null::kind();
   return JSON_VALUE_NULL;
 endfunction : kind
+
+
+function bit json_null::is_json_null();
+  return 1;
+endfunction : is_json_null

@@ -7,8 +7,11 @@ class json_object extends json_value;
   // Create json_object from associative array
   extern static function json_object from(json_value_map_t values);
 
-  // Return current object (override default implementation)
+  // Return current object
   extern virtual function json_result#(json_object) as_json_object();
+
+  // Check for current object type
+  extern virtual function bit is_json_object();
 
   // Get number of items within object
   extern virtual function int unsigned size();
@@ -93,3 +96,8 @@ endfunction : compare
 function json_value_e json_object::kind();
   return JSON_VALUE_OBJECT;
 endfunction : kind
+
+
+function bit json_object::is_json_object();
+  return 1;
+endfunction : is_json_object

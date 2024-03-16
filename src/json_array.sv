@@ -10,6 +10,9 @@ class json_array extends json_value;
   // Return current object (override default implementation)
   extern virtual function json_result#(json_array) as_json_array();
 
+  // Check for current object type
+  extern virtual function bit is_json_array();
+
   // Get size of the array
   extern virtual function int unsigned size();
 
@@ -89,3 +92,8 @@ endfunction : compare
 function json_value_e json_array::kind();
   return JSON_VALUE_ARRAY;
 endfunction : kind
+
+
+function bit json_array::is_json_array();
+  return 1;
+endfunction : is_json_array
