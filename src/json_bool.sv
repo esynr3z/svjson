@@ -7,22 +7,22 @@ class json_bool extends json_value;
   // Create json_bool from 1-bit value
   extern static function json_bool from(bit value);
 
-  // Return current object (override default implementation)
+  // Get current instance
   extern virtual function json_result#(json_bool) as_json_bool();
 
-  // Check for current object type
+  // Check for current instance class type
   extern virtual function bit is_json_bool();
 
-  // Return current value (override default implementation)
+  // Get current value
   extern virtual function json_result#(bit) to_bit();
 
-  // Create full copy of a value
+  // Create a deep copy of an instance
   extern virtual function json_value clone();
 
-  // Compare with value
+  // Compare with another instance
   extern virtual function bit compare(json_value value);
 
-  // Get kind of current value
+  // Get kind of current instance
   extern virtual function json_value_e kind();
 endclass : json_bool
 
@@ -54,7 +54,13 @@ endfunction : clone
 
 
 function bit json_bool::compare(json_value value);
-  return value.is_json_bool() && (value.as_json_bool().unwrap().value == this.value);
+  json_result#(json_bool) casted = value.as_json_bool();
+  json_error err;
+  json_bool rhs;
+  case (1)
+    casted.matches_err(err): return 0;
+    casted.matches_ok(rhs): return this.value == rhs.value;
+  endcase
 endfunction : compare
 
 

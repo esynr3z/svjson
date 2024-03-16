@@ -4,28 +4,25 @@ class json_string extends json_value;
   // Normal constructor
   extern function new(string value);
 
-  // Create json_string from string
+  // Create `json_string` from string
   extern static function json_string from(string value);
 
-  // Return current object (override default implementation)
+  // Get current instance
   extern virtual function json_result#(json_string) as_json_string();
 
-  // Check for current object type
+  // Check for current instance class type
   extern virtual function bit is_json_string();
 
-  // Return current value (override default implementation)
+  // Get current value
   extern virtual function json_result#(string) to_string();
 
-  // Get string size
-  extern virtual function int unsigned size();
-
-  // Create full copy of a value
+  // Create a deep copy of an instance
   extern virtual function json_value clone();
 
-  // Compare with value
+  // Compare with another instance
   extern virtual function bit compare(json_value value);
 
-  // Get kind of current value
+  // Get kind of current instance
   extern virtual function json_value_e kind();
 endclass : json_string
 
@@ -51,18 +48,19 @@ function json_result#(string) json_string::to_string();
 endfunction : to_string
 
 
-function int unsigned json_string::size();
-  return this.value.len();
-endfunction : size
-
-
 function json_value json_string::clone();
   return json_string::from(this.value);
 endfunction : clone
 
 
 function bit json_string::compare(json_value value);
-  return value.is_json_string() && (value.as_json_string().unwrap().value == this.value);
+  json_result#(json_string) casted = value.as_json_string();
+  json_error err;
+  json_string rhs;
+  case (1)
+    casted.matches_err(err): return 0;
+    casted.matches_ok(rhs): return this.value == rhs.value;
+  endcase
 endfunction : compare
 
 

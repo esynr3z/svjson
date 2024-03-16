@@ -7,22 +7,22 @@ class json_int extends json_value;
   // Create json_int from longint
   extern static function json_int from(longint value);
 
-  // Return current object (override default implementation)
+  // Get current instance
   extern virtual function json_result#(json_int) as_json_int();
 
-  // Check for current object type
+  // Check for current instance class type
   extern virtual function bit is_json_int();
 
-  // Return current value (override default implementation)
+  // Get current value
   extern virtual function json_result#(longint) to_longint();
 
-  // Create full copy of a value
+  // Create a deep copy of an instance
   extern virtual function json_value clone();
 
-  // Compare with value
+  // Compare with another instance
   extern virtual function bit compare(json_value value);
 
-  // Get kind of current value
+  // Get kind of current instance
   extern virtual function json_value_e kind();
 endclass : json_int
 
@@ -54,7 +54,13 @@ endfunction : clone
 
 
 function bit json_int::compare(json_value value);
-  return value.is_json_int() && (value.as_json_int().unwrap().value == this.value);
+  json_result#(json_int) casted = value.as_json_int();
+  json_error err;
+  json_int rhs;
+  case (1)
+    casted.matches_err(err): return 0;
+    casted.matches_ok(rhs): return this.value == rhs.value;
+  endcase
 endfunction : compare
 
 
