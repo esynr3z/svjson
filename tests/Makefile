@@ -1,5 +1,7 @@
 .PHONY: all clean test
 
+r_args ?=
+
 export SV_JSON_ROOT := $(realpath ..)
 export SVUNIT_INSTALL := $(SV_JSON_ROOT)/contrib/svunit
 export PATH := $(SVUNIT_INSTALL)/bin:$(PATH)
@@ -12,6 +14,7 @@ test:
 		-l run.log \
 		-c "--binary -j $$(nproc)" \
 		-f $(SV_JSON_ROOT)/src/filelist.f test_utils_pkg.sv \
+		$(r_args) \
 		-o work
 
 clean:
