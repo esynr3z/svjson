@@ -25,7 +25,13 @@ endclass : json_array
 
 
 function json_array::new(json_value_queue_t values);
-  this.values = values;
+  foreach (values[i]) begin
+    json_value value = values[i];
+    if (values[i] == null) begin
+      value = json_null::create();
+    end
+    this.values.push_back(value);
+  end
 endfunction : new
 
 
@@ -44,7 +50,7 @@ function json_value json_array::clone();
   json_value new_values[$];
 
   foreach (this.values[i]) begin
-    new_values[i] = this.values[i].clone();
+    new_values.push_back(this.values[i].clone());
   end
 
   return json_array::from(new_values);
