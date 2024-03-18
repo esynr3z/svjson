@@ -27,7 +27,7 @@ endclass : json_array
 function json_array::new(json_value_queue_t values);
   foreach (values[i]) begin
     json_value value = values[i];
-    if (values[i] == null) begin
+    if (value == null) begin
       value = json_null::create();
     end
     this.values.push_back(value);

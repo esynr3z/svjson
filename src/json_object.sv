@@ -25,7 +25,13 @@ endclass : json_object
 
 
 function json_object::new(json_value_map_t values);
-  this.values = values;
+  foreach (values[key]) begin
+    json_value value = values[key];
+    if (value == null) begin
+      value = json_null::create();
+    end
+    this.values[key] = value;
+  end
 endfunction : new
 
 
