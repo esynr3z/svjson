@@ -58,9 +58,15 @@ endfunction : clone
 
 
 function bit json_array::compare(json_value value);
-  json_result#(json_array) casted = value.as_json_array();
+  json_result#(json_array) casted;
   json_error err;
   json_array rhs;
+
+  if (value == null) begin
+    return 0;
+  end
+
+  casted = value.as_json_array();
   case (1)
     casted.matches_err(err): return 0;
     casted.matches_ok(rhs): begin

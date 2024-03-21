@@ -58,9 +58,15 @@ endfunction : clone
 
 
 function bit json_object::compare(json_value value);
-  json_result#(json_object) casted = value.as_json_object();
+  json_result#(json_object) casted;
   json_error err;
   json_object rhs;
+
+  if (value == null) begin
+    return 0;
+  end
+
+  casted = value.as_json_object();
   case (1)
     casted.matches_err(err): return 0;
     casted.matches_ok(rhs): begin
