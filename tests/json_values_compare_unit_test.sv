@@ -300,7 +300,6 @@ module json_values_compare_unit_test;
     jarray_b = json_array::from('{null});
     `FAIL_IF(jarray_a.compare(jarray_b))
     jarray_a = json_array::from('{null});
-    $display("===== %0d", jarray_a.values.size());
     jarray_b = json_array::from('{json_int::from(42)});
     `FAIL_IF(jarray_a.compare(jarray_b))
   end
@@ -356,14 +355,31 @@ module json_values_compare_unit_test;
 
   `SVTEST(compare_null_test)
   begin
-    `FAIL_IF(1)
+    json_null jnull_a = json_null::create();
+    json_null jnull_b = json_null::create();
+
+    `FAIL_UNLESS(jnull_a.compare(jnull_a))
+    `FAIL_UNLESS(jnull_a.compare(jnull_b))
   end
   `SVTEST_END
 
 
   `SVTEST(compare_null_with_others_test)
   begin
-    `FAIL_IF(1)
+    json_string jstring = json_string::from("1");
+    json_real jreal = json_real::from(1.0);
+    json_int jint = json_int::from(1);
+    json_bool jbool = json_bool::from(1);
+    json_array jarray = json_array::from('{json_int::from(1)});
+    json_object jobject = json_object::from('{"int": json_int::from(1)});
+    json_null jnull = json_null::create();
+    // Comparsion is strict
+    `FAIL_IF(jnull.compare(jreal))
+    `FAIL_IF(jnull.compare(jint))
+    `FAIL_IF(jnull.compare(jbool))
+    `FAIL_IF(jnull.compare(jobject))
+    `FAIL_IF(jnull.compare(jstring))
+    `FAIL_UNLESS(jnull.compare(null))
   end
   `SVTEST_END
 

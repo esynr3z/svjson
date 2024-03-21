@@ -44,6 +44,9 @@ endfunction : clone
 
 
 function bit json_null::compare(json_value value);
+  if (value == null) begin
+    return 1;
+  end
   return value.is_json_null();
 endfunction : compare
 
