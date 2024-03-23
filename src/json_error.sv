@@ -1,4 +1,9 @@
 class json_error;
+  // Width of context for printing JSON errors.
+  // It controls how long would be part of a JSON string to show the context.
+  // Why 80? Just a reasonable number for a message in CLI.
+  static int unsigned ctx_width = 80;
+
   // All types of JSON related errors
   typedef enum {
     // JSON syntax errors
@@ -27,8 +32,8 @@ class json_error;
     INTERNAL
   } kind_e;
 
+  // Error properties
   const string info [kind_e];
-
   kind_e kind;
   string description;
   string file;
@@ -50,16 +55,19 @@ class json_error;
   );
 
   // Report error
-  extern function void throw_error();
+  extern virtual function void throw_error();
 
   // Report fatal
-  extern function void throw_fatal();
+  extern virtual function void throw_fatal();
 
   // Convert error to printable string
-  extern function string to_string();
+  extern virtual function string to_string();
 
-  // Extract context for error from JSON string
-  extern protected function string extract_json_context();
+  // Try to extract context for error from provided JSON string
+  extern protected virtual function string extract_err_context();
+
+  // Make error context human readable
+  extern protected virtual function string prettify_err_context(string err_ctx, int err_pos, int err_line_idx);
 endclass : json_error
 
 
@@ -122,6 +130,7 @@ endfunction : throw_fatal
 function string json_error::to_string();
   string str = $sformatf("JSON error %s: %s", this.kind.name(), this.info[this.kind]);
 
+  // Add information about file and line where error was raised if this was provided
   if (this.file != "") begin
     str = {str, $sformatf("\n%s", this.file)};
     if (this.line >= 0) begin
@@ -129,57 +138,89 @@ function string json_error::to_string();
     end
   end
 
+  // Add custom description if exists
   if (this.description != "") begin
     str = {str, $sformatf("\n%s", this.description)};
   end
 
-  if (this.json_idx >= 0) begin
-    str = {str, {"\n", this.extract_json_context()}};
+  // Provide context fro JSON error if context was provided
+  if ((this.json_idx >= 0) && (this.json_str.len() > 0) && (this.json_idx < this.json_str.len())) begin
+    string err_ctx = this.extract_err_context();
+    str = {str, {"\n", err_ctx}};
   end
 
   return str;
 endfunction : to_string
 
 
-function string json_error::extract_json_context();
+function string json_error::extract_err_context();
   int ctx_start_idx = 0;
   int ctx_end_idx = this.json_str.len() - 1;
-  int line_ends[$];
-  string pointer_offset = "";
-  string line;
 
-  // Locate all line endings
+  int err_pos;
+  int err_line_idx;
+  string err_ctx;
+
+  // Locate line with error
   foreach (json_str[i]) begin
     if (json_str[i] == "\n") begin
-      line_ends.push_back(i);
+      ctx_end_idx = i;
+      if (ctx_end_idx >= this.json_idx) begin
+        break;
+      end
+      ctx_start_idx = i + 1;
+      err_line_idx++;
     end
   end
 
-  // Locate line with context
-  foreach (line_ends[i]) begin
-    if (line_ends[i] < this.json_idx) begin
-      ctx_start_idx = line_ends[i];
-    end else if (line_ends[i] >= this.json_idx) begin
-      ctx_end_idx = line_ends[i];
+  // Extract this line
+  err_ctx = this.json_str.substr(ctx_start_idx, ctx_end_idx);
+  err_pos = this.json_idx - ctx_start_idx;
+
+  // Make the error context more human readable
+  return prettify_err_context(err_ctx, err_pos, err_line_idx);
+endfunction : extract_err_context
+
+
+function string json_error::prettify_err_context(string err_ctx, int err_pos, int err_line_idx);
+  int ctx_width_half = ctx_width / 2 - 1;
+  string pretty_ctx;
+  int pretty_start_idx;
+  int pretty_end_idx;
+  string pointer_offset;
+
+  // Cut off line to fit context width window
+  pretty_start_idx = (err_pos - ctx_width_half) < 0 ? 0 : err_pos - ctx_width_half;
+  pretty_end_idx = (err_ctx.len() - pretty_start_idx - 1) < 78 ? err_ctx.len() - 1 :
+                                                                 pretty_start_idx + ctx_width_half * 2;
+  if (err_ctx[pretty_end_idx] == "\n") begin
+    pretty_end_idx--; // there might be a single newline character that has to be handled
+  end
+
+  // Prepare final context line
+  pretty_ctx = err_ctx.substr(pretty_start_idx, pretty_end_idx);
+  if (pretty_start_idx > 0) begin
+    for (int i = 0; i < 3; i++) begin
+      pretty_ctx[i] = "."; // just to show that error is far away from line start
+    end
+  end
+  if (pretty_end_idx < (err_ctx.len() - 2)) begin
+    for (int i = pretty_ctx.len() - 3; i < pretty_ctx.len(); i++) begin
+      pretty_ctx[i] = "."; // just to show that error is far away from line end
     end
   end
 
-  // Cut off line to fit 80 symbols
-  ctx_start_idx = (this.json_idx - 40) < ctx_start_idx ? ctx_start_idx : this.json_idx - 40;
-  ctx_end_idx = (this.json_idx + 39) > ctx_end_idx ? ctx_end_idx : this.json_idx + 39;
-
-  // Prepare context line
-  line = this.json_str.substr(ctx_start_idx, ctx_end_idx);
-  if (ctx_start_idx > 0) begin
-    for (int i = 0; i < 3;i++) begin
-      line[i] = ".";
-    end
-  end
-
-  // Prepare offset for pointer
-  repeat(this.json_idx % 80) begin
+  // Prepare offset for error pointer
+  repeat(err_pos - pretty_start_idx) begin
     pointer_offset = {pointer_offset, " "};
   end
 
-  return $sformatf("%s\n%s\n%s", line, {pointer_offset, "^"}, {pointer_offset, "|"});
-endfunction : extract_json_context
+  return $sformatf(
+    "JSON string line %0d symbol %0d:\n%s\n%s\n%s",
+    err_line_idx + 1, // lines and symbols in text are usually counted from 1 by a normal human
+    err_pos + 1,
+    pretty_ctx,
+    {pointer_offset, "^"},
+    {pointer_offset, "|"}
+  );
+endfunction : prettify_err_context
