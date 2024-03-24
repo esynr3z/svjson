@@ -1,11 +1,12 @@
 `include "svunit_defines.svh"
+`include "test_utils_macros.svh"
 
-// Basic tests of `json_decoder::load_string()` method
-module json_decoder_load_string_unit_test;
+// Basic tests of `json_decoder` is used to parse JSON
+module json_load_basic_unit_test;
   import svunit_pkg::svunit_testcase;
   import json_pkg::*;
 
-  string name = "json_decoder_load_basic_ut";
+  string name = "json_load_basic_ut";
   svunit_testcase svunit_ut;
 
   function void build();
@@ -24,24 +25,27 @@ module json_decoder_load_string_unit_test;
 
   `SVTEST(empty_object_test)
   begin
-    string raw = "{}";
-    json_result result = json_decoder::load_string(raw);
-    `FAIL_IF(result.is_err())
-    `FAIL_UNLESS(result.unwrap().as_json_object().unwrap().compare(json_object::from('{})))
+    json_object golden = json_object::from('{});
+    `EXPECT_OK_LOAD_STR("{}", golden)
+    `EXPECT_OK_LOAD_STR("{ }", golden)
+    `EXPECT_OK_LOAD_STR("{\n}", golden)
+    `EXPECT_OK_LOAD_STR("{\t}", golden)
+    `EXPECT_OK_LOAD_STR("{ \n \n \n   }", golden)
+    `EXPECT_OK_LOAD_STR(" {}   \n\n", golden)
+    `EXPECT_OK_LOAD_STR("\n\n{\n}\n\n", golden)
+    `EXPECT_OK_LOAD_STR("\n\r{  }  \n", golden)
   end
   `SVTEST_END
 
 
-  `SVTEST(some_object_test)
+  `SVTEST(simple_object_test)
   begin
-    string raw = "{\"foo\" : 42, \"bar\" : []}";
-    json_object golden = json_object::from('{
-      "foo": json_int::from(42),
-      "bar": json_array::from('{})
-    });
-    json_result result = json_decoder::load_string(raw);
-    `FAIL_IF(result.is_err())
-    `FAIL_UNLESS(result.unwrap().as_json_object().unwrap().compare(golden))
+    json_object golden = json_object::from('{"the_answer": json_int::from(42)});
+    `EXPECT_OK_LOAD_STR("{\"the_answer\":42}", golden)
+    `EXPECT_OK_LOAD_STR(" {\n  \"the_answer\": 42\n}\n\n ", golden)
+    `EXPECT_OK_LOAD_STR(" {\n  \"the_answer\": 42   \n}  \n\n ", golden)
+    `EXPECT_OK_LOAD_STR(" {\n  \"the_answer\"  :   \t\n42\n}\n\n ", golden)
+    `EXPECT_OK_LOAD_STR("\n{\n\"the_answer\"\n:\n42\n}\n", golden)
   end
   `SVTEST_END
 
@@ -155,4 +159,4 @@ module json_decoder_load_string_unit_test;
 
   `SVUNIT_TESTS_END
 
-endmodule : json_decoder_load_string_unit_test
+endmodule : json_load_basic_unit_test

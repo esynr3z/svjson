@@ -1,6 +1,6 @@
 .PHONY: all clean test
 
-r_args ?=
+extra_args ?=
 
 export SV_JSON_ROOT := $(realpath ..)
 export SVUNIT_INSTALL := $(SV_JSON_ROOT)/contrib/svunit
@@ -13,8 +13,9 @@ test:
 		-s verilator \
 		-l run.log \
 		-c "--binary -j $$(nproc)" \
-		-f $(SV_JSON_ROOT)/src/filelist.f test_utils_pkg.sv \
-		$(r_args) \
+		-f $(SV_JSON_ROOT)/src/filelist.f \
+		-f $(SV_JSON_ROOT)/tests/filelist.f \
+		$(extra_args) \
 		-o work
 
 clean:
