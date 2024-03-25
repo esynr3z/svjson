@@ -168,7 +168,10 @@ function json_decoder::parser_result json_decoder::parse_object(const ref string
               if (trailing_comma) begin
                 return `JSON_SYNTAX_ERR(json_error::TRAILING_COMMA, str, error.json_idx);
               end
+              curr_pos = error.json_idx;
               exit_parsing_loop = 1; // empty object parsed
+            end else begin
+              return result;
             end
           end
 
@@ -176,7 +179,7 @@ function json_decoder::parser_result json_decoder::parse_object(const ref string
 
           result.matches_ok(parsed): begin
             key = parsed.value.as_json_string().unwrap().value;
-            curr_pos++; // move from last string token
+            curr_pos = parsed.end_pos + 1; // move from last string token
             state = EXPECT_COLON;
           end
         endcase
@@ -230,6 +233,7 @@ function json_decoder::parser_result json_decoder::parse_object(const ref string
               exit_parsing_loop = 1; // end of object
             end else begin
               trailing_comma = 1;
+              curr_pos++; // move to a symbol after comma
               state = PARSE_KEY;
             end
           end
@@ -270,7 +274,10 @@ function json_decoder::parser_result json_decoder::parse_array(const ref string 
               if (trailing_comma) begin
                 return `JSON_SYNTAX_ERR(json_error::TRAILING_COMMA, str, error.json_idx);
               end
+              curr_pos = error.json_idx;
               exit_parsing_loop = 1; // empty array parsed
+            end else begin
+              return result;
             end
           end
 
@@ -301,6 +308,7 @@ function json_decoder::parser_result json_decoder::parse_array(const ref string 
               exit_parsing_loop = 1; // end of array
             end else begin
               trailing_comma = 1;
+              curr_pos++; // move to a symbol after comma
               state = PARSE_VALUE;
             end
           end
@@ -419,7 +427,7 @@ function json_decoder::parser_result json_decoder::parse_number(const ref string
   while ((str[curr_pos] inside {this.number_chars}) && (curr_pos < str_len)) begin
     value = {value, str[curr_pos]};
     curr_pos++;
-    is_real |= (str[curr_pos] == ".");
+    is_real |= (str[curr_pos] inside {".", "e", "E"});
   end
 
   parsed.end_pos = curr_pos - 1;
