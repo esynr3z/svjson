@@ -26,9 +26,9 @@ module json_load_ok_unit_test;
 
   `SVTEST(null_test)
   begin
-    `EXPECT_OK_LOAD_STR("null", json_null::create())
-    `EXPECT_OK_LOAD_STR(" null ", json_null::create())
-    `EXPECT_OK_LOAD_STR(" \nnull\n \t ", json_null::create())
+    `EXPECT_OK_LOAD_STR("null", null)
+    `EXPECT_OK_LOAD_STR(" null ", null)
+    `EXPECT_OK_LOAD_STR(" \nnull\n \t ", null)
   end
   `SVTEST_END
 

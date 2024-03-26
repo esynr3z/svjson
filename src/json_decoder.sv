@@ -465,7 +465,7 @@ function json_decoder::parser_result json_decoder::parse_literal(const ref strin
     "n": begin
       literal_expected = "null";
       parsed.end_pos = curr_pos + 3;
-      parsed.value = json_null::create();
+      parsed.value = null;
     end
 
     default: return `JSON_INTERNAL_ERR("Unreachable case branch");

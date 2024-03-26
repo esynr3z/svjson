@@ -51,14 +51,12 @@ module json_values_compare_unit_test;
     json_bool jbool = json_bool::from(1);
     json_array jarray = json_array::from('{json_int::from(1)});
     json_object jobject = json_object::from('{"int": json_int::from(1)});
-    json_null jnull = json_null::create();
     // Comparsion is strict
     `FAIL_IF(jint.compare(jstring))
     `FAIL_IF(jint.compare(jreal))
     `FAIL_IF(jint.compare(jbool))
     `FAIL_IF(jint.compare(jarray))
     `FAIL_IF(jint.compare(jobject))
-    `FAIL_IF(jint.compare(jnull))
     `FAIL_IF(jint.compare(null))
   end
   `SVTEST_END
@@ -93,14 +91,12 @@ module json_values_compare_unit_test;
     json_bool jbool = json_bool::from(1);
     json_array jarray = json_array::from('{json_int::from(1)});
     json_object jobject = json_object::from('{"int": json_int::from(1)});
-    json_null jnull = json_null::create();
     // Comparsion is strict
     `FAIL_IF(jreal.compare(jstring))
     `FAIL_IF(jreal.compare(jint))
     `FAIL_IF(jreal.compare(jbool))
     `FAIL_IF(jreal.compare(jarray))
     `FAIL_IF(jreal.compare(jobject))
-    `FAIL_IF(jreal.compare(jnull))
     `FAIL_IF(jreal.compare(null))
   end
   `SVTEST_END
@@ -135,14 +131,12 @@ module json_values_compare_unit_test;
     json_bool jbool = json_bool::from(1);
     json_array jarray = json_array::from('{json_int::from(1)});
     json_object jobject = json_object::from('{"int": json_int::from(1)});
-    json_null jnull = json_null::create();
     // Comparsion is strict
     `FAIL_IF(jbool.compare(jstring))
     `FAIL_IF(jbool.compare(jreal))
     `FAIL_IF(jbool.compare(jint))
     `FAIL_IF(jbool.compare(jarray))
     `FAIL_IF(jbool.compare(jobject))
-    `FAIL_IF(jbool.compare(jnull))
     `FAIL_IF(jbool.compare(null))
   end
   `SVTEST_END
@@ -177,14 +171,12 @@ module json_values_compare_unit_test;
     json_bool jbool = json_bool::from(1);
     json_array jarray = json_array::from('{json_int::from(1)});
     json_object jobject = json_object::from('{"int": json_int::from(1)});
-    json_null jnull = json_null::create();
     // Comparsion is strict
     `FAIL_IF(jstring.compare(jreal))
     `FAIL_IF(jstring.compare(jint))
     `FAIL_IF(jstring.compare(jbool))
     `FAIL_IF(jstring.compare(jarray))
     `FAIL_IF(jstring.compare(jobject))
-    `FAIL_IF(jstring.compare(jnull))
     `FAIL_IF(jstring.compare(null))
   end
   `SVTEST_END
@@ -257,14 +249,12 @@ module json_values_compare_unit_test;
     json_bool jbool = json_bool::from(1);
     json_array jarray = json_array::from('{json_int::from(1)});
     json_object jobject = json_object::from('{"int": json_int::from(1)});
-    json_null jnull = json_null::create();
     // Comparsion is strict
     `FAIL_IF(jobject.compare(jreal))
     `FAIL_IF(jobject.compare(jint))
     `FAIL_IF(jobject.compare(jbool))
     `FAIL_IF(jobject.compare(jarray))
     `FAIL_IF(jobject.compare(jstring))
-    `FAIL_IF(jobject.compare(jnull))
     `FAIL_IF(jobject.compare(null))
   end
   `SVTEST_END
@@ -340,49 +330,15 @@ module json_values_compare_unit_test;
     json_bool jbool = json_bool::from(1);
     json_array jarray = json_array::from('{json_int::from(1)});
     json_object jobject = json_object::from('{"int": json_int::from(1)});
-    json_null jnull = json_null::create();
     // Comparsion is strict
     `FAIL_IF(jarray.compare(jreal))
     `FAIL_IF(jarray.compare(jint))
     `FAIL_IF(jarray.compare(jbool))
     `FAIL_IF(jarray.compare(jobject))
     `FAIL_IF(jarray.compare(jstring))
-    `FAIL_IF(jarray.compare(jnull))
     `FAIL_IF(jarray.compare(null))
   end
   `SVTEST_END
-
-
-  `SVTEST(compare_null_test)
-  begin
-    json_null jnull_a = json_null::create();
-    json_null jnull_b = json_null::create();
-
-    `FAIL_UNLESS(jnull_a.compare(jnull_a))
-    `FAIL_UNLESS(jnull_a.compare(jnull_b))
-  end
-  `SVTEST_END
-
-
-  `SVTEST(compare_null_with_others_test)
-  begin
-    json_string jstring = json_string::from("1");
-    json_real jreal = json_real::from(1.0);
-    json_int jint = json_int::from(1);
-    json_bool jbool = json_bool::from(1);
-    json_array jarray = json_array::from('{json_int::from(1)});
-    json_object jobject = json_object::from('{"int": json_int::from(1)});
-    json_null jnull = json_null::create();
-    // Comparsion is strict
-    `FAIL_IF(jnull.compare(jreal))
-    `FAIL_IF(jnull.compare(jint))
-    `FAIL_IF(jnull.compare(jbool))
-    `FAIL_IF(jnull.compare(jobject))
-    `FAIL_IF(jnull.compare(jstring))
-    `FAIL_UNLESS(jnull.compare(null))
-  end
-  `SVTEST_END
-
 
   `SVUNIT_TESTS_END
 

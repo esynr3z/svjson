@@ -26,11 +26,7 @@ endclass : json_array
 
 function json_array::new(json_value_queue_t values);
   foreach (values[i]) begin
-    json_value value = values[i];
-    if (value == null) begin
-      value = json_null::create();
-    end
-    this.values.push_back(value);
+    this.values.push_back(values[i]);
   end
 endfunction : new
 
@@ -50,7 +46,11 @@ function json_value json_array::clone();
   json_value new_values[$];
 
   foreach (this.values[i]) begin
-    new_values.push_back(this.values[i].clone());
+    if (this.values[i] == null) begin
+      new_values.push_back(null);
+    end else begin
+      new_values.push_back(this.values[i].clone());
+    end
   end
 
   return json_array::from(new_values);
@@ -73,8 +73,15 @@ function bit json_array::compare(json_value value);
       if (rhs.values.size() != this.values.size()) begin
         return 0;
       end
+
       foreach (this.values[i]) begin
-        if (!this.values[i].compare(rhs.values[i])) begin
+        if ((this.values[i] != null) && (rhs.values[i] != null)) begin
+          if (!this.values[i].compare(rhs.values[i])) begin
+            return 0;
+          end
+        end else if ((this.values[i] == null) && (rhs.values[i] == null)) begin
+          continue;
+        end else begin
           return 0;
         end
       end

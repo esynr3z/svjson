@@ -62,15 +62,6 @@ module json_values_clone_unit_test;
   `SVTEST_END
 
 
-  `SVTEST(clone_null_test)
-  begin
-    json_null orig = json_null::create();
-    json_null clone = orig.clone().as_json_null().unwrap();
-    `FAIL_IF(orig == clone)
-  end
-  `SVTEST_END
-
-
   `SVTEST(clone_array_test)
   begin
     json_array orig = json_array::from('{json_bool::from(0), json_int::from(-13)});
@@ -100,9 +91,9 @@ module json_values_clone_unit_test;
     json_array clone = orig.clone().as_json_array().unwrap();
     `FAIL_IF(orig == clone)
     `FAIL_UNLESS(clone.values.size() == 3)
-    `FAIL_UNLESS(clone.values[0].is_json_null())
+    `FAIL_UNLESS(clone.values[0] == null)
     `FAIL_UNLESS(clone.values[1].as_json_string().unwrap().value == str)
-    `FAIL_UNLESS(clone.values[2].is_json_null())
+    `FAIL_UNLESS(clone.values[2] == null)
   end
   `SVTEST_END
 
@@ -152,7 +143,7 @@ module json_values_clone_unit_test;
      jvalue = clone.values["foo"];
     `FAIL_UNLESS_STR_EQUAL(jvalue.as_json_string().unwrap().value, "blabla")
     jvalue = clone.values["bar"];
-    `FAIL_UNLESS(jvalue.is_json_null())
+    `FAIL_UNLESS(jvalue == null)
   end
   `SVTEST_END
 

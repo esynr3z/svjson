@@ -27,9 +27,6 @@ virtual class json_value;
   // Try to cast current value to `json_bool`
   extern virtual function json_result#(json_bool) as_json_bool();
 
-  // Try to cast current value to `json_null`
-  extern virtual function json_result#(json_null) as_json_null();
-
   // Try to convert current value to map (associative array). Succesfull only for underlying `json_object`.
   // FIXME: this return type does not work in Verilator currently
   //extern virtual function json_result#(json_value_map_t) to_map();
@@ -67,9 +64,6 @@ virtual class json_value;
 
   // Check if current value is `json_bool`
   extern virtual function bit is_json_bool();
-
-  // Check if current value is `json_null`
-  extern virtual function bit is_json_null();
 endclass : json_value
 
 
@@ -101,11 +95,6 @@ endfunction : as_json_real
 function json_result#(json_bool) json_value::as_json_bool();
   return json_result#(json_bool)::err(json_error::create(json_error::TYPE_CONVERSION));
 endfunction : as_json_bool
-
-
-function json_result#(json_null) json_value::as_json_null();
-  return json_result#(json_null)::err(json_error::create(json_error::TYPE_CONVERSION));
-endfunction : as_json_null
 
 
 function json_result#(string) json_value::to_string();
@@ -156,8 +145,3 @@ endfunction : is_json_real
 function bit json_value::is_json_bool();
   return 0;
 endfunction : is_json_bool
-
-
-function bit json_value::is_json_null();
-  return 0;
-endfunction : is_json_null

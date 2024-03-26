@@ -14,7 +14,9 @@ package test_utils_pkg;
         return err.to_string();
       end
       parsed.matches_ok(val): begin
-        if (val.compare(golden) || (golden == null)) begin
+        if ((val == null) && (golden == null)) begin
+          return "";
+        end else if (val.compare(golden) || (golden == null)) begin
           return "";
         end else begin
           return "Loaded JSON value do not match the golden one!";
@@ -37,7 +39,9 @@ package test_utils_pkg;
         return err.to_string();
       end
       parsed.matches_ok(val): begin
-        if (val.compare(golden) || (golden == null)) begin
+        if ((val == null) && (golden == null)) begin
+          return "";
+        end else if (val.compare(golden) || (golden == null)) begin
           return "";
         end else begin
           return "Loaded JSON value do not match the golden one!";
