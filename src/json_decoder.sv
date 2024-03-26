@@ -123,18 +123,19 @@ function json_decoder::parser_result json_decoder::parse_value(const ref string 
 
     result.matches_err(error): return `JSON_INTERNAL_ERR($sformatf("Unexpected error %s", error.kind.name()));
 
-    result.matches_ok(parsed): curr_pos = parsed.end_pos;
-  endcase
+    result.matches_ok(parsed): begin
+      curr_pos = parsed.end_pos; // current character must start a value
 
-  // Current character must start a value
-  case (str[curr_pos]) inside
-    "{": return parse_object(str, curr_pos + 1);
-    "[": return parse_array(str, curr_pos + 1);
-    "\"": return parse_string(str, curr_pos);
-    "n", "t", "f": return parse_literal(str, curr_pos);
-    "-", ["0":"9"]: return parse_number(str, curr_pos);
+      case (str[curr_pos]) inside
+        "{": return parse_object(str, curr_pos + 1);
+        "[": return parse_array(str, curr_pos + 1);
+        "\"": return parse_string(str, curr_pos);
+        "n", "t", "f": return parse_literal(str, curr_pos);
+        "-", ["0":"9"]: return parse_number(str, curr_pos);
 
-    default: return `JSON_SYNTAX_ERR(json_error::EXPECTED_VALUE, str, curr_pos);
+        default: return `JSON_SYNTAX_ERR(json_error::EXPECTED_VALUE, str, curr_pos);
+      endcase
+    end
   endcase
 endfunction : parse_value
 

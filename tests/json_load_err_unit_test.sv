@@ -24,8 +24,12 @@ module json_load_err_unit_test;
   `SVUNIT_TESTS_BEGIN
 
 
-  `SVTEST(dummy_test)
+  `SVTEST(value_err_test)
   begin
+    `EXPECT_ERR_LOAD_STR("bar", json_error::create(json_error::EXPECTED_VALUE, .json_idx(0)))
+    `EXPECT_ERR_LOAD_STR("  bar", json_error::create(json_error::EXPECTED_VALUE, .json_idx(2)))
+    `EXPECT_ERR_LOAD_STR(" ", json_error::create(json_error::EOF_VALUE, .json_idx(0)))
+    `EXPECT_ERR_LOAD_STR(" \n \t ", json_error::create(json_error::EOF_VALUE, .json_idx(0)))
   end
   `SVTEST_END
 
