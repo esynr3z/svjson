@@ -45,4 +45,39 @@ package test_utils_pkg;
       end
     endcase
   endfunction : expect_ok_load_file
+
+
+  // Checker that expected JSON string parsing finishes with error status.
+  // It also compares error with the golden one, if the latest is provided.
+  // Returns error message if something is not expected.
+  function automatic string expect_err_load_str(string raw, json_error golden);
+    json_error err;
+    json_value val;
+    json_result parsed = json_decoder::load_string(raw);
+
+    case (1)
+      parsed.matches_err(err): begin
+        if (golden != null) begin
+          if (err.kind != golden.kind) begin
+            return $sformatf(
+              "Expect %s error but got %s intead! Captured error:\n%s",
+              golden.kind, err.kind, err.to_string()
+            );
+          end
+
+          if ((golden.json_idx > 0) && (err.json_idx != golden.json_idx)) begin
+            return $sformatf(
+              "Expect to get error for %0d symbol but got for %0d intead! Captured error:\n%s",
+              golden.json_idx, err.json_idx, err.to_string()
+            );
+          end
+        end
+        return "";
+      end
+
+      parsed.matches_ok(val): begin
+        return "JSON parsed succesfully, but error was expected!";
+      end
+    endcase
+  endfunction : expect_err_load_str
 endpackage : test_utils_pkg

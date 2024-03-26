@@ -1,12 +1,12 @@
 `include "svunit_defines.svh"
 `include "test_utils_macros.svh"
 
-// Basic tests of `json_decoder` is used to parse JSON
-module json_load_basic_unit_test;
+// Basic tests of `json_decoder` is used to parse JSON succesfuly
+module json_load_ok_unit_test;
   import svunit_pkg::svunit_testcase;
   import json_pkg::*;
 
-  string name = "json_load_basic_ut";
+  string name = "json_load_ok_ut";
   svunit_testcase svunit_ut;
 
   function void build();
@@ -242,4 +242,4 @@ module json_load_basic_unit_test;
 
   `SVUNIT_TESTS_END
 
-endmodule : json_load_basic_unit_test
+endmodule : json_load_ok_unit_test
