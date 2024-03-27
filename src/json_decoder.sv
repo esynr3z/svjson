@@ -55,6 +55,11 @@ class json_decoder;
 
   extern local function parser_result parse_literal(const ref string str, input int unsigned start_pos);
 
+  extern local function parser_result check_trailing_chars(
+    const ref string str,
+    input int unsigned start_pos
+  );
+
   // Scan input string char by char ignoring any whitespaces and stop at first non-whitespace char.
   // Return error with last char position if non-whitespace char was not found or do not match expected ones.
   // Return OK and position of found char within string otherwise.
@@ -78,7 +83,15 @@ function json_result json_decoder::load_string(const ref string str);
 
   result = decoder.parse_value(str, 0);
   case (1)
-    result.matches_ok(parsed): return json_result#()::ok(parsed.value);
+    result.matches_ok(parsed): begin
+      parser_result check_result = decoder.check_trailing_chars(str, parsed.end_pos + 1);
+      parsed_s ok;
+      case (1)
+        check_result.matches_ok(ok): return json_result#()::ok(parsed.value);
+        check_result.matches_err(error): return json_result#()::err(error);
+      endcase
+    end
+
     result.matches_err(error): return json_result#()::err(error);
   endcase
 endfunction : load_string
@@ -103,6 +116,22 @@ function json_result json_decoder::load_file(string path);
 
   return load_string(file_text);
 endfunction : load_file
+
+
+function json_decoder::parser_result json_decoder::check_trailing_chars(
+  const ref string str,
+  input int unsigned start_pos
+);
+  json_error error;
+  parsed_s parsed;
+  parser_result result = scan_until_token(str, start_pos);
+  case (1)
+    // scan ok means that some token found, which is a failure
+    result.matches_ok(parsed): return `JSON_SYNTAX_ERR(json_error::TRAILING_CHARS, str, parsed.end_pos);
+    // scan error means that no token found, which is a success
+    result.matches_err(error): return parser_result::ok('{null, str.len()-1});
+  endcase
+endfunction : check_trailing_chars
 
 
 function json_decoder::parser_result json_decoder::parse_value(const ref string str, input int unsigned start_pos);

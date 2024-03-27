@@ -65,11 +65,11 @@ package test_utils_pkg;
           if (err.kind != golden.kind) begin
             return $sformatf(
               "Expect %s error but got %s intead! Captured error:\n%s",
-              golden.kind, err.kind, err.to_string()
+              golden.kind.name(), err.kind.name(), err.to_string()
             );
           end
 
-          if ((golden.json_idx > 0) && (err.json_idx != golden.json_idx)) begin
+          if ((golden.json_idx >= 0) && (err.json_idx != golden.json_idx)) begin
             return $sformatf(
               "Expect to get error for %0d symbol but got for %0d intead! Captured error:\n%s",
               golden.json_idx, err.json_idx, err.to_string()
