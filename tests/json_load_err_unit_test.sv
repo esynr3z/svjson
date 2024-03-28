@@ -54,6 +54,18 @@ module json_load_err_unit_test;
   `SVTEST_END
 
 
+  `SVTEST(number_err_test)
+  begin
+    `EXPECT_ERR_LOAD_STR("8'h23", json_error::create(json_error::INVALID_NUMBER, .json_idx(1)))
+    `EXPECT_ERR_LOAD_STR("0x1", json_error::create(json_error::INVALID_NUMBER, .json_idx(1)))
+    `EXPECT_ERR_LOAD_STR("0b11", json_error::create(json_error::INVALID_NUMBER, .json_idx(1)))
+    `EXPECT_ERR_LOAD_STR("0,1", json_error::create(json_error::TRAILING_CHARS, .json_idx(1)))
+    `EXPECT_ERR_LOAD_STR("212  122", json_error::create(json_error::TRAILING_CHARS, .json_idx(5)))
+    `EXPECT_ERR_LOAD_STR("2f5e", json_error::create(json_error::INVALID_NUMBER, .json_idx(1)))
+  end
+  `SVTEST_END
+
+
   `SVUNIT_TESTS_END
 
 endmodule : json_load_err_unit_test

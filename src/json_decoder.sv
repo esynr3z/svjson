@@ -461,10 +461,12 @@ function json_decoder::parser_result json_decoder::parse_number(const ref string
   end
 
   parsed.end_pos = curr_pos - 1;
-  if (is_real && $sscanf(value, "%f", real_value) > 0) begin
+  if ((curr_pos < str_len) && !(str[curr_pos] inside {this.whitespace_chars, "]", "}", ","})) begin
+    return `JSON_SYNTAX_ERR(json_error::INVALID_NUMBER, str, curr_pos);
+  end else if (is_real && $sscanf(value, "%f", real_value) == 1) begin
     parsed.value = json_real::from(real_value);
     return parser_result::ok(parsed);
-  end else if ($sscanf(value, "%d", int_value) > 0) begin
+  end else if ($sscanf(value, "%d", int_value) == 1) begin
     parsed.value = json_int::from(int_value);
     return parser_result::ok(parsed);
   end else begin
