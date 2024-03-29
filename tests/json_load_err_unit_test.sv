@@ -66,6 +66,17 @@ module json_load_err_unit_test;
   `SVTEST_END
 
 
+  `SVTEST(string_err_test)
+  begin
+    `EXPECT_ERR_LOAD_STR("\"", json_error::create(json_error::EOF_STRING, .json_idx(0)))
+    `EXPECT_ERR_LOAD_STR("\"  1221 ", json_error::create(json_error::EOF_STRING, .json_idx(7)))
+    `EXPECT_ERR_LOAD_STR("\"  [] ", json_error::create(json_error::EOF_STRING, .json_idx(5)))
+    `EXPECT_ERR_LOAD_STR("\"}", json_error::create(json_error::EOF_STRING, .json_idx(1)))
+    `EXPECT_ERR_LOAD_STR("\" \\z \"", json_error::create(json_error::INVALID_ESCAPE, .json_idx(3)))
+  end
+  `SVTEST_END
+
+
   `SVUNIT_TESTS_END
 
 endmodule : json_load_err_unit_test
