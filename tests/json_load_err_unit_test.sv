@@ -77,6 +77,19 @@ module json_load_err_unit_test;
   `SVTEST_END
 
 
+  `SVTEST(array_err_test)
+  begin
+    `EXPECT_ERR_LOAD_STR(" [", json_error::create(json_error::EOF_VALUE, .json_idx(1)))
+    `EXPECT_ERR_LOAD_STR("[ a", json_error::create(json_error::EXPECTED_VALUE, .json_idx(2)))
+    `EXPECT_ERR_LOAD_STR("[null,", json_error::create(json_error::EOF_VALUE, .json_idx(5)))
+    `EXPECT_ERR_LOAD_STR("[ true, 1.2, ] ", json_error::create(json_error::TRAILING_COMMA, .json_idx(13)))
+    `EXPECT_ERR_LOAD_STR("[ 42, , false] ", json_error::create(json_error::EXPECTED_VALUE, .json_idx(6)))
+    `EXPECT_ERR_LOAD_STR("[ , ] ", json_error::create(json_error::EXPECTED_VALUE, .json_idx(2)))
+    `EXPECT_ERR_LOAD_STR("[ \"123\"; 456 ] ", json_error::create(json_error::EXPECTED_ARRAY_COMMA_OR_END, .json_idx(7)))
+  end
+  `SVTEST_END
+
+
   `SVUNIT_TESTS_END
 
 endmodule : json_load_err_unit_test
