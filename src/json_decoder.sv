@@ -12,7 +12,15 @@ class json_decoder;
 
   local const byte whitespace_chars[] = '{" ", "\t", "\n", "\r"};
 
-  local const byte escape_chars[] = '{"\"", "\\", "/", "b", "f", "n", "r", "t"};
+  local const byte escape_lut[string] = '{
+    "\\\"": "\"",
+    "\\\\": "\\",
+    "\\/": "/",
+    "\\f": "\f",
+    "\\n": "\n",
+    "\\r" : "\r",
+    "\\t": "\t"
+  };
 
   local const byte hex_chars[] = '{
     "0", "1", "2", "3", "4", "5", "6", "7", "8", "9",
@@ -357,8 +365,7 @@ function json_decoder::parser_result json_decoder::parse_string(const ref string
   enum {
     EXPECT_DOUBLE_QUOTE,
     SCAN_CHARS,
-    PARSE_ESCAPE,
-    PARSE_UNICODE
+    PARSE_ESCAPE
   } state = EXPECT_DOUBLE_QUOTE;
 
   string value;
@@ -394,7 +401,7 @@ function json_decoder::parser_result json_decoder::parse_string(const ref string
       SCAN_CHARS: begin
         while (curr_pos < str_len) begin
           if (str[curr_pos] == "\\") begin
-            value = {value, str[curr_pos++]};
+            curr_pos++;
             state = PARSE_ESCAPE;
             break;
           end else if (str[curr_pos] == "\"") begin
@@ -410,31 +417,19 @@ function json_decoder::parser_result json_decoder::parse_string(const ref string
       end
 
       PARSE_ESCAPE: begin
-        if (str[curr_pos] inside {this.escape_chars}) begin
-          value = {value, str[curr_pos++]};
+        string escape = str.substr(curr_pos - 1, curr_pos);
+        if (escape_lut.exists(str.substr(curr_pos - 1, curr_pos)) == 1) begin
+          value = {value, this.escape_lut[escape]};
+          curr_pos++;
           state = SCAN_CHARS;
-        end else if (str[curr_pos] == "u") begin
-          value = {value, str[curr_pos++]};
-          state = PARSE_UNICODE;
+        end else if (str[curr_pos] inside {"u", "b"}) begin
+          // backspace and unicode escapes are not supported, so leave them as they are
+          value = {value, escape};
+          curr_pos++;
+          state = SCAN_CHARS;
         end else begin
           return `JSON_SYNTAX_ERR(json_error::INVALID_ESCAPE, str, curr_pos);
         end
-      end
-
-      PARSE_UNICODE: begin
-        int unsigned unicode_char_cnt = 0;
-        while ((curr_pos < str_len) && (unicode_char_cnt < 4)) begin
-          if (str[curr_pos] inside {this.hex_chars}) begin
-            value = {value, str[curr_pos++]};
-          end else begin
-            return `JSON_SYNTAX_ERR(json_error::INVALID_UNICODE, str, curr_pos);
-          end
-          unicode_char_cnt++;
-        end
-        if (curr_pos == str_len) begin
-          return `JSON_SYNTAX_ERR(json_error::EOF_STRING, str, curr_pos - 1);
-        end
-        state = SCAN_CHARS;
       end
     endcase
   end

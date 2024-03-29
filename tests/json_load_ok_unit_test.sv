@@ -75,7 +75,7 @@ module json_load_ok_unit_test;
   `SVTEST_END
 
 
-   `SVTEST(string_test)
+  `SVTEST(string_test)
   begin
     `EXPECT_OK_LOAD_STR("\"\"", json_string::from(""))
     `EXPECT_OK_LOAD_STR("\" \"", json_string::from(" "))
@@ -85,6 +85,21 @@ module json_load_ok_unit_test;
     `EXPECT_OK_LOAD_STR("\"true, false, null\"", json_string::from("true, false, null"))
     `EXPECT_OK_LOAD_STR("\"1234abcABC!@#$^&*\"", json_string::from("1234abcABC!@#$^&*"))
     `EXPECT_OK_LOAD_STR(" \n\n\t \"hello\"\n \n ", json_string::from("hello"))
+  end
+  `SVTEST_END
+
+
+  `SVTEST(string_escapes_test)
+  begin
+    `EXPECT_OK_LOAD_STR("\" \\n \"", json_string::from(" \n "))
+    `EXPECT_OK_LOAD_STR("\" \\t \"", json_string::from(" \t "))
+    `EXPECT_OK_LOAD_STR("\" \\r \"", json_string::from(" \r "))
+    `EXPECT_OK_LOAD_STR("\" \\f \"", json_string::from(" \f "))
+    `EXPECT_OK_LOAD_STR("\" \\\\ \"", json_string::from(" \\ "))
+    `EXPECT_OK_LOAD_STR("\" \\\" \"", json_string::from(" \" "))
+    `EXPECT_OK_LOAD_STR("\" \\/ \"", json_string::from(" / "))
+    `EXPECT_OK_LOAD_STR("\"\\n \\t \\r \\f \\\\ \\/ \\\"\"", json_string::from("\n \t \r \f \\ / \""))
+    `EXPECT_OK_LOAD_STR("\" \\u1234\\uabcd \\b \"", json_string::from(" \\u1234\\uabcd \\b "))
   end
   `SVTEST_END
 

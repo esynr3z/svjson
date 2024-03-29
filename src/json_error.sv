@@ -19,7 +19,6 @@ class json_error;
     EXPECTED_DOUBLE_QUOTE,
     EXPECTED_VALUE,
     INVALID_ESCAPE,
-    INVALID_UNICODE,
     INVALID_LITERAL,
     INVALID_NUMBER,
     INVALID_OBJECT_KEY,
@@ -86,7 +85,6 @@ function json_error::new(kind_e kind);
   this.info[EXPECTED_DOUBLE_QUOTE] =        "Current character should be '\"'";
   this.info[EXPECTED_VALUE] =               "Current character should start some JSON value";
   this.info[INVALID_ESCAPE] =               "Invaid escape code";
-  this.info[INVALID_UNICODE] =              "Invaid characters in unicode";
   this.info[INVALID_LITERAL] =              "Invaid literal that should be 'true', 'false', or 'null'";
   this.info[INVALID_NUMBER] =               "Invaid number";
   this.info[INVALID_OBJECT_KEY] =           "String must be used as a key";
