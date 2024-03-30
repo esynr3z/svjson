@@ -31,8 +31,8 @@ class json_decoder;
     "{", "[", "\"", "n", "t", "f", "-", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9"
   };
 
-  local const byte number_chars[] = '{
-    ".", "-", "+", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "e", "E"
+  local const byte digit_chars[] = '{
+    "0", "1", "2", "3", "4", "5", "6", "7", "8", "9"
   };
 
   //----------------------------------------------------------------------------
@@ -441,24 +441,173 @@ endfunction : parse_string
 
 
 function json_decoder::parser_result json_decoder::parse_number(const ref string str, input int unsigned start_pos);
-  parsed_s parsed;
+  enum {
+    EXPECT_MINUS_OR_DIGIT,
+    EXPECT_LEADING_DIGIT,
+    PARSE_DIGITS,
+    EXPECT_POINT_OR_EXP,
+    PARSE_FRACTIONAL_DIGITS,
+    EXPECT_EXPONENT_SIGN,
+    PARSE_EXPONENT_DIGITS
+  } state = EXPECT_MINUS_OR_DIGIT;
+
+  string value;
   real real_value;
   longint int_value;
-  string value = "";
-  bit is_real = 0;
-  int unsigned str_len = str.len();
-  int unsigned curr_pos = start_pos;
+  bit is_real;
 
-  while ((str[curr_pos] inside {this.number_chars}) && (curr_pos < str_len)) begin
-    value = {value, str[curr_pos]};
-    curr_pos++;
-    is_real |= (str[curr_pos] inside {".", "e", "E"});
+  json_error error;
+  parser_result result;
+  parsed_s parsed;
+
+  int unsigned curr_pos = start_pos;
+  int unsigned str_len = str.len();
+  bit exit_parsing_loop = 0;
+
+  while(!exit_parsing_loop) begin
+    case (state)
+      EXPECT_MINUS_OR_DIGIT: begin
+        result = scan_until_token(str, curr_pos, '{this.digit_chars, "-"});
+        case (1)
+          result.matches_err(error): return `JSON_SYNTAX_ERR(json_error::INVALID_NUMBER, str, error.json_idx);
+
+          result.matches_ok(parsed): begin
+            curr_pos = parsed.end_pos;
+            if (str[curr_pos] == "-") begin
+              state = EXPECT_LEADING_DIGIT;
+            end else if (str[curr_pos] == "0") begin
+              state = EXPECT_POINT_OR_EXP;
+            end else begin
+              state = PARSE_DIGITS;
+            end
+            value = {value, str[curr_pos++]};
+          end
+        endcase
+
+        if (curr_pos == str_len) begin
+          if (str[curr_pos - 1] == "-") begin
+            return `JSON_SYNTAX_ERR(json_error::INVALID_NUMBER, str, curr_pos - 1);
+          end
+          exit_parsing_loop = 1;
+        end
+      end
+
+      EXPECT_LEADING_DIGIT: begin
+        if (str[curr_pos] == "0") begin
+          state = EXPECT_POINT_OR_EXP;
+        end else if (str[curr_pos] inside {this.digit_chars}) begin
+          state = PARSE_DIGITS;
+        end else begin
+          return `JSON_SYNTAX_ERR(json_error::INVALID_NUMBER, str, curr_pos);
+        end
+
+        value = {value, str[curr_pos++]};
+        if (curr_pos == str_len) begin
+          exit_parsing_loop = 1;
+        end
+      end
+
+      EXPECT_POINT_OR_EXP: begin
+        if (str[curr_pos] == ".") begin
+          state = PARSE_FRACTIONAL_DIGITS;
+        end else if (str[curr_pos] inside {"e", "E"}) begin
+          state = EXPECT_EXPONENT_SIGN;
+        end else begin
+          exit_parsing_loop = 1;
+          break;
+        end
+
+        value = {value, str[curr_pos++]};
+        if (curr_pos == str_len) begin
+          return `JSON_SYNTAX_ERR(json_error::INVALID_NUMBER, str, curr_pos - 1);
+        end
+      end
+
+      PARSE_DIGITS: begin
+        while (curr_pos < str_len) begin
+          if (str[curr_pos] == ".") begin
+            value = {value, str[curr_pos++]};
+            state = PARSE_FRACTIONAL_DIGITS;
+            break;
+          end else if (str[curr_pos] inside {"e", "E"}) begin
+            value = {value, str[curr_pos++]};
+            state = EXPECT_EXPONENT_SIGN;
+            break;
+          end else if (str[curr_pos] inside {this.digit_chars}) begin
+            value = {value, str[curr_pos++]};
+          end else begin
+            exit_parsing_loop = 1;
+            break;
+          end
+        end
+
+        if (curr_pos == str_len) begin
+          if (str[curr_pos - 1] inside {".", "e", "E"}) begin
+            return `JSON_SYNTAX_ERR(json_error::INVALID_NUMBER, str, curr_pos - 1);
+          end
+          exit_parsing_loop = 1;
+        end
+      end
+
+      PARSE_FRACTIONAL_DIGITS: begin
+        is_real = 1;
+        while (curr_pos < str_len) begin
+          if (str[curr_pos] inside {"e", "E"}) begin
+            value = {value, str[curr_pos++]};
+            state = EXPECT_EXPONENT_SIGN;
+            break;
+          end else if (str[curr_pos] inside {this.digit_chars}) begin
+            value = {value, str[curr_pos++]};
+          end else begin
+            exit_parsing_loop = 1;
+            break;
+          end
+        end
+
+        if (curr_pos == str_len) begin
+          if (str[curr_pos - 1] inside {"e", "E"}) begin
+            return `JSON_SYNTAX_ERR(json_error::INVALID_NUMBER, str, curr_pos - 1);
+          end
+          exit_parsing_loop = 1;
+        end
+      end
+
+      EXPECT_EXPONENT_SIGN: begin
+        is_real = 1;
+        if (!(str[curr_pos] inside {"-", "+", this.digit_chars})) begin
+          return `JSON_SYNTAX_ERR(json_error::INVALID_NUMBER, str, curr_pos);
+        end
+
+        value = {value, str[curr_pos++]};
+        state = PARSE_EXPONENT_DIGITS;
+        if (curr_pos == str_len) begin
+          if (str[curr_pos - 1] inside {"-", "+"}) begin
+            return `JSON_SYNTAX_ERR(json_error::INVALID_NUMBER, str, curr_pos - 1);
+          end
+          exit_parsing_loop = 1;
+        end
+      end
+
+      PARSE_EXPONENT_DIGITS: begin
+        while (curr_pos < str_len) begin
+          if (str[curr_pos] inside {this.digit_chars}) begin
+            value = {value, str[curr_pos++]};
+          end else begin
+            exit_parsing_loop = 1;
+            break;
+          end
+        end
+        if (curr_pos == str_len) begin
+          exit_parsing_loop = 1;
+        end
+      end
+    endcase
   end
 
   parsed.end_pos = curr_pos - 1;
-  if ((curr_pos < str_len) && !(str[curr_pos] inside {this.whitespace_chars, "]", "}", ","})) begin
+  if ((curr_pos < str_len) && !(str[curr_pos] inside {this.whitespace_chars, ",", "]", "}"})) begin
     return `JSON_SYNTAX_ERR(json_error::INVALID_NUMBER, str, curr_pos);
-  end else if (is_real && $sscanf(value, "%f", real_value) == 1) begin
+  end else  if (is_real && $sscanf(value, "%f", real_value) == 1) begin
     parsed.value = json_real::from(real_value);
     return parser_result::ok(parsed);
   end else if ($sscanf(value, "%d", int_value) == 1) begin
