@@ -73,6 +73,7 @@ module json_load_err_unit_test;
     `EXPECT_ERR_LOAD_STR("\"  [] ", json_error::create(json_error::EOF_STRING, .json_idx(5)))
     `EXPECT_ERR_LOAD_STR("\"}", json_error::create(json_error::EOF_STRING, .json_idx(1)))
     `EXPECT_ERR_LOAD_STR("\" \\z \"", json_error::create(json_error::INVALID_ESCAPE, .json_idx(3)))
+    `EXPECT_ERR_LOAD_STR("\" \n \"", json_error::create(json_error::INVALID_CHAR, .json_idx(2)))
   end
   `SVTEST_END
 

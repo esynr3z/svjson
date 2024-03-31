@@ -79,7 +79,7 @@ module json_load_ok_unit_test;
   begin
     `EXPECT_OK_LOAD_STR("\"\"", json_string::from(""))
     `EXPECT_OK_LOAD_STR("\" \"", json_string::from(" "))
-    `EXPECT_OK_LOAD_STR("\"\n\"", json_string::from("\n"))
+    `EXPECT_OK_LOAD_STR("\"\\n\"", json_string::from("\n"))
     `EXPECT_OK_LOAD_STR("\"a\"", json_string::from("a"))
     `EXPECT_OK_LOAD_STR("\"abc [klm] {xyz}\"", json_string::from("abc [klm] {xyz}"))
     `EXPECT_OK_LOAD_STR("\"true, false, null\"", json_string::from("true, false, null"))

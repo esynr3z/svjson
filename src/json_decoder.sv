@@ -407,6 +407,8 @@ function json_decoder::parser_result json_decoder::parse_string(const ref string
           end else if (str[curr_pos] == "\"") begin
             exit_parsing_loop = 1;
             break;
+          end else if (str[curr_pos] < 'h20) begin
+            return `JSON_SYNTAX_ERR(json_error::INVALID_CHAR, str, curr_pos);
           end else begin
             value = {value, str[curr_pos++]};
           end
