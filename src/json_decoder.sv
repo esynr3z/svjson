@@ -551,6 +551,11 @@ function json_decoder::parser_result json_decoder::parse_number(const ref string
 
       PARSE_FRACTIONAL_DIGITS: begin
         is_real = 1;
+
+        if (!(str[curr_pos] inside {this.digit_chars})) begin
+          return `JSON_SYNTAX_ERR(json_error::INVALID_NUMBER, str, curr_pos);
+        end
+
         while (curr_pos < str_len) begin
           if (str[curr_pos] inside {"e", "E"}) begin
             value = {value, str[curr_pos++]};
@@ -580,15 +585,13 @@ function json_decoder::parser_result json_decoder::parse_number(const ref string
 
         value = {value, str[curr_pos++]};
         state = PARSE_EXPONENT_DIGITS;
-        if (curr_pos == str_len) begin
-          if (str[curr_pos - 1] inside {"-", "+"}) begin
-            return `JSON_SYNTAX_ERR(json_error::INVALID_NUMBER, str, curr_pos - 1);
-          end
-          exit_parsing_loop = 1;
-        end
       end
 
       PARSE_EXPONENT_DIGITS: begin
+        if ((str[curr_pos - 1] inside {"-", "+"}) && !(str[curr_pos] inside {this.digit_chars})) begin
+          return `JSON_SYNTAX_ERR(json_error::INVALID_NUMBER, str, curr_pos - 1);
+        end
+
         while (curr_pos < str_len) begin
           if (str[curr_pos] inside {this.digit_chars}) begin
             value = {value, str[curr_pos++]};
