@@ -35,6 +35,8 @@ class json_decoder;
     "0", "1", "2", "3", "4", "5", "6", "7", "8", "9"
   };
 
+  protected int unsigned nesting_limit = 1024;
+
   //----------------------------------------------------------------------------
   // Public methods
   //----------------------------------------------------------------------------
@@ -51,11 +53,23 @@ class json_decoder;
   extern local function new();
 
   // Scan string symbol by symbol to encounter and extract JSON values recursively.
-  extern local function parser_result parse_value(const ref string str, input int unsigned start_pos);
+  extern local function parser_result parse_value(
+    const ref string str,
+    input int unsigned start_pos,
+    input int unsigned nesting_lvl
+  );
 
-  extern local function parser_result parse_object(const ref string str, input int unsigned start_pos);
+  extern local function parser_result parse_object(
+    const ref string str,
+    input int unsigned start_pos,
+    input int unsigned nesting_lvl
+  );
 
-  extern local function parser_result parse_array(const ref string str, input int unsigned start_pos);
+  extern local function parser_result parse_array(
+    const ref string str,
+    input int unsigned start_pos,
+    input int unsigned nesting_lvl
+  );
 
   extern local function parser_result parse_string(const ref string str, input int unsigned start_pos);
 
@@ -89,7 +103,7 @@ function json_result json_decoder::load_string(const ref string str);
   parser_result result;
   json_decoder decoder = new();
 
-  result = decoder.parse_value(str, 0);
+  result = decoder.parse_value(str, 0, 0);
   case (1)
     result.matches_ok(parsed): begin
       parser_result check_result = decoder.check_trailing_chars(str, parsed.end_pos + 1);
@@ -142,7 +156,11 @@ function json_decoder::parser_result json_decoder::check_trailing_chars(
 endfunction : check_trailing_chars
 
 
-function json_decoder::parser_result json_decoder::parse_value(const ref string str, input int unsigned start_pos);
+function json_decoder::parser_result json_decoder::parse_value(
+  const ref string str,
+  input int unsigned start_pos,
+  input int unsigned nesting_lvl
+);
   parser_result result;
   json_error error;
   parsed_s parsed;
@@ -164,8 +182,8 @@ function json_decoder::parser_result json_decoder::parse_value(const ref string 
       curr_pos = parsed.end_pos; // current character must start a value
 
       case (str[curr_pos]) inside
-        "{": return parse_object(str, curr_pos + 1);
-        "[": return parse_array(str, curr_pos + 1);
+        "{": return parse_object(str, curr_pos + 1, nesting_lvl);
+        "[": return parse_array(str, curr_pos + 1, nesting_lvl);
         "\"": return parse_string(str, curr_pos);
         "n", "t", "f": return parse_literal(str, curr_pos);
         "-", ["0":"9"]: return parse_number(str, curr_pos);
@@ -177,7 +195,11 @@ function json_decoder::parser_result json_decoder::parse_value(const ref string 
 endfunction : parse_value
 
 
-function json_decoder::parser_result json_decoder::parse_object(const ref string str, input int unsigned start_pos);
+function json_decoder::parser_result json_decoder::parse_object(
+  const ref string str,
+  input int unsigned start_pos,
+  input int unsigned nesting_lvl
+);
   enum {
     PARSE_KEY,
     EXPECT_COLON,
@@ -195,6 +217,11 @@ function json_decoder::parser_result json_decoder::parse_object(const ref string
   int unsigned curr_pos = start_pos;
   bit trailing_comma = 0;
   bit exit_parsing_loop = 0;
+
+  nesting_lvl++;
+  if (nesting_lvl >= this.nesting_limit) begin
+    return `JSON_SYNTAX_ERR(json_error::TOO_DEEP_NESTING, str, curr_pos);
+  end
 
   while(!exit_parsing_loop) begin
     case (state)
@@ -242,7 +269,7 @@ function json_decoder::parser_result json_decoder::parse_object(const ref string
       end
 
       PARSE_VALUE: begin
-        result = parse_value(str, curr_pos);
+        result = parse_value(str, curr_pos, nesting_lvl);
         case(1)
           result.matches_err(error): return result;
 
@@ -286,7 +313,11 @@ function json_decoder::parser_result json_decoder::parse_object(const ref string
 endfunction : parse_object
 
 
-function json_decoder::parser_result json_decoder::parse_array(const ref string str, input int unsigned start_pos);
+function json_decoder::parser_result json_decoder::parse_array(
+  const ref string str,
+  input int unsigned start_pos,
+  input int unsigned nesting_lvl
+);
   enum {
     PARSE_VALUE,
     EXPECT_COMMA_OR_RIGHT_BRACE
@@ -302,10 +333,15 @@ function json_decoder::parser_result json_decoder::parse_array(const ref string 
   bit trailing_comma = 0;
   bit exit_parsing_loop = 0;
 
+  nesting_lvl++;
+  if (nesting_lvl >= this.nesting_limit) begin
+    return `JSON_SYNTAX_ERR(json_error::TOO_DEEP_NESTING, str, curr_pos);
+  end
+
   while(!exit_parsing_loop) begin
     case (state)
       PARSE_VALUE: begin
-        result = parse_value(str, curr_pos);
+        result = parse_value(str, curr_pos, nesting_lvl);
         case (1)
           result.matches_err_eq(json_error::EXPECTED_VALUE, error): begin
             if (str[error.json_idx] == "]") begin

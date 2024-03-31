@@ -25,6 +25,7 @@ class json_error;
     INVALID_OBJECT_KEY,
     TRAILING_COMMA,
     TRAILING_CHARS,
+    TOO_DEEP_NESTING,
     // IO and generic errors
     TYPE_CONVERSION,
     FILE_NOT_OPENED,
@@ -92,6 +93,7 @@ function json_error::new(kind_e kind);
   this.info[INVALID_OBJECT_KEY] =           "String must be used as a key";
   this.info[TRAILING_COMMA] =               "Unexpected comma after the last value";
   this.info[TRAILING_CHARS] =               "Unexpected characters after the JSON value";
+  this.info[TOO_DEEP_NESTING] =             "This JSON value exceeds nesing limit for a decoder";
   this.info[TYPE_CONVERSION] =              "Type conversion failed";
   this.info[FILE_NOT_OPENED] =              "File opening failed";
   this.info[NOT_IMPLEMENTED] =              "Feature is not implemented";
