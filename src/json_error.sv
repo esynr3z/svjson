@@ -40,7 +40,7 @@ class json_error;
   string file;
   int line;
   string json_str;
-  int json_idx;
+  int json_pos;
 
   // Create empty error
   extern function new();
@@ -50,7 +50,7 @@ class json_error;
     kind_e kind,
     string description="",
     string json_str="",
-    int json_idx=-1,
+    int json_pos=-1,
     string source_file="",
     int source_line=-1
   );
@@ -105,14 +105,14 @@ function json_error json_error::create(
   kind_e kind,
   string description="",
   string json_str="",
-  int json_idx=-1,
+  int json_pos=-1,
   string source_file="",
   int source_line=-1
 );
    json_error err = new(kind);
    err.description = description;
    err.json_str = json_str;
-   err.json_idx = json_idx;
+   err.json_pos = json_pos;
    err.file = source_file;
    err.line = source_line;
    return err;
@@ -149,7 +149,7 @@ function string json_error::to_string();
   end
 
   // Provide context from JSON error if context was provided
-  if ((this.json_idx >= 0) && (this.json_str.len() > 0) && (this.json_idx < this.json_str.len())) begin
+  if ((this.json_pos >= 0) && (this.json_str.len() > 0) && (this.json_pos < this.json_str.len())) begin
     string err_ctx = this.extract_err_context();
     str = {str, {"\n", err_ctx}};
   end
@@ -170,7 +170,7 @@ function string json_error::extract_err_context();
   foreach (json_str[i]) begin
     if (json_str[i] == "\n") begin
       ctx_end_idx = i;
-      if (ctx_end_idx >= this.json_idx) begin
+      if (ctx_end_idx >= this.json_pos) begin
         break;
       end
       ctx_start_idx = i + 1;
@@ -180,7 +180,7 @@ function string json_error::extract_err_context();
 
   // Extract this line
   err_ctx = this.json_str.substr(ctx_start_idx, ctx_end_idx);
-  err_pos = this.json_idx - ctx_start_idx;
+  err_pos = this.json_pos - ctx_start_idx;
 
   // Make the error context more human readable
   return prettify_err_context(err_ctx, err_pos, err_line_idx);

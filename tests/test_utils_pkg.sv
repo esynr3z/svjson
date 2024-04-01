@@ -69,10 +69,10 @@ package test_utils_pkg;
             );
           end
 
-          if ((golden.json_idx >= 0) && (err.json_idx != golden.json_idx)) begin
+          if ((golden.json_pos >= 0) && (err.json_pos != golden.json_pos)) begin
             return $sformatf(
               "Expect to get error for %0d symbol but got for %0d intead! Captured error:\n%s",
-              golden.json_idx, err.json_idx, err.to_string()
+              golden.json_pos, err.json_pos, err.to_string()
             );
           end
         end
@@ -104,10 +104,10 @@ package test_utils_pkg;
             );
           end
 
-          if ((golden.json_idx >= 0) && (err.json_idx != golden.json_idx)) begin
+          if ((golden.json_pos >= 0) && (err.json_pos != golden.json_pos)) begin
             return $sformatf(
               "Expect to get error for %0d symbol but got for %0d intead! Captured error:\n%s",
-              golden.json_idx, err.json_idx, err.to_string()
+              golden.json_pos, err.json_pos, err.to_string()
             );
           end
         end

@@ -30,7 +30,7 @@ package json_pkg;
         .kind(KIND), \
         .description(DESCR), \
         .json_str(STR), \
-        .json_idx(IDX), \
+        .json_pos(IDX), \
         .source_file(`__FILE__), \
         .source_line(`__LINE__) \
       ) \

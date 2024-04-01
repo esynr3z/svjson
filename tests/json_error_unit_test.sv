@@ -94,7 +94,7 @@ Additional description message")
     json_error err = json_error::create(
       .kind(json_error::TRAILING_COMMA),
       .json_str("[[],]"),
-      .json_idx(3)
+      .json_pos(3)
     );
     string err_s = err.to_string();
     `FAIL_UNLESS_STR_EQUAL(err_s, "JSON error:\
@@ -112,7 +112,7 @@ JSON string line 1 symbol 4:\
     json_error err = json_error::create(
       .kind(json_error::EXPECTED_VALUE),
       .json_str("a"),
-      .json_idx(0)
+      .json_pos(0)
     );
     string err_s = err.to_string();
     `FAIL_UNLESS_STR_EQUAL(err_s, "JSON error:\
@@ -130,7 +130,7 @@ a\
     json_error err = json_error::create(
       .kind(json_error::EXPECTED_VALUE),
       .json_str("[[],a"),
-      .json_idx(4)
+      .json_pos(4)
     );
     string err_s = err.to_string();
     `FAIL_UNLESS_STR_EQUAL(err_s, "JSON error:\
@@ -148,7 +148,7 @@ JSON string line 1 symbol 5:\
     json_error err = json_error::create(
       .kind(json_error::EXPECTED_VALUE),
       .json_str("[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,abc,24,25,26,27,28,29,30]"),
-      .json_idx(60)
+      .json_pos(60)
     );
     string err_s = err.to_string();
     `FAIL_UNLESS_STR_EQUAL(err_s, "JSON error:\
@@ -166,7 +166,7 @@ JSON string line 1 symbol 61:\
     json_error err = json_error::create(
       .kind(json_error::EXPECTED_VALUE),
       .json_str("[0,1,abc,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33]"),
-      .json_idx(5)
+      .json_pos(5)
     );
     string err_s = err.to_string();
     `FAIL_UNLESS_STR_EQUAL(err_s, "JSON error:\
@@ -184,7 +184,7 @@ JSON string line 1 symbol 6:\
     json_error err = json_error::create(
       .kind(json_error::EXPECTED_VALUE),
       .json_str("[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,abc,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48]"),
-      .json_idx(60)
+      .json_pos(60)
     );
     string err_s = err.to_string();
     `FAIL_UNLESS_STR_EQUAL(err_s, "JSON error:\
@@ -205,7 +205,7 @@ JSON string line 1 symbol 61:\
     42,\
     abc\
 ]"),
-      .json_idx(14)
+      .json_pos(14)
     );
     string err_s = err.to_string();
     `FAIL_UNLESS_STR_EQUAL(err_s, "JSON error:\

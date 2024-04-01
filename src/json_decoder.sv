@@ -171,10 +171,10 @@ function json_decoder::parser_result json_decoder::parse_value(
   result = scan_until_token(str, curr_pos, this.value_start_chars);
   case (1)
     result.matches_err_eq(json_error::EXPECTED_TOKEN, error):
-      return `JSON_SYNTAX_ERR(json_error::EXPECTED_VALUE, str, error.json_idx);
+      return `JSON_SYNTAX_ERR(json_error::EXPECTED_VALUE, str, error.json_pos);
 
     result.matches_err_eq(json_error::EOF_VALUE, error):
-      return `JSON_SYNTAX_ERR(json_error::EOF_VALUE, str, error.json_idx);
+      return `JSON_SYNTAX_ERR(json_error::EOF_VALUE, str, error.json_pos);
 
     result.matches_err(error): return `JSON_INTERNAL_ERR($sformatf("Unexpected error %s", error.kind.name()));
 
@@ -229,11 +229,11 @@ function json_decoder::parser_result json_decoder::parse_object(
         result = parse_string(str, curr_pos);
         case(1)
           result.matches_err_eq(json_error::EXPECTED_DOUBLE_QUOTE, error): begin
-            if (str[error.json_idx] == "}") begin
+            if (str[error.json_pos] == "}") begin
               if (trailing_comma) begin
-                return `JSON_SYNTAX_ERR(json_error::TRAILING_COMMA, str, error.json_idx);
+                return `JSON_SYNTAX_ERR(json_error::TRAILING_COMMA, str, error.json_pos);
               end
-              curr_pos = error.json_idx;
+              curr_pos = error.json_pos;
               exit_parsing_loop = 1; // empty object parsed
             end else begin
               return result;
@@ -254,10 +254,10 @@ function json_decoder::parser_result json_decoder::parse_object(
         result = scan_until_token(str, curr_pos, '{":"});
         case(1)
           result.matches_err_eq(json_error::EXPECTED_TOKEN, error):
-            return `JSON_SYNTAX_ERR(json_error::EXPECTED_COLON, str, error.json_idx);
+            return `JSON_SYNTAX_ERR(json_error::EXPECTED_COLON, str, error.json_pos);
 
           result.matches_err_eq(json_error::EOF_VALUE, error):
-            return `JSON_SYNTAX_ERR(json_error::EOF_OBJECT, str, error.json_idx);
+            return `JSON_SYNTAX_ERR(json_error::EOF_OBJECT, str, error.json_pos);
 
           result.matches_err(error): return `JSON_INTERNAL_ERR($sformatf("Unexpected error %s", error.kind.name()));
 
@@ -285,10 +285,10 @@ function json_decoder::parser_result json_decoder::parse_object(
         result = scan_until_token(str, curr_pos, '{",", "}"});
         case(1)
           result.matches_err_eq(json_error::EXPECTED_TOKEN, error):
-            return `JSON_SYNTAX_ERR(json_error::EXPECTED_OBJECT_COMMA_OR_END, str, error.json_idx);
+            return `JSON_SYNTAX_ERR(json_error::EXPECTED_OBJECT_COMMA_OR_END, str, error.json_pos);
 
           result.matches_err_eq(json_error::EOF_VALUE, error):
-            return `JSON_SYNTAX_ERR(json_error::EOF_OBJECT, str, error.json_idx);
+            return `JSON_SYNTAX_ERR(json_error::EOF_OBJECT, str, error.json_pos);
 
           result.matches_err(error): return `JSON_INTERNAL_ERR($sformatf("Unexpected error %s", error.kind.name()));
 
@@ -344,11 +344,11 @@ function json_decoder::parser_result json_decoder::parse_array(
         result = parse_value(str, curr_pos, nesting_lvl);
         case (1)
           result.matches_err_eq(json_error::EXPECTED_VALUE, error): begin
-            if (str[error.json_idx] == "]") begin
+            if (str[error.json_pos] == "]") begin
               if (trailing_comma) begin
-                return `JSON_SYNTAX_ERR(json_error::TRAILING_COMMA, str, error.json_idx);
+                return `JSON_SYNTAX_ERR(json_error::TRAILING_COMMA, str, error.json_pos);
               end
-              curr_pos = error.json_idx;
+              curr_pos = error.json_pos;
               exit_parsing_loop = 1; // empty array parsed
             end else begin
               return result;
@@ -369,10 +369,10 @@ function json_decoder::parser_result json_decoder::parse_array(
         result = scan_until_token(str, curr_pos, '{",", "]"});
         case (1)
           result.matches_err_eq(json_error::EXPECTED_TOKEN, error):
-            return `JSON_SYNTAX_ERR(json_error::EXPECTED_ARRAY_COMMA_OR_END, str, error.json_idx);
+            return `JSON_SYNTAX_ERR(json_error::EXPECTED_ARRAY_COMMA_OR_END, str, error.json_pos);
 
           result.matches_err_eq(json_error::EOF_VALUE, error):
-            return `JSON_SYNTAX_ERR(json_error::EOF_ARRAY, str, error.json_idx);
+            return `JSON_SYNTAX_ERR(json_error::EOF_ARRAY, str, error.json_pos);
 
           result.matches_err(error): return `JSON_INTERNAL_ERR($sformatf("Unexpected error %s", error.kind.name()));
 
@@ -420,10 +420,10 @@ function json_decoder::parser_result json_decoder::parse_string(const ref string
         result = scan_until_token(str, curr_pos, '{"\""});
         case (1)
           result.matches_err_eq(json_error::EXPECTED_TOKEN, error):
-            return `JSON_SYNTAX_ERR(json_error::EXPECTED_DOUBLE_QUOTE, str, error.json_idx);
+            return `JSON_SYNTAX_ERR(json_error::EXPECTED_DOUBLE_QUOTE, str, error.json_pos);
 
           result.matches_err_eq(json_error::EOF_VALUE, error):
-            return `JSON_SYNTAX_ERR(json_error::EOF_STRING, str, error.json_idx);
+            return `JSON_SYNTAX_ERR(json_error::EOF_STRING, str, error.json_pos);
 
           result.matches_err(error): return `JSON_INTERNAL_ERR($sformatf("Unexpected error %s", error.kind.name()));
 
@@ -507,7 +507,7 @@ function json_decoder::parser_result json_decoder::parse_number(const ref string
       EXPECT_MINUS_OR_DIGIT: begin
         result = scan_until_token(str, curr_pos, '{this.digit_chars, "-"});
         case (1)
-          result.matches_err(error): return `JSON_SYNTAX_ERR(json_error::INVALID_NUMBER, str, error.json_idx);
+          result.matches_err(error): return `JSON_SYNTAX_ERR(json_error::INVALID_NUMBER, str, error.json_pos);
 
           result.matches_ok(parsed): begin
             curr_pos = parsed.end_pos;
