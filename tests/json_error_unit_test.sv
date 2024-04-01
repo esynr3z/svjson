@@ -27,7 +27,7 @@ module json_error_unit_test;
   begin
     json_error err = json_error::create(json_error::INTERNAL);
     string err_s = err.to_string();
-    `FAIL_UNLESS_STR_EQUAL(err_s, "JSON error INTERNAL: Unspecified internal error")
+    `FAIL_UNLESS_STR_EQUAL(err_s, "JSON error:\nINTERNAL: Unspecified internal error")
   end
   `SVTEST_END
 
@@ -39,8 +39,8 @@ module json_error_unit_test;
       .source_file("/path/to/some/file.sv")
     );
     string err_s = err.to_string();
-    `FAIL_UNLESS_STR_EQUAL(err_s, "JSON error INTERNAL: Unspecified internal error\
-/path/to/some/file.sv")
+    `FAIL_UNLESS_STR_EQUAL(err_s, "JSON error raised from /path/to/some/file.sv:\
+INTERNAL: Unspecified internal error")
   end
   `SVTEST_END
 
@@ -53,8 +53,8 @@ module json_error_unit_test;
       .source_line(20)
     );
     string err_s = err.to_string();
-    `FAIL_UNLESS_STR_EQUAL(err_s, "JSON error INTERNAL: Unspecified internal error\
-/path/to/some/file.sv:20")
+    `FAIL_UNLESS_STR_EQUAL(err_s, "JSON error raised from /path/to/some/file.sv:20:\
+INTERNAL: Unspecified internal error")
   end
   `SVTEST_END
 
@@ -66,7 +66,8 @@ module json_error_unit_test;
       .description("Additional description message")
     );
     string err_s = err.to_string();
-    `FAIL_UNLESS_STR_EQUAL(err_s, "JSON error INTERNAL: Unspecified internal error\
+    `FAIL_UNLESS_STR_EQUAL(err_s, "JSON error:\
+INTERNAL: Unspecified internal error\
 Additional description message")
   end
   `SVTEST_END
@@ -81,8 +82,8 @@ Additional description message")
       .source_line(20)
     );
     string err_s = err.to_string();
-    `FAIL_UNLESS_STR_EQUAL(err_s, "JSON error INTERNAL: Unspecified internal error\
-/path/to/some/file.sv:20\
+    `FAIL_UNLESS_STR_EQUAL(err_s, "JSON error raised from /path/to/some/file.sv:20:\
+INTERNAL: Unspecified internal error\
 Additional description message")
   end
   `SVTEST_END
@@ -96,7 +97,8 @@ Additional description message")
       .json_idx(3)
     );
     string err_s = err.to_string();
-    `FAIL_UNLESS_STR_EQUAL(err_s, "JSON error TRAILING_COMMA: Unexpected comma after the last value\
+    `FAIL_UNLESS_STR_EQUAL(err_s, "JSON error:\
+TRAILING_COMMA: Unexpected comma after the last value\
 JSON string line 1 symbol 4:\
 [[],]\
    ^\
@@ -113,7 +115,8 @@ JSON string line 1 symbol 4:\
       .json_idx(0)
     );
     string err_s = err.to_string();
-    `FAIL_UNLESS_STR_EQUAL(err_s, "JSON error EXPECTED_VALUE: Current character should start some JSON value\
+    `FAIL_UNLESS_STR_EQUAL(err_s, "JSON error:\
+EXPECTED_VALUE: Current character should start some JSON value\
 JSON string line 1 symbol 1:\
 a\
 ^\
@@ -130,7 +133,8 @@ a\
       .json_idx(4)
     );
     string err_s = err.to_string();
-    `FAIL_UNLESS_STR_EQUAL(err_s, "JSON error EXPECTED_VALUE: Current character should start some JSON value\
+    `FAIL_UNLESS_STR_EQUAL(err_s, "JSON error:\
+EXPECTED_VALUE: Current character should start some JSON value\
 JSON string line 1 symbol 5:\
 [[],a\
     ^\
@@ -147,7 +151,8 @@ JSON string line 1 symbol 5:\
       .json_idx(60)
     );
     string err_s = err.to_string();
-    `FAIL_UNLESS_STR_EQUAL(err_s, "JSON error EXPECTED_VALUE: Current character should start some JSON value\
+    `FAIL_UNLESS_STR_EQUAL(err_s, "JSON error:\
+EXPECTED_VALUE: Current character should start some JSON value\
 JSON string line 1 symbol 61:\
 ...11,12,13,14,15,16,17,18,19,20,21,22,abc,24,25,26,27,28,29,30]\
                                        ^\
@@ -164,7 +169,8 @@ JSON string line 1 symbol 61:\
       .json_idx(5)
     );
     string err_s = err.to_string();
-    `FAIL_UNLESS_STR_EQUAL(err_s, "JSON error EXPECTED_VALUE: Current character should start some JSON value\
+    `FAIL_UNLESS_STR_EQUAL(err_s, "JSON error:\
+EXPECTED_VALUE: Current character should start some JSON value\
 JSON string line 1 symbol 6:\
 [0,1,abc,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27...\
      ^\
@@ -181,7 +187,8 @@ JSON string line 1 symbol 6:\
       .json_idx(60)
     );
     string err_s = err.to_string();
-    `FAIL_UNLESS_STR_EQUAL(err_s, "JSON error EXPECTED_VALUE: Current character should start some JSON value\
+    `FAIL_UNLESS_STR_EQUAL(err_s, "JSON error:\
+EXPECTED_VALUE: Current character should start some JSON value\
 JSON string line 1 symbol 61:\
 ...11,12,13,14,15,16,17,18,19,20,21,22,abc,24,25,26,27,28,29,30,31,32,33,34,...\
                                        ^\
@@ -201,7 +208,8 @@ JSON string line 1 symbol 61:\
       .json_idx(14)
     );
     string err_s = err.to_string();
-    `FAIL_UNLESS_STR_EQUAL(err_s, "JSON error EXPECTED_VALUE: Current character should start some JSON value\
+    `FAIL_UNLESS_STR_EQUAL(err_s, "JSON error:\
+EXPECTED_VALUE: Current character should start some JSON value\
 JSON string line 3 symbol 5:\
     abc\
     ^\

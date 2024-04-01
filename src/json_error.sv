@@ -25,7 +25,7 @@ class json_error;
     INVALID_OBJECT_KEY,
     TRAILING_COMMA,
     TRAILING_CHARS,
-    TOO_DEEP_NESTING,
+    DEEP_NESTING,
     // IO and generic errors
     TYPE_CONVERSION,
     FILE_NOT_OPENED,
@@ -93,7 +93,7 @@ function json_error::new(kind_e kind);
   this.info[INVALID_OBJECT_KEY] =           "String must be used as a key";
   this.info[TRAILING_COMMA] =               "Unexpected comma after the last value";
   this.info[TRAILING_CHARS] =               "Unexpected characters after the JSON value";
-  this.info[TOO_DEEP_NESTING] =             "This JSON value exceeds nesing limit for a decoder";
+  this.info[DEEP_NESTING] =                 "This JSON value exceeds nesing limit for a decoder";
   this.info[TYPE_CONVERSION] =              "Type conversion failed";
   this.info[FILE_NOT_OPENED] =              "File opening failed";
   this.info[NOT_IMPLEMENTED] =              "Feature is not implemented";
@@ -130,22 +130,25 @@ endfunction : throw_fatal
 
 
 function string json_error::to_string();
-  string str = $sformatf("JSON error %s: %s", this.kind.name(), this.info[this.kind]);
+  string str = "JSON error";
 
   // Add information about file and line where error was raised if this was provided
   if (this.file != "") begin
-    str = {str, $sformatf("\n%s", this.file)};
+    str = {str, $sformatf(" raised from %s", this.file)};
     if (this.line >= 0) begin
       str = {str, $sformatf(":%0d", this.line)};
     end
   end
+
+  // Add error kind and base information
+  str = {str, $sformatf(":\n%s: %s", this.kind.name(), this.info[this.kind])};
 
   // Add custom description if exists
   if (this.description != "") begin
     str = {str, $sformatf("\n%s", this.description)};
   end
 
-  // Provide context fro JSON error if context was provided
+  // Provide context from JSON error if context was provided
   if ((this.json_idx >= 0) && (this.json_str.len() > 0) && (this.json_idx < this.json_str.len())) begin
     string err_ctx = this.extract_err_context();
     str = {str, {"\n", err_ctx}};

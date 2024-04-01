@@ -220,7 +220,7 @@ function json_decoder::parser_result json_decoder::parse_object(
 
   nesting_lvl++;
   if (nesting_lvl >= this.nesting_limit) begin
-    return `JSON_SYNTAX_ERR(json_error::TOO_DEEP_NESTING, str, curr_pos);
+    return `JSON_SYNTAX_ERR(json_error::DEEP_NESTING, str, curr_pos);
   end
 
   while(!exit_parsing_loop) begin
@@ -335,7 +335,7 @@ function json_decoder::parser_result json_decoder::parse_array(
 
   nesting_lvl++;
   if (nesting_lvl >= this.nesting_limit) begin
-    return `JSON_SYNTAX_ERR(json_error::TOO_DEEP_NESTING, str, curr_pos);
+    return `JSON_SYNTAX_ERR(json_error::DEEP_NESTING, str, curr_pos);
   end
 
   while(!exit_parsing_loop) begin
