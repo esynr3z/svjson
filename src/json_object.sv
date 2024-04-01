@@ -1,11 +1,13 @@
 class json_object extends json_value;
-  json_value_map_t values;
+  typedef json_value items_t[string];
+
+  items_t values;
 
   // Normal constructor
-  extern function new(json_value_map_t values);
+  extern function new(items_t items);
 
   // Create `json_object` from associative array
-  extern static function json_object from(json_value_map_t values);
+  extern static function json_object from(items_t items);
 
   // Get current instance
   extern virtual function json_result#(json_object) as_json_object();
@@ -21,15 +23,15 @@ class json_object extends json_value;
 endclass : json_object
 
 
-function json_object::new(json_value_map_t values);
-  foreach (values[key]) begin
-    this.values[key] = values[key];
+function json_object::new(items_t items);
+  foreach (items[key]) begin
+    this.values[key] = items[key];
   end
 endfunction : new
 
 
-function json_object json_object::from(json_value_map_t values);
-  json_object obj = new(values);
+function json_object json_object::from(items_t items);
+  json_object obj = new(items);
   return obj;
 endfunction : from
 

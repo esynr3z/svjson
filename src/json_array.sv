@@ -1,11 +1,13 @@
 class json_array extends json_value;
-  json_value_queue_t values;
+  typedef json_value values_t[$];
+
+  values_t values;
 
   // Normal constructor
-  extern function new(json_value_queue_t values);
+  extern function new(values_t values);
 
   // Create `json_array` from queue
-  extern static function json_array from(json_value_queue_t values);
+  extern static function json_array from(values_t values);
 
   // Get current instance
   extern virtual function json_result#(json_array) as_json_array();
@@ -21,14 +23,14 @@ class json_array extends json_value;
 endclass : json_array
 
 
-function json_array::new(json_value_queue_t values);
+function json_array::new(values_t values);
   foreach (values[i]) begin
     this.values.push_back(values[i]);
   end
 endfunction : new
 
 
-function json_array json_array::from(json_value_queue_t values);
+function json_array json_array::from(values_t values);
   json_array obj = new(values);
   return obj;
 endfunction : from

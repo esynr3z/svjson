@@ -9,10 +9,6 @@ package json_pkg;
   typedef json_real;
   typedef json_bool;
 
-  // Additional aliases for aggregate types
-  typedef json_value json_value_queue_t[$];
-  typedef json_value json_value_map_t[string];
-
   // Alias to raise syntax errors in a more compact way
   `define JSON_SYNTAX_ERR(KIND, STR, IDX, DESCR="")\
     parser_result::err( \
