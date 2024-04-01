@@ -18,9 +18,6 @@ class json_array extends json_value;
 
   // Compare with another instance
   extern virtual function bit compare(json_value value);
-
-  // Get kind of current instance
-  extern virtual function json_value_e kind();
 endclass : json_array
 
 
@@ -89,11 +86,6 @@ function bit json_array::compare(json_value value);
     end
   endcase
 endfunction : compare
-
-
-function json_value_e json_array::kind();
-  return JSON_VALUE_ARRAY;
-endfunction : kind
 
 
 function bit json_array::is_json_array();

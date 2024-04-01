@@ -13,16 +13,6 @@ package json_pkg;
   typedef json_value json_value_queue_t[$];
   typedef json_value json_value_map_t[string];
 
-  // All kinds of JSON value
-  typedef enum {
-    JSON_VALUE_OBJECT,
-    JSON_VALUE_ARRAY,
-    JSON_VALUE_STRING,
-    JSON_VALUE_INT,
-    JSON_VALUE_REAL,
-    JSON_VALUE_BOOL
-  } json_value_e;
-
   // Alias to raise syntax errors in a more compact way
   `define JSON_SYNTAX_ERR(KIND, STR, IDX, DESCR="")\
     parser_result::err( \

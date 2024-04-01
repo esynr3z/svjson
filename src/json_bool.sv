@@ -13,17 +13,11 @@ class json_bool extends json_value;
   // Check for current instance class type
   extern virtual function bit is_json_bool();
 
-  // Get current value
-  extern virtual function json_result#(bit) to_bit();
-
   // Create a deep copy of an instance
   extern virtual function json_value clone();
 
   // Compare with another instance
   extern virtual function bit compare(json_value value);
-
-  // Get kind of current instance
-  extern virtual function json_value_e kind();
 endclass : json_bool
 
 
@@ -41,11 +35,6 @@ endfunction : from
 function json_result#(json_bool) json_bool::as_json_bool();
   return json_result#(json_bool)::ok(this);
 endfunction : as_json_bool
-
-
-function json_result#(bit) json_bool::to_bit();
-  return json_result#(bit)::ok(this.value);
-endfunction : to_bit
 
 
 function json_value json_bool::clone();
@@ -68,11 +57,6 @@ function bit json_bool::compare(json_value value);
     casted.matches_ok(rhs): return this.value == rhs.value;
   endcase
 endfunction : compare
-
-
-function json_value_e json_bool::kind();
-  return JSON_VALUE_BOOL;
-endfunction : kind
 
 
 function bit json_bool::is_json_bool();

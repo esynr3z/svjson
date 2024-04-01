@@ -13,17 +13,11 @@ class json_int extends json_value;
   // Check for current instance class type
   extern virtual function bit is_json_int();
 
-  // Get current value
-  extern virtual function json_result#(longint) to_longint();
-
   // Create a deep copy of an instance
   extern virtual function json_value clone();
 
   // Compare with another instance
   extern virtual function bit compare(json_value value);
-
-  // Get kind of current instance
-  extern virtual function json_value_e kind();
 endclass : json_int
 
 
@@ -41,11 +35,6 @@ endfunction : from
 function json_result#(json_int) json_int::as_json_int();
   return json_result#(json_int)::ok(this);
 endfunction : as_json_int
-
-
-function json_result#(longint) json_int::to_longint();
-  return json_result#(longint)::ok(this.value);
-endfunction : to_longint
 
 
 function json_value json_int::clone();
@@ -68,11 +57,6 @@ function bit json_int::compare(json_value value);
     casted.matches_ok(rhs): return this.value == rhs.value;
   endcase
 endfunction : compare
-
-
-function json_value_e json_int::kind();
-  return JSON_VALUE_INT;
-endfunction : kind
 
 
 function bit json_int::is_json_int();

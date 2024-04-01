@@ -6,9 +6,6 @@ virtual class json_value;
   // Compare with value
   pure virtual function bit compare(json_value value);
 
-  // Get kind of current value
-  pure virtual function json_value_e kind();
-
   // Try to cast current value to `json_object`
   extern virtual function json_result#(json_object) as_json_object();
 
@@ -26,26 +23,6 @@ virtual class json_value;
 
   // Try to cast current value to `json_bool`
   extern virtual function json_result#(json_bool) as_json_bool();
-
-  // Try to convert current value to map (associative array). Succesfull only for underlying `json_object`.
-  // FIXME: this return type does not work in Verilator currently
-  //extern virtual function json_result#(json_value_map_t) to_map();
-
-  // Try to convert current value to queue. Succesfull only for underlying `json_array`.
-  // FIXME: this return type does not work in Verilator currently
-  //extern virtual function json_result#(json_value_queue_t) to_queue();
-
-  // Try to convert current value to string. Succesfull only for underlying `json_string`.
-  extern virtual function json_result#(string) to_string();
-
-  // Try to convert current value to integer. Succesfull only for underlying `json_int`.
-  extern virtual function json_result#(longint) to_longint();
-
-  // Try to convert current value to real. Succesfull only for underlying `json_real`.
-  extern virtual function json_result#(real) to_real();
-
-  // Try to convert current value to 1-bit (bool). Succesfull only for underlying `json_bool`.
-  extern virtual function json_result#(bit) to_bit();
 
   // Check if current value is `json_object`
   extern virtual function bit is_json_object();
@@ -95,26 +72,6 @@ endfunction : as_json_real
 function json_result#(json_bool) json_value::as_json_bool();
   return json_result#(json_bool)::err(json_error::create(json_error::TYPE_CONVERSION));
 endfunction : as_json_bool
-
-
-function json_result#(string) json_value::to_string();
-  return json_result#(string)::err(json_error::create(json_error::TYPE_CONVERSION));
-endfunction : to_string
-
-
-function json_result#(longint) json_value::to_longint();
-  return json_result#(longint)::err(json_error::create(json_error::TYPE_CONVERSION));
-endfunction : to_longint
-
-
-function json_result#(real) json_value::to_real();
-  return json_result#(real)::err(json_error::create(json_error::TYPE_CONVERSION));
-endfunction : to_real
-
-
-function json_result#(bit) json_value::to_bit();
-  return json_result#(bit)::err(json_error::create(json_error::TYPE_CONVERSION));
-endfunction : to_bit
 
 
 function bit json_value::is_json_object();
