@@ -1,3 +1,4 @@
+// JSON number value - integer
 class json_int extends json_value;
   longint value;
 
@@ -6,12 +7,6 @@ class json_int extends json_value;
 
   // Create json_int from longint
   extern static function json_int from(longint value);
-
-  // Get current instance
-  extern virtual function json_result#(json_int) as_json_int();
-
-  // Check for current instance class type
-  extern virtual function bit is_json_int();
 
   // Create a deep copy of an instance
   extern virtual function json_value clone();
@@ -30,11 +25,6 @@ function json_int json_int::from(longint value);
   json_int obj = new(value);
   return obj;
 endfunction : from
-
-
-function json_result#(json_int) json_int::as_json_int();
-  return json_result#(json_int)::ok(this);
-endfunction : as_json_int
 
 
 function json_value json_int::clone();
@@ -57,8 +47,3 @@ function bit json_int::compare(json_value value);
     casted.matches_ok(rhs): return this.value == rhs.value;
   endcase
 endfunction : compare
-
-
-function bit json_int::is_json_int();
-  return 1;
-endfunction : is_json_int

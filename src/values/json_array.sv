@@ -1,3 +1,4 @@
+// JSON array value
 class json_array extends json_value;
   typedef json_value values_t[$];
 
@@ -8,12 +9,6 @@ class json_array extends json_value;
 
   // Create `json_array` from queue
   extern static function json_array from(values_t values);
-
-  // Get current instance
-  extern virtual function json_result#(json_array) as_json_array();
-
-  // Check for current instance class type
-  extern virtual function bit is_json_array();
 
   // Create a deep copy of an instance
   extern virtual function json_value clone();
@@ -34,11 +29,6 @@ function json_array json_array::from(values_t values);
   json_array obj = new(values);
   return obj;
 endfunction : from
-
-
-function json_result#(json_array) json_array::as_json_array();
-  return json_result#(json_array)::ok(this);
-endfunction : as_json_array
 
 
 function json_value json_array::clone();
@@ -88,8 +78,3 @@ function bit json_array::compare(json_value value);
     end
   endcase
 endfunction : compare
-
-
-function bit json_array::is_json_array();
-  return 1;
-endfunction : is_json_array

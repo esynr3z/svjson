@@ -1,3 +1,4 @@
+// JSON object value
 class json_object extends json_value;
   typedef json_value items_t[string];
 
@@ -8,12 +9,6 @@ class json_object extends json_value;
 
   // Create `json_object` from associative array
   extern static function json_object from(items_t items);
-
-  // Get current instance
-  extern virtual function json_result#(json_object) as_json_object();
-
-  // Check for current instance class type
-  extern virtual function bit is_json_object();
 
   // Create a deep copy of an instance
   extern virtual function json_value clone();
@@ -34,11 +29,6 @@ function json_object json_object::from(items_t items);
   json_object obj = new(items);
   return obj;
 endfunction : from
-
-
-function json_result#(json_object) json_object::as_json_object();
-  return json_result#(json_object)::ok(this);
-endfunction : as_json_object
 
 
 function json_value json_object::clone();
@@ -90,8 +80,3 @@ function bit json_object::compare(json_value value);
     end
   endcase
 endfunction : compare
-
-
-function bit json_object::is_json_object();
-  return 1;
-endfunction : is_json_object

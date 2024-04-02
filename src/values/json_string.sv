@@ -1,3 +1,4 @@
+// JSON string value
 class json_string extends json_value;
   string value;
 
@@ -6,12 +7,6 @@ class json_string extends json_value;
 
   // Create `json_string` from string
   extern static function json_string from(string value);
-
-  // Get current instance
-  extern virtual function json_result#(json_string) as_json_string();
-
-  // Check for current instance class type
-  extern virtual function bit is_json_string();
 
   // Create a deep copy of an instance
   extern virtual function json_value clone();
@@ -30,11 +25,6 @@ function json_string json_string::from(string value);
   json_string obj = new(value);
   return obj;
 endfunction : from
-
-
-function json_result#(json_string) json_string::as_json_string();
-  return json_result#(json_string)::ok(this);
-endfunction : as_json_string
 
 
 function json_value json_string::clone();
@@ -57,8 +47,3 @@ function bit json_string::compare(json_value value);
     casted.matches_ok(rhs): return this.value == rhs.value;
   endcase
 endfunction : compare
-
-
-function bit json_string::is_json_string();
-  return 1;
-endfunction : is_json_string
