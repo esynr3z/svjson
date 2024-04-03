@@ -1,5 +1,5 @@
 // JSON number value - real
-class json_real extends json_value;
+class json_real extends json_value implements json_real_encodable;
   real value;
 
   // Normal constructor
@@ -13,6 +13,9 @@ class json_real extends json_value;
 
   // Compare with another instance
   extern virtual function bit compare(json_value value);
+
+  // Interface json_real_encodable
+  extern virtual function real get_value();
 endclass : json_real
 
 
@@ -47,3 +50,8 @@ function bit json_real::compare(json_value value);
     casted.matches_ok(rhs): return this.value == rhs.value;
   endcase
 endfunction : compare
+
+
+function real json_real::get_value();
+  return this.value;
+endfunction : get_value

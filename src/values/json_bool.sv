@@ -1,5 +1,5 @@
 // JSON bool value
-class json_bool extends json_value;
+class json_bool extends json_value implements json_bool_encodable;
   bit value;
 
   // Normal constructor
@@ -13,6 +13,9 @@ class json_bool extends json_value;
 
   // Compare with another instance
   extern virtual function bit compare(json_value value);
+
+  // Interface json_bool_encodable
+  extern virtual function bit get_value();
 endclass : json_bool
 
 
@@ -47,3 +50,8 @@ function bit json_bool::compare(json_value value);
     casted.matches_ok(rhs): return this.value == rhs.value;
   endcase
 endfunction : compare
+
+
+function bit json_bool::get_value();
+  return this.value;
+endfunction : get_value

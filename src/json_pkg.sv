@@ -46,6 +46,15 @@ package json_pkg;
 
   `include "json_error.sv"
   `include "json_result.sv"
+
+  `include "json_value_encodable.sv"
+  `include "json_object_encodable.sv"
+  `include "json_array_encodable.sv"
+  `include "json_string_encodable.sv"
+  `include "json_int_encodable.sv"
+  `include "json_real_encodable.sv"
+  `include "json_bool_encodable.sv"
+
   `include "json_value.sv"
   `include "json_object.sv"
   `include "json_array.sv"

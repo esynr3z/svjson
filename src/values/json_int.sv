@@ -1,5 +1,5 @@
 // JSON number value - integer
-class json_int extends json_value;
+class json_int extends json_value implements json_int_encodable;
   longint value;
 
   // Normal constructor
@@ -13,6 +13,9 @@ class json_int extends json_value;
 
   // Compare with another instance
   extern virtual function bit compare(json_value value);
+
+  // Interface json_int_encodable
+  extern virtual function longint get_value();
 endclass : json_int
 
 
@@ -47,3 +50,8 @@ function bit json_int::compare(json_value value);
     casted.matches_ok(rhs): return this.value == rhs.value;
   endcase
 endfunction : compare
+
+
+function longint json_int::get_value();
+  return this.value;
+endfunction : get_value

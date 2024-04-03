@@ -1,5 +1,5 @@
 // JSON array value
-class json_array extends json_value;
+class json_array extends json_value implements json_array_encodable;
   typedef json_value values_t[$];
 
   values_t values;
@@ -15,6 +15,9 @@ class json_array extends json_value;
 
   // Compare with another instance
   extern virtual function bit compare(json_value value);
+
+  // Interface json_array_encodable
+  extern virtual function json_array_encodable::values_t get_values();
 endclass : json_array
 
 
@@ -78,3 +81,14 @@ function bit json_array::compare(json_value value);
     end
   endcase
 endfunction : compare
+
+
+function json_array_encodable::values_t json_array::get_values();
+  json_array_encodable::values_t values;
+
+  foreach(this.values[i]) begin
+    values.push_back(this.values[i]);
+  end
+
+  return values;
+endfunction : get_values

@@ -1,5 +1,5 @@
 // JSON object value
-class json_object extends json_value;
+class json_object extends json_value implements json_object_encodable;
   typedef json_value values_t[string];
 
   values_t values;
@@ -15,6 +15,9 @@ class json_object extends json_value;
 
   // Compare with another instance
   extern virtual function bit compare(json_value value);
+
+  // Interface json_object_encodable
+  extern virtual function json_object_encodable::values_t get_values();
 endclass : json_object
 
 
@@ -80,3 +83,14 @@ function bit json_object::compare(json_value value);
     end
   endcase
 endfunction : compare
+
+
+function json_object_encodable::values_t json_object::get_values();
+  json_object_encodable::values_t values;
+
+  foreach(this.values[key]) begin
+    values[key] = this.values[key];
+  end
+
+  return values;
+endfunction : get_values

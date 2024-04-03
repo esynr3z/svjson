@@ -1,5 +1,5 @@
 // Generic JSON value
-virtual class json_value;
+virtual class json_value implements json_value_encodable;
   // Create deep copy of a value
   pure virtual function json_value clone();
 

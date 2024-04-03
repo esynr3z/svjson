@@ -1,5 +1,5 @@
 // JSON string value
-class json_string extends json_value;
+class json_string extends json_value implements json_string_encodable;
   string value;
 
   // Normal constructor
@@ -13,6 +13,9 @@ class json_string extends json_value;
 
   // Compare with another instance
   extern virtual function bit compare(json_value value);
+
+  // Interface json_string_encodable
+  extern virtual function string get_value();
 endclass : json_string
 
 
@@ -47,3 +50,8 @@ function bit json_string::compare(json_value value);
     casted.matches_ok(rhs): return this.value == rhs.value;
   endcase
 endfunction : compare
+
+
+function string json_string::get_value();
+  return this.value;
+endfunction : get_value
