@@ -1,3 +1,4 @@
+// Generic JSON error
 class json_error;
   // Width of context for printing JSON errors.
   // It controls how long would be part of a JSON string to show the context.

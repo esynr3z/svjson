@@ -2,26 +2,26 @@
 // Inspired by Result<T, E> enumeration and a common way to propagate errors in Rust.
 // However, error type is hardcoded for `json_error`.
 class json_result#(type VAL_T=json_value);
-  local VAL_T value;
-  local json_error error;
+  protected VAL_T value;
+  protected json_error error;
 
   // Private constructor to force using `ok()` or `err()`
   extern local function new();
 
   // Is result OK?
-  extern function bit is_ok();
+  extern virtual function bit is_ok();
 
   // Is result error?
-  extern function bit is_err();
+  extern virtual function bit is_err();
 
   // Match result with any OK value and return value item and 1 on success
-  extern function bit matches_ok(output VAL_T value);
+  extern virtual function bit matches_ok(output VAL_T value);
 
   // Match result with any error and return error item and 1 on success
-  extern function bit matches_err(output json_error error);
+  extern virtual function bit matches_err(output json_error error);
 
   // Match result with specific error and return error item and 1 on success
-  extern function bit matches_err_eq(input json_error::kind_e kind, output json_error error);
+  extern virtual function bit matches_err_eq(input json_error::kind_e kind, output json_error error);
 
   // Create OK result
   static function json_result#(VAL_T) ok(VAL_T value);

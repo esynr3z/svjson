@@ -1,43 +1,6 @@
 // JSON decoder
 class json_decoder;
   //----------------------------------------------------------------------------
-  // Private properties
-  //----------------------------------------------------------------------------
-  local typedef struct {
-    json_value   value;
-    int unsigned end_pos;
-  } parsed_s;
-
-  local typedef json_result#(parsed_s) parser_result;
-
-  local const byte whitespace_chars[] = '{" ", "\t", "\n", "\r"};
-
-  local const byte escape_lut[string] = '{
-    "\\\"": "\"",
-    "\\\\": "\\",
-    "\\/": "/",
-    "\\f": "\f",
-    "\\n": "\n",
-    "\\r" : "\r",
-    "\\t": "\t"
-  };
-
-  local const byte hex_chars[] = '{
-    "0", "1", "2", "3", "4", "5", "6", "7", "8", "9",
-    "a", "b", "c", "d", "e", "f", "A", "B", "C", "D", "E", "F"
-  };
-
-  local const byte value_start_chars[] = '{
-    "{", "[", "\"", "n", "t", "f", "-", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9"
-  };
-
-  local const byte digit_chars[] = '{
-    "0", "1", "2", "3", "4", "5", "6", "7", "8", "9"
-  };
-
-  protected int unsigned nesting_limit = 1024;
-
-  //----------------------------------------------------------------------------
   // Public methods
   //----------------------------------------------------------------------------
   // Try to load and decode string into JSON value
@@ -47,37 +10,74 @@ class json_decoder;
   extern static function json_result load_file(string path);
 
   //----------------------------------------------------------------------------
+  // Private properties
+  //----------------------------------------------------------------------------
+  protected typedef struct {
+    json_value   value;
+    int unsigned end_pos;
+  } parsed_s;
+
+  protected typedef json_result#(parsed_s) parser_result;
+
+  protected const byte whitespace_chars[] = '{" ", "\t", "\n", "\r"};
+
+  protected const byte escape_lut[string] = '{
+    "\\\"": "\"",
+    "\\\\": "\\",
+    "\\/": "/",
+    "\\f": "\f",
+    "\\n": "\n",
+    "\\r" : "\r",
+    "\\t": "\t"
+  };
+
+  protected const byte hex_chars[] = '{
+    "0", "1", "2", "3", "4", "5", "6", "7", "8", "9",
+    "a", "b", "c", "d", "e", "f", "A", "B", "C", "D", "E", "F"
+  };
+
+  protected const byte value_start_chars[] = '{
+    "{", "[", "\"", "n", "t", "f", "-", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9"
+  };
+
+  protected const byte digit_chars[] = '{
+    "0", "1", "2", "3", "4", "5", "6", "7", "8", "9"
+  };
+
+  protected int unsigned nesting_limit = 1024;
+
+  //----------------------------------------------------------------------------
   // Private methods
   //----------------------------------------------------------------------------
   // Private constructor
   extern local function new();
 
   // Scan string symbol by symbol to encounter and extract JSON values recursively.
-  extern local function parser_result parse_value(
+  extern protected function parser_result parse_value(
     const ref string str,
     input int unsigned start_pos,
     input int unsigned nesting_lvl
   );
 
-  extern local function parser_result parse_object(
+  extern protected function parser_result parse_object(
     const ref string str,
     input int unsigned start_pos,
     input int unsigned nesting_lvl
   );
 
-  extern local function parser_result parse_array(
+  extern protected function parser_result parse_array(
     const ref string str,
     input int unsigned start_pos,
     input int unsigned nesting_lvl
   );
 
-  extern local function parser_result parse_string(const ref string str, input int unsigned start_pos);
+  extern protected function parser_result parse_string(const ref string str, input int unsigned start_pos);
 
-  extern local function parser_result parse_number(const ref string str, input int unsigned start_pos);
+  extern protected function parser_result parse_number(const ref string str, input int unsigned start_pos);
 
-  extern local function parser_result parse_literal(const ref string str, input int unsigned start_pos);
+  extern protected function parser_result parse_literal(const ref string str, input int unsigned start_pos);
 
-  extern local function parser_result check_trailing_chars(
+  extern protected function parser_result check_trailing_chars(
     const ref string str,
     input int unsigned start_pos
   );
@@ -85,7 +85,7 @@ class json_decoder;
   // Scan input string char by char ignoring any whitespaces and stop at first non-whitespace char.
   // Return error with last char position if non-whitespace char was not found or do not match expected ones.
   // Return OK and position of found char within string otherwise.
-  extern local function parser_result scan_until_token(
+  extern protected function parser_result scan_until_token(
     const ref string str,
     input int unsigned start_pos,
     input byte expected_tokens [] = '{}
