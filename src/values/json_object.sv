@@ -1,14 +1,14 @@
 // JSON object value
 class json_object extends json_value;
-  typedef json_value items_t[string];
+  typedef json_value values_t[string];
 
-  items_t values;
+  values_t values;
 
   // Normal constructor
-  extern function new(items_t items);
+  extern function new(values_t values);
 
   // Create `json_object` from associative array
-  extern static function json_object from(items_t items);
+  extern static function json_object from(values_t values);
 
   // Create a deep copy of an instance
   extern virtual function json_value clone();
@@ -18,15 +18,15 @@ class json_object extends json_value;
 endclass : json_object
 
 
-function json_object::new(items_t items);
-  foreach (items[key]) begin
-    this.values[key] = items[key];
+function json_object::new(values_t values);
+  foreach (values[key]) begin
+    this.values[key] = values[key];
   end
 endfunction : new
 
 
-function json_object json_object::from(items_t items);
-  json_object obj = new(items);
+function json_object json_object::from(values_t values);
+  json_object obj = new(values);
   return obj;
 endfunction : from
 
