@@ -64,6 +64,7 @@ package json_pkg;
   `include "json_bool.sv"
 
   `include "json_decoder.sv"
+  `include "json_encoder.sv"
 
   `undef JSON_SYNTAX_ERR
   `undef JSON_INTERNAL_ERR
