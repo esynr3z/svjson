@@ -20,7 +20,7 @@ class json_encoder;
   //----------------------------------------------------------------------------
   // Private properties
   //----------------------------------------------------------------------------
-  int unsigned indent_spaces;
+  protected int unsigned indent_spaces;
 
   //----------------------------------------------------------------------------
   // Private methods
@@ -38,16 +38,16 @@ class json_encoder;
   extern protected function json_result#(string) convert_array(json_array_encodable obj, int unsigned nesting_lvl);
 
   // Encode JSON string
-  extern protected function string convert_string(json_string_encodable obj);
+  extern protected function json_result#(string) convert_string(json_string_encodable obj);
 
   // Encode JSON number (int)
-  extern protected function string convert_int(json_int_encodable obj);
+  extern protected function json_result#(string) convert_int(json_int_encodable obj);
 
   // Encode JSON number (real)
-  extern protected function string convert_real(json_real_encodable obj);
+  extern protected function json_result#(string) convert_real(json_real_encodable obj);
 
   // Encode JSON nool
-  extern protected function string convert_bool(json_bool_encodable obj);
+  extern protected function json_result#(string) convert_bool(json_bool_encodable obj);
 
   // Convert indentation level to string of spaces
   extern protected function string level_to_spaces(int unsigned lvl);
@@ -114,10 +114,10 @@ function json_result#(string) json_encoder::convert_value(json_value_encodable o
     obj == null: return json_result#(string)::ok("null");
     $cast(jobject, obj): return convert_object(jobject, nesting_lvl);
     $cast(jarray, obj): return convert_array(jarray, nesting_lvl);
-    $cast(jstring, obj): return json_result#(string)::ok(convert_string(jstring));
-    $cast(jint, obj): return json_result#(string)::ok(convert_int(jint));
-    $cast(jreal, obj): return json_result#(string)::ok(convert_real(jreal));
-    $cast(jbool, obj): return json_result#(string)::ok(convert_bool(jbool));
+    $cast(jstring, obj): return convert_string(jstring);
+    $cast(jint, obj): return convert_int(jint);
+    $cast(jreal, obj): return convert_real(jreal);
+    $cast(jbool, obj): return convert_bool(jbool);
     default: return `JSON_ERR(
       json_error::TYPE_CONVERSION,
       $sformatf("Provided object has unsupported JSON encodable interface implemented!"),
@@ -186,7 +186,7 @@ function json_result#(string) json_encoder::convert_array(json_array_encodable o
 endfunction : convert_array
 
 
-function string json_encoder::convert_string(json_string_encodable obj);
+function json_result#(string) json_encoder::convert_string(json_string_encodable obj);
   string orig = obj.get_value();
   string converted = "";
 
@@ -205,22 +205,22 @@ function string json_encoder::convert_string(json_string_encodable obj);
     converted = {converted, sym};
   end
 
-  return converted;
+  return json_result#(string)::ok(converted);
 endfunction : convert_string
 
 
-function string json_encoder::convert_int(json_int_encodable obj);
-  return $sformatf("%0d", obj.get_value());
+function json_result#(string) json_encoder::convert_int(json_int_encodable obj);
+  return json_result#(string)::ok($sformatf("%0d", obj.get_value()));
 endfunction : convert_int
 
 
-function string json_encoder::convert_real(json_real_encodable obj);
-  return $sformatf("%0f", obj.get_value());
+function json_result#(string) json_encoder::convert_real(json_real_encodable obj);
+  return json_result#(string)::ok($sformatf("%0f", obj.get_value()));
 endfunction : convert_real
 
 
-function string json_encoder::convert_bool(json_bool_encodable obj);
-  return obj.get_value() ? "true" : "false";
+function json_result#(string) json_encoder::convert_bool(json_bool_encodable obj);
+  return json_result#(string)::ok(obj.get_value() ? "true" : "false");
 endfunction : convert_bool
 
 
