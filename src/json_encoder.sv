@@ -142,8 +142,9 @@ function json_result#(string) json_encoder::convert_object(json_object_encodable
       nested_conv.matches_err(err): return nested_conv;
 
       nested_conv.matches_ok(ok): begin
-        converted = {converted, level_to_spaces(nesting_lvl + 1), key, ":", this.is_compact() ? "" : " ", ok};
-        if (key == last_key) begin
+        string encoded_key = convert_string(json_string::from(key)).unwrap();
+        converted = {converted, level_to_spaces(nesting_lvl + 1), encoded_key, ":", this.is_compact() ? "" : " ", ok};
+        if (key != last_key) begin
           converted = {converted, ","};
         end
         converted = {converted, this.is_compact() ? "" : "\n"};
@@ -188,7 +189,7 @@ endfunction : convert_array
 
 function json_result#(string) json_encoder::convert_string(json_string_encodable obj);
   string orig = obj.get_value();
-  string converted = "";
+  string converted = "\"";
 
   foreach (orig[i]) begin
     string sym;
@@ -204,6 +205,7 @@ function json_result#(string) json_encoder::convert_string(json_string_encodable
     endcase
     converted = {converted, sym};
   end
+  converted = {converted, "\""};
 
   return json_result#(string)::ok(converted);
 endfunction : convert_string
@@ -234,5 +236,5 @@ endfunction : level_to_spaces
 
 
 function bit json_encoder::is_compact();
-  return this.indent_spaces > 0;
+  return this.indent_spaces == 0;
 endfunction : is_compact

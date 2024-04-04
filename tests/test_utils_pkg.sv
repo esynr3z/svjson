@@ -1,7 +1,7 @@
 package test_utils_pkg;
   import json_pkg::*;
 
-  // Checker that expected JSON string parsing finishes with OK status.
+  // Check that JSON string parsing finishes with OK status.
   // It also compares parsed value with the golden one, if the latest is provided.
   // Returns error message if something is wrong.
   function automatic string expect_ok_load_str(string raw, json_value golden);
@@ -26,7 +26,7 @@ package test_utils_pkg;
   endfunction : expect_ok_load_str
 
 
-  // Checker that expected JSON file parsing finishes with OK status.
+  // Check that JSON file parsing finishes with OK status.
   // It also compares parsed value with the golden one, if the latest is provided.
   // Returns error message if something is wrong.
   function automatic string expect_ok_load_file(string path, json_value golden);
@@ -51,7 +51,7 @@ package test_utils_pkg;
   endfunction : expect_ok_load_file
 
 
-  // Checker that expected JSON string parsing finishes with error status.
+  // Check that JSON string parsing finishes with error status.
   // It also compares error with the golden one, if the latest is provided.
   // Returns error message if something is not expected.
   function automatic string expect_err_load_str(string raw, json_error golden);
@@ -86,7 +86,7 @@ package test_utils_pkg;
   endfunction : expect_err_load_str
 
 
-  // Checker that expected JSON file parsing finishes with error status.
+  // Check that JSON file parsing finishes with error status.
   // It also compares error with the golden one, if the latest is provided.
   // Returns error message if something is not expected.
   function automatic string expect_err_load_file(string path, json_error golden);
@@ -119,4 +119,5 @@ package test_utils_pkg;
       end
     endcase
   endfunction : expect_err_load_file
+
 endpackage : test_utils_pkg
