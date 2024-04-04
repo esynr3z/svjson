@@ -175,7 +175,7 @@ function json_result#(string) json_encoder::convert_array(json_array_encodable o
         if (i < (values_num - 1)) begin
           converted = {converted, ","};
         end
-        converted = {converted, this.is_compact() ? "\n" : ""};
+        converted = {converted, this.is_compact() ? "" : "\n"};
       end
     endcase
 
