@@ -135,6 +135,7 @@ function json_result json_decoder::load_file(string path);
     $fgets(line, file_descr);
     file_text = {file_text, line};
   end
+  $fclose(file_descr);
 
   return load_string(file_text);
 endfunction : load_file

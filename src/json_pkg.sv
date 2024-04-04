@@ -23,8 +23,8 @@ package json_pkg;
     )
 
   // Alias to raise internal error in a more compact way
-  `define JSON_INTERNAL_ERR(DESCR="")\
-    parser_result::err( \
+  `define JSON_INTERNAL_ERR(DESCR="", RES_T=parser_result)\
+    RES_T::err( \
       json_error::create( \
         .kind(json_error::INTERNAL), \
         .description(DESCR), \
