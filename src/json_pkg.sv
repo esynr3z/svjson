@@ -35,7 +35,7 @@ package json_pkg;
 
   // Alias to raise common error
   `define JSON_ERR(KIND, DESCR="", VAL_T=json_value)\
-    json_result#(json_value)::err( \
+    json_result#(VAL_T)::err( \
       json_error::create( \
         .kind(KIND), \
         .description(DESCR), \

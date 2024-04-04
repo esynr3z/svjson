@@ -65,6 +65,11 @@ function json_result#(string) json_encoder::dump_string(
   json_value_encodable obj,
   int unsigned indent_spaces = 0
 );
+  json_encoder encoder = new();
+
+  encoder.indent_spaces = indent_spaces;
+
+  return encoder.convert_value(obj, 0);
 endfunction : dump_string
 
 
@@ -73,6 +78,27 @@ function json_result#(string) json_encoder::dump_file(
   string path,
   int unsigned indent_spaces = 0
 );
+  json_result#(string) dump;
+  json_error err;
+  string encoded;
+
+  dump = dump_string(obj, .indent_spaces(indent_spaces));
+  case(1)
+    dump.matches_err(err): return dump;
+
+    dump.matches_ok(encoded): begin
+      int file_descr = $fopen(path, "w");
+
+      if (file_descr == 0) begin
+        return `JSON_ERR(json_error::FILE_NOT_OPENED, $sformatf("Failed to open the file '%s'!", path), string);
+      end
+
+      $fwrite(file_descr, encoded);
+      $fclose(file_descr);
+
+      return dump;
+    end
+  endcase
 endfunction : dump_file
 
 
@@ -92,10 +118,11 @@ function json_result#(string) json_encoder::convert_value(json_value_encodable o
     $cast(jint, obj): return json_result#(string)::ok(convert_int(jint));
     $cast(jreal, obj): return json_result#(string)::ok(convert_real(jreal));
     $cast(jbool, obj): return json_result#(string)::ok(convert_bool(jbool));
-    default: return json_result#(string)::err(json_error::create(
+    default: return `JSON_ERR(
       json_error::TYPE_CONVERSION,
-      $sformatf("Provided object has unsupported JSON encodable interface implemented")
-    ));
+      $sformatf("Provided object has unsupported JSON encodable interface implemented!"),
+      string
+    );
   endcase
 endfunction : convert_value
 
