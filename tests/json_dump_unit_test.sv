@@ -128,6 +128,48 @@ module json_dump_unit_test;
   `SVTEST_END
 
 
+  `SVTEST(dump_indent2_test)
+  begin
+    `EXPECT_OK_DUMP_STR(
+      json_decoder::load_file(resolve_path("pizza_indent2.json")).unwrap(),
+      read_file(resolve_path("pizza_indent2.json")),
+      2
+    )
+    `EXPECT_OK_DUMP_STR(
+      json_decoder::load_file(resolve_path("recipes_indent2.json")).unwrap(),
+      read_file(resolve_path("recipes_indent2.json")),
+      2
+    )
+    `EXPECT_OK_DUMP_STR(
+      json_decoder::load_file(resolve_path("video_indent2.json")).unwrap(),
+      read_file(resolve_path("video_indent2.json")),
+      2
+    )
+  end
+  `SVTEST_END
+
+
+  `SVTEST(dump_indent4_test)
+  begin
+    `EXPECT_OK_DUMP_STR(
+      json_decoder::load_file(resolve_path("pizza_indent4.json")).unwrap(),
+      read_file(resolve_path("pizza_indent4.json")),
+      4
+    )
+    `EXPECT_OK_DUMP_STR(
+      json_decoder::load_file(resolve_path("recipes_indent4.json")).unwrap(),
+      read_file(resolve_path("recipes_indent4.json")),
+      4
+    )
+    `EXPECT_OK_DUMP_STR(
+      json_decoder::load_file(resolve_path("video_indent4.json")).unwrap(),
+      read_file(resolve_path("video_indent4.json")),
+      4
+    )
+  end
+  `SVTEST_END
+
+
   `SVUNIT_TESTS_END
 
 endmodule : json_dump_unit_test

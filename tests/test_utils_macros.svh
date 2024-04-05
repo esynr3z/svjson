@@ -41,9 +41,9 @@
 
 // Automation macro to hide boilerplate of checking JSON string to be successfuly dumped.
 // Dumped value is compared with the golden one.
-`define EXPECT_OK_DUMP_STR(OBJ, GOLDEN_VAL)\
+`define EXPECT_OK_DUMP_STR(OBJ, GOLDEN_VAL, INDENT=0)\
   begin\
-    json_result#(string) res = json_encoder::dump_string(OBJ);\
+    json_result#(string) res = json_encoder::dump_string(OBJ, .indent_spaces(INDENT));\
     `FAIL_IF(res.is_err())\
     `FAIL_UNLESS_STR_EQUAL(res.unwrap(), GOLDEN_VAL)\
   end
