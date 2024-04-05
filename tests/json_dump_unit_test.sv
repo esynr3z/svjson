@@ -170,6 +170,19 @@ module json_dump_unit_test;
   `SVTEST_END
 
 
+  `SVTEST(loopback_test)
+  begin
+    json_value dec_obj_before = json_decoder::load_file(resolve_path("pizza.json")).unwrap();
+    string enc_str = json_encoder::dump_file(dec_obj_before, "dump_pizza.json").unwrap();
+    json_value dec_obj_ret = json_decoder::load_string(enc_str).unwrap();
+    json_value dec_obj_after = json_decoder::load_file("dump_pizza.json").unwrap();
+
+    `FAIL_UNLESS(dec_obj_before.compare(dec_obj_ret))
+    `FAIL_UNLESS(dec_obj_before.compare(dec_obj_after))
+  end
+  `SVTEST_END
+
+
   `SVUNIT_TESTS_END
 
 endmodule : json_dump_unit_test
