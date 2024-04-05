@@ -21,6 +21,31 @@ module json_dump_unit_test;
     svunit_ut.teardown();
   endtask
 
+  // Construct and return full path to a JSON file from `tests/golden_json`
+  function automatic string resolve_path(string path);
+    return {`STRINGIFY(`GOLDEN_JSON_DIR), "/", path};
+  endfunction : resolve_path
+
+
+  function automatic string read_file(string path);
+    int file_descr;
+    string file_text;
+
+    file_descr = $fopen(path, "r");
+    if (file_descr == 0) begin
+      return "File not opened";
+    end
+
+    while (!$feof(file_descr)) begin
+      string line;
+      $fgets(line, file_descr);
+      file_text = {file_text, line};
+    end
+    $fclose(file_descr);
+
+    return file_text;
+  endfunction : read_file
+
   `SVUNIT_TESTS_BEGIN
 
 
@@ -81,6 +106,24 @@ module json_dump_unit_test;
       "{\"bar\":42,\"foo\":-1}"
     )
     `EXPECT_OK_DUMP_STR(json_object::from('{"arr": json_array::from('{})}), "{\"arr\":[]}")
+  end
+  `SVTEST_END
+
+
+  `SVTEST(dump_indent0_test)
+  begin
+    `EXPECT_OK_DUMP_STR(
+      json_decoder::load_file(resolve_path("pizza_indent0.json")).unwrap(),
+      read_file(resolve_path("pizza_indent0.json"))
+    )
+    `EXPECT_OK_DUMP_STR(
+      json_decoder::load_file(resolve_path("recipes_indent0.json")).unwrap(),
+      read_file(resolve_path("recipes_indent0.json"))
+    )
+    `EXPECT_OK_DUMP_STR(
+      json_decoder::load_file(resolve_path("video_indent0.json")).unwrap(),
+      read_file(resolve_path("video_indent0.json"))
+    )
   end
   `SVTEST_END
 

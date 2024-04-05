@@ -196,7 +196,6 @@ function json_result#(string) json_encoder::convert_string(json_string_encodable
     case (orig[i])
       "\"" : sym = "\\\"";
       "\\" : sym = "\\\\";
-      "\/" : sym = "\\/";
       "\f" : sym = "\\f";
       "\n" : sym = "\\n";
       "\r" : sym = "\\r";

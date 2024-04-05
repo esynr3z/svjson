@@ -1,8 +1,22 @@
 {
+    "title": "Exclusive Preview",
     "description": "An early look at our exciting new feature",
-    "disclaimer": "Please ensure your sound is on for the best experience.",
+    "releaseYear": 2021,
+    "isAvailable": true,
+    "rating": 4.333333,
+    "viewerCount": null,
+    "link": {
+        "text": "Click here to see the preview!",
+        "url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+    },
     "features": {
         "interactive": false,
+        "subtitles": null,
+        "supportedLanguages": [
+            "English",
+            "Spanish",
+            "French"
+        ],
         "platforms": [
             {
                 "name": "Web",
@@ -19,21 +33,7 @@
                     "Android"
                 ]
             }
-        ],
-        "subtitles": null,
-        "supportedLanguages": [
-            "English",
-            "Spanish",
-            "French"
         ]
     },
-    "isAvailable": true,
-    "link": {
-        "text": "Click here to see the preview!",
-        "url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
-    },
-    "rating": 4.333333,
-    "releaseYear": 2021,
-    "title": "Exclusive Preview",
-    "viewerCount": null
+    "disclaimer": "Please ensure your sound is on for the best experience."
 }

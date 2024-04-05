@@ -1,54 +1,9 @@
 {
-    "recipeName": "Vegetarian Pizza",
-    "servings": 4,
-    "isVegan": false,
-    "ingredients": [
-        {
-            "name": "Flour",
-            "quantity": 300,
-            "unit": "grams"
-        },
-        {
-            "name": "Tomato Sauce",
-            "quantity": 200,
-            "unit": "ml",
-            "isOrganic": true
-        },
-        {
-            "name": "Mozzarella Cheese",
-            "quantity": 150,
-            "unit": "grams",
-            "isOrganic": false
-        },
-        {
-            "name": "Bell Pepper",
-            "quantity": 1,
-            "unit": null
-        },
-        {
-            "name": "Mushrooms",
-            "quantity": 100,
-            "unit": "grams",
-            "isFresh": true
-        }
-    ],
-    "cookingTime": 20,
-    "calories": 850.5,
-    "tags": [
-        "pizza",
-        "vegetarian",
-        "main dish"
-    ],
-    "nutritionInfo": {
-        "carbs": "100g",
-        "protein": "35g",
-        "fat": "30g",
-        "fiber": "5g"
-    },
+    "calories": 850.654321,
     "comments": [
         {
             "author": "Foodie44",
-            "rating": 4.5,
+            "rating": 4,
             "text": "Delicious recipe, easy to make!"
         },
         {
@@ -56,5 +11,50 @@
             "rating": null,
             "text": "Could use more veggies."
         }
+    ],
+    "cookingTime": 20,
+    "ingredients": [
+        {
+            "name": "Flour",
+            "quantity": 300,
+            "unit": "grams"
+        },
+        {
+            "isOrganic": true,
+            "name": "Tomato Sauce",
+            "quantity": 200,
+            "unit": "ml"
+        },
+        {
+            "isOrganic": false,
+            "name": "Mozzarella Cheese",
+            "quantity": 150,
+            "unit": "grams"
+        },
+        {
+            "name": "Bell Pepper",
+            "quantity": 1,
+            "unit": null
+        },
+        {
+            "isFresh": true,
+            "name": "Mushrooms",
+            "quantity": 100,
+            "unit": "grams"
+        }
+    ],
+    "isVegan": false,
+    "nutritionInfo": {
+        "carbs": "100g",
+        "fat": "30g",
+        "fiber": "5g",
+        "protein": "35g"
+    },
+    "recipeName": "Vegetarian Pizza",
+    "servings": 4,
+    "tags": [
+        "pizza",
+        "vegetarian",
+        "main dish"
     ]
 }

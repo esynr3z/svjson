@@ -1,0 +1,60 @@
+{
+    "recipeName": "Vegetarian Pizza",
+    "servings": 4,
+    "isVegan": false,
+    "ingredients": [
+        {
+            "name": "Flour",
+            "quantity": 300,
+            "unit": "grams"
+        },
+        {
+            "name": "Tomato Sauce",
+            "quantity": 200,
+            "unit": "ml",
+            "isOrganic": true
+        },
+        {
+            "name": "Mozzarella Cheese",
+            "quantity": 150,
+            "unit": "grams",
+            "isOrganic": false
+        },
+        {
+            "name": "Bell Pepper",
+            "quantity": 1,
+            "unit": null
+        },
+        {
+            "name": "Mushrooms",
+            "quantity": 100,
+            "unit": "grams",
+            "isFresh": true
+        }
+    ],
+    "cookingTime": 20,
+    "calories": 850.654321,
+    "tags": [
+        "pizza",
+        "vegetarian",
+        "main dish"
+    ],
+    "nutritionInfo": {
+        "carbs": "100g",
+        "protein": "35g",
+        "fat": "30g",
+        "fiber": "5g"
+    },
+    "comments": [
+        {
+            "author": "Foodie44",
+            "rating": 4,
+            "text": "Delicious recipe, easy to make!"
+        },
+        {
+            "author": "VeggieLover",
+            "rating": null,
+            "text": "Could use more veggies."
+        }
+    ]
+}

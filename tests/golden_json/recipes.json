@@ -1,84 +1,84 @@
 [
     {
-        "calories": 350,
         "dishName": "Caesar Salad",
+        "isGlutenFree": true,
         "ingredients": [
             {
-                "amount": 2,
                 "name": "Romaine Lettuce",
+                "amount": 2,
                 "unit": "cups"
             },
             {
-                "amount": 50,
                 "name": "Parmesan Cheese",
+                "amount": 50,
                 "unit": "grams"
             },
             {
-                "amount": 1,
-                "isGlutenFree": false,
                 "name": "Croutons",
-                "unit": "cup"
+                "amount": 1,
+                "unit": "cup",
+                "isGlutenFree": false
             },
             {
-                "amount": 3,
                 "name": "Caesar Dressing",
+                "amount": 3,
                 "unit": "tablespoons"
             }
         ],
-        "isGlutenFree": true
+        "calories": 350
     },
     {
-        "calories": 600,
         "dishName": "Spaghetti Carbonara",
+        "isGlutenFree": false,
         "ingredients": [
             {
-                "amount": 200,
                 "name": "Spaghetti",
+                "amount": 200,
                 "unit": "grams"
             },
             {
-                "amount": 100,
                 "name": "Bacon",
+                "amount": 100,
                 "unit": "grams"
             },
             {
-                "amount": 2,
-                "name": "Eggs"
+                "name": "Eggs",
+                "amount": 2
             },
             {
-                "amount": 50,
                 "name": "Parmesan Cheese",
+                "amount": 50,
                 "unit": "grams"
             }
         ],
-        "isGlutenFree": false
+        "calories": 600
     },
     {
-        "calories": 450,
         "dishName": "Mushroom Risotto",
+        "isGlutenFree": true,
         "ingredients": [
             {
-                "amount": 1,
                 "name": "Arborio Rice",
+                "amount": 1,
                 "unit": "cup"
             },
             {
-                "amount": 200,
                 "name": "Mushrooms",
+                "amount": 200,
                 "unit": "grams"
             },
             {
-                "amount": 500,
                 "name": "Chicken Stock",
+                "amount": 500,
                 "unit": "ml"
             },
             {
-                "amount": 100,
-                "isOptional": true,
                 "name": "White Wine",
-                "unit": "ml"
+                "amount": 100,
+                "unit": "ml",
+                "isOptional": true
             }
         ],
-        "isGlutenFree": true
+        "calories": 450
     }
 ]
