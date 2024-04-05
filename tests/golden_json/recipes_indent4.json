@@ -1,0 +1,84 @@
+[
+    {
+        "dishName": "Caesar Salad",
+        "isGlutenFree": true,
+        "ingredients": [
+            {
+                "name": "Romaine Lettuce",
+                "amount": 2,
+                "unit": "cups"
+            },
+            {
+                "name": "Parmesan Cheese",
+                "amount": 50,
+                "unit": "grams"
+            },
+            {
+                "name": "Croutons",
+                "amount": 1,
+                "unit": "cup",
+                "isGlutenFree": false
+            },
+            {
+                "name": "Caesar Dressing",
+                "amount": 3,
+                "unit": "tablespoons"
+            }
+        ],
+        "calories": 350
+    },
+    {
+        "dishName": "Spaghetti Carbonara",
+        "isGlutenFree": false,
+        "ingredients": [
+            {
+                "name": "Spaghetti",
+                "amount": 200,
+                "unit": "grams"
+            },
+            {
+                "name": "Bacon",
+                "amount": 100,
+                "unit": "grams"
+            },
+            {
+                "name": "Eggs",
+                "amount": 2
+            },
+            {
+                "name": "Parmesan Cheese",
+                "amount": 50,
+                "unit": "grams"
+            }
+        ],
+        "calories": 600
+    },
+    {
+        "dishName": "Mushroom Risotto",
+        "isGlutenFree": true,
+        "ingredients": [
+            {
+                "name": "Arborio Rice",
+                "amount": 1,
+                "unit": "cup"
+            },
+            {
+                "name": "Mushrooms",
+                "amount": 200,
+                "unit": "grams"
+            },
+            {
+                "name": "Chicken Stock",
+                "amount": 500,
+                "unit": "ml"
+            },
+            {
+                "name": "White Wine",
+                "amount": 100,
+                "unit": "ml",
+                "isOptional": true
+            }
+        ],
+        "calories": 450
+    }
+]
