@@ -63,6 +63,8 @@ package json_pkg;
   `include "json_real.sv"
   `include "json_bool.sv"
 
+  `include "json_enum.sv"
+
   `include "json_decoder.sv"
   `include "json_encoder.sv"
 
