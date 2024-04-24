@@ -13,6 +13,14 @@ class json_enum #(type ENUM_T) extends json_string;
 
   // Try to create `json_enum` from string
   static function json_result#(json_enum#(ENUM_T)) from_string(string value);
+    for (ENUM_T e = e.first();; e = e.next()) begin
+      if (e.name() == value) begin
+        return json_result#(json_enum#(ENUM_T))::ok(json_enum#(ENUM_T)::from(e));
+      end
+      if (e == e.last()) begin
+        break;
+      end
+    end
     return json_result#(json_enum#(ENUM_T))::err(json_error::create(json_error::TYPE_CONVERSION));
   endfunction : from_string
 
