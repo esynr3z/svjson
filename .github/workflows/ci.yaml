@@ -1,0 +1,64 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    types: [opened, synchronize]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    env:
+      VERILATOR_VERSION: "v5.24"
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Cache Verilator build
+      id: cache-verilator
+      uses: actions/cache@v2
+      with:
+        path: ~/verilator_bin
+        key: verilator-${{ env.VERILATOR_VERSION }}
+        restore-keys: verilator-
+
+    - name: Install dependencies and build Verilator
+      if: steps.cache-verilator.outputs.cache-hit != 'true'
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y git make autoconf g++ flex bison
+        git clone https://github.com/verilator/verilator.git
+        cd verilator
+        git checkout ${{ env.VERILATOR_VERSION }}
+        autoconf
+        ./configure
+        make -j$(nproc)
+        sudo make install
+        # Cache the built Verilator
+        mkdir -p ~/verilator_bin
+        cp /usr/local/bin/verilator* ~/verilator_bin
+
+    - name: Use cached Verilator if available
+      if: steps.cache-verilator.outputs.cache-hit == 'true'
+      run: |
+        sudo cp ~/verilator_bin/* /usr/local/bin/
+
+    - name: Change to tests directory
+      run: cd tests
+
+    - name: Run tests
+      run: make
+
+    - name: Parse test results
+      uses: mikepenz/action-junit-report@v2
+      if: always()
+      with:
+        report_paths: '**/tests.xml'
+
+    - name: Fail CI if tests fail
+      if: failure()
+      run: exit 1
