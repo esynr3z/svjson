@@ -8,57 +8,57 @@ on:
     types: [opened, synchronize]
 
 jobs:
-  build-and-test:
+  verilator-test:
     runs-on: ubuntu-latest
 
     env:
-      VERILATOR_VERSION: "v5.024"
+      VERILATOR_VERSION: v5.024
+      VERILATOR_INSTALL: /opt/verilator
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v2
-
-    - name: Cache Verilator build
+    - name: Cache Verilator
       id: cache-verilator
-      uses: actions/cache@v2
+      uses: actions/cache@v4
       with:
-        path: ~/verilator_bin
-        key: verilator-${{ env.VERILATOR_VERSION }}
-        restore-keys: verilator-
+        path: ${{ env.VERILATOR_INSTALL }}
+        key: verilator-${{ env.VERILATOR_VERSION }}-${{ runner.os }}
+        save-always: true
 
-    - name: Install dependencies and build Verilator
+    - name: Build Verilator
       if: steps.cache-verilator.outputs.cache-hit != 'true'
       run: |
+        # Install dependecies
         sudo apt-get update
         sudo apt-get install -y git help2man perl python3 make autoconf g++ flex bison ccache libfl2 libfl-dev
+
+        # Clone Verilator and checkout version
         git clone https://github.com/verilator/verilator.git
         cd verilator
         git checkout ${{ env.VERILATOR_VERSION }}
+
+        # Build Verilator
         autoconf
-        ./configure
+        ./configure --prefix ${{ env.VERILATOR_INSTALL }}
         make -j$(nproc)
         sudo make install
-        # Cache the built Verilator
-        mkdir -p ~/verilator_bin
-        cp /usr/local/bin/verilator* ~/verilator_bin
 
-    - name: Use cached Verilator if available
-      if: steps.cache-verilator.outputs.cache-hit == 'true'
+    - name: Checkout source code
+      uses: actions/checkout@v4
+      with:
+        submodules: "recursive"
+
+    - name: Prepare evinronment
       run: |
-        sudo cp ~/verilator_bin/* /usr/local/bin/
-
-    - name: Change to tests directory
-      run: cd tests
+        sudo apt-get install -y g++ flex bison ccache
+        echo "${{ env.VERILATOR_INSTALL }}/bin" >> $GITHUB_PATH
+        echo "${{ github.workspace }}/contrib/svunit/bin" >> $GITHUB_PATH
 
     - name: Run tests
-      run: make
+      run: make -C tests
 
     - name: Parse test results
-      uses: mikepenz/action-junit-report@v2
+      uses: mikepenz/action-junit-report@v4
       if: always()
       with:
-        report_paths: '**/tests.xml'
-
-    - name: Fail CI if tests fail
-      if: failure()
-      run: exit 1
+        report_paths: '**tests/work/tests.xml'
+        require_tests: true
