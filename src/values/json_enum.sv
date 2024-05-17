@@ -7,12 +7,14 @@ class json_enum #(type ENUM_T) extends json_string;
 
   // Create `json_enum` from enum
   static function json_enum#(ENUM_T) from(ENUM_T value);
+    // FIXME: extern is not used here, because verialtor does not work well with parametrized return type
     json_enum#(ENUM_T) obj = new(value);
     return obj;
   endfunction : from
 
   // Try to create `json_enum` from string
   static function json_result#(json_enum#(ENUM_T)) from_string(string value);
+    // FIXME: extern is not used here, because verialtor does not work well with parametrized return type
     for (ENUM_T e = e.first();; e = e.next()) begin
       if (e.name() == value) begin
         return json_result#(json_enum#(ENUM_T))::ok(json_enum#(ENUM_T)::from(e));
@@ -36,6 +38,7 @@ endclass : json_enum
 
 
 function json_enum::new(ENUM_T value);
+  super.new(value.name);
   this.enum_value = value;
 endfunction : new
 

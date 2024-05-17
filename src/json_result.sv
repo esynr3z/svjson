@@ -25,6 +25,7 @@ class json_result#(type VAL_T=json_value);
 
   // Create OK result
   static function json_result#(VAL_T) ok(VAL_T value);
+    // FIXME: extern is not used here, because verialtor does not work well with parametrized return type
     json_result#(VAL_T) result = new();
     result.value = value;
     return result;
@@ -32,6 +33,7 @@ class json_result#(type VAL_T=json_value);
 
   // Create error result
   static function json_result#(VAL_T) err(json_error error);
+    // FIXME: extern is not used here, because verialtor does not work well with parametrized return type
     json_result#(VAL_T) result = new();
     result.error = error;
     return result;
@@ -39,6 +41,7 @@ class json_result#(type VAL_T=json_value);
 
   // Create error result
   virtual function VAL_T unwrap();
+    // FIXME: extern is not used here, because verialtor does not work well with parametrized return type
     if (this.is_err()) begin
       this.error.throw_fatal();
     end
