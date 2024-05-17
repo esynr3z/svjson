@@ -1,4 +1,5 @@
 `include "svunit_defines.svh"
+`include "test_utils_macros.svh"
 
 // Tests of `json_error` class
 module json_error_unit_test;

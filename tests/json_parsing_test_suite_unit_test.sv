@@ -1,4 +1,5 @@
 `include "svunit_defines.svh"
+`include "test_utils_macros.svh"
 
 // Tests based on `contrib/json_test_suite/test_parsing/*.json` files.
 // Decoder should accept y_*.json.

@@ -1,4 +1,5 @@
 `include "svunit_defines.svh"
+`include "test_utils_macros.svh"
 
 // Tests of `clone()` method implementations within JSON values
 module json_values_clone_unit_test;

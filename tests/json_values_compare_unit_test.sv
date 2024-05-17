@@ -1,4 +1,5 @@
 `include "svunit_defines.svh"
+`include "test_utils_macros.svh"
 
 // Tests of `compare()` method implementations within JSON values
 module json_values_compare_unit_test;
