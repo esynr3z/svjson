@@ -38,13 +38,13 @@ endclass : json_enum
 
 
 function json_enum::new(ENUM_T value);
-  super.new(value.name);
+  super.new(value.name());
   this.enum_value = value;
 endfunction : new
 
 
 function json_value json_enum::clone();
-  return json_enum#(ENUM_T)::from(this.value);
+  return json_enum#(ENUM_T)::from(this.enum_value);
 endfunction : clone
 
 

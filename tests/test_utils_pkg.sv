@@ -120,4 +120,12 @@ package test_utils_pkg;
     endcase
   endfunction : expect_err_load_file
 
+
+  // Dummy enum for testing purposes
+  typedef enum {
+    DUMMY_FOO,
+    DUMMY_BAR,
+    DUMMY_BAZ
+  } dummy_e;
+
 endpackage : test_utils_pkg
