@@ -50,16 +50,17 @@ endfunction : clone
 
 function bit json_enum::compare(json_value value);
   json_enum#(ENUM_T) rhs;
+  bit res = super.compare(value);
 
   if (value == null) begin
-    return 0;
+    res = 0;
+  end else if ($cast(rhs, value)) begin
+    res &= this.enum_value == rhs.enum_value;
+  end else begin
+    res = 0;
   end
 
-  if ($cast(rhs, value)) begin
-    return this.value == rhs.value;
-  end else begin
-    return 0;
-  end
+  return res;
 endfunction : compare
 
 
