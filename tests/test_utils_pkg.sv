@@ -128,4 +128,6 @@ package test_utils_pkg;
     DUMMY_BAZ
   } dummy_e;
 
+  typedef json_enum#(dummy_e) json_dummy_enum;
+
 endpackage : test_utils_pkg

@@ -4,6 +4,7 @@
 // Tests of `clone()` method implementations within JSON values
 module json_values_clone_unit_test;
   import svunit_pkg::svunit_testcase;
+  import test_utils_pkg::*;
   import json_pkg::*;
 
   string name = "json_values_clone_ut";
@@ -59,6 +60,18 @@ module json_values_clone_unit_test;
     json_string clone = orig.clone().as_json_string().unwrap();
     `FAIL_IF(orig == clone)
     `FAIL_UNLESS(orig.value == clone.value)
+  end
+  `SVTEST_END
+
+
+  `SVTEST(clone_enum_test)
+  begin
+    json_dummy_enum orig = json_dummy_enum::from(DUMMY_FOO);
+    json_dummy_enum clone;
+    $cast(clone, orig.clone());
+    `FAIL_IF(orig == clone)
+    `FAIL_UNLESS(orig.value == clone.value)
+    `FAIL_UNLESS(orig.enum_value == clone.enum_value)
   end
   `SVTEST_END
 
