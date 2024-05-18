@@ -1,6 +1,11 @@
-// JSON number value - real
+// JSON real number.
+// This wrapper class represens standard JSON number value type using SV real.
+// JSON does not specify requirements for number types, but it is more
+// convenient to operate with integers and real numbers separately.
+// This class covers real numbers.
 class json_real extends json_value implements json_real_encodable;
-  real value;
+  // Internal raw value
+  real value; // FIXME: need to make protected
 
   // Normal constructor
   extern function new(real value);
@@ -11,11 +16,18 @@ class json_real extends json_value implements json_real_encodable;
   // Create a deep copy of an instance
   extern virtual function json_value clone();
 
-  // Compare with another instance
+  // Compare with another instance.
+  // Return 1 if instances are equal and 0 otherwise.
   extern virtual function bit compare(json_value value);
 
-  // Interface json_real_encodable
-  extern virtual function real get_value();
+  // Get internal real value
+  extern virtual function real get();
+
+  // Set internal real value
+  extern virtual function void set(real value);
+
+  // Get value encodable as JSON real number (for interface json_real_encodable)
+  extern virtual function real to_json_encodable();
 endclass : json_real
 
 
@@ -31,7 +43,7 @@ endfunction : from
 
 
 function json_value json_real::clone();
-  return json_real::from(this.value);
+  return json_real::from(get());
 endfunction : clone
 
 
@@ -47,11 +59,21 @@ function bit json_real::compare(json_value value);
   casted = value.as_json_real();
   case (1)
     casted.matches_err(err): return 0;
-    casted.matches_ok(rhs): return this.value == rhs.value;
+    casted.matches_ok(rhs): return get() == rhs.get();
   endcase
 endfunction : compare
 
 
-function real json_real::get_value();
+function real json_real::get();
   return this.value;
-endfunction : get_value
+endfunction : get
+
+
+function void json_real::set(real value);
+  this.value = value;
+endfunction : set
+
+
+function real json_real::to_json_encodable();
+  return get();
+endfunction : to_json_encodable

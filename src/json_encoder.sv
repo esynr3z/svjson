@@ -216,7 +216,7 @@ endfunction : convert_int
 
 
 function json_result#(string) json_encoder::convert_real(json_real_encodable obj);
-  return json_result#(string)::ok($sformatf("%0f", obj.get_value()));
+  return json_result#(string)::ok($sformatf("%0f", obj.to_json_encodable()));
 endfunction : convert_real
 
 
