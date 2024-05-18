@@ -221,7 +221,7 @@ endfunction : convert_real
 
 
 function json_result#(string) json_encoder::convert_bool(json_bool_encodable obj);
-  return json_result#(string)::ok(obj.get_value() ? "true" : "false");
+  return json_result#(string)::ok(obj.to_json_encodable() ? "true" : "false");
 endfunction : convert_bool
 
 

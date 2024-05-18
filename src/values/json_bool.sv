@@ -1,6 +1,8 @@
-// JSON bool value
+// JSON bool.
+// This wrapper class represens standard JSON bool value type using bit.
 class json_bool extends json_value implements json_bool_encodable;
-  bit value;
+  // Internal raw value
+  bit value; // FIXME: need to make protected
 
   // Normal constructor
   extern function new(bit value);
@@ -11,11 +13,18 @@ class json_bool extends json_value implements json_bool_encodable;
   // Create a deep copy of an instance
   extern virtual function json_value clone();
 
-  // Compare with another instance
+  // Compare with another instance.
+  // Return 1 if instances are equal and 0 otherwise.
   extern virtual function bit compare(json_value value);
 
-  // Interface json_bool_encodable
-  extern virtual function bit get_value();
+  // Get internal 1-bit value
+  extern virtual function bit get();
+
+  // Set internal 1-bit value
+  extern virtual function void set(bit value);
+
+  // Get value encodable as JSON bool (for interface json_bool_encodable)
+  extern virtual function bit to_json_encodable();
 endclass : json_bool
 
 
@@ -31,7 +40,7 @@ endfunction : from
 
 
 function json_value json_bool::clone();
-  return json_bool::from(this.value);
+  return json_bool::from(get());
 endfunction : clone
 
 
@@ -47,11 +56,21 @@ function bit json_bool::compare(json_value value);
   casted = value.as_json_bool();
   case (1)
     casted.matches_err(err): return 0;
-    casted.matches_ok(rhs): return this.value == rhs.value;
+    casted.matches_ok(rhs): return get() == rhs.get();
   endcase
 endfunction : compare
 
 
-function bit json_bool::get_value();
+function bit json_bool::get();
   return this.value;
-endfunction : get_value
+endfunction : get
+
+
+function void json_bool::set(bit value);
+  this.value = value;
+endfunction : set
+
+
+function bit json_bool::to_json_encodable();
+  return get();
+endfunction : to_json_encodable
