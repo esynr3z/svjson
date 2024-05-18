@@ -5,7 +5,7 @@
 // This class covers real numbers.
 class json_real extends json_value implements json_real_encodable;
   // Internal raw value
-  real value; // FIXME: need to make protected
+  protected real value;
 
   // Normal constructor
   extern function new(real value);

@@ -30,15 +30,15 @@ module json_values_compare_unit_test;
     // OK
     `FAIL_UNLESS(jint_a.compare(jint_a))
     `FAIL_UNLESS(jint_a.compare(jint_b))
-    jint_a.value = -123213213;
-    jint_b.value = -123213213;
+    jint_a.set(-123213213);
+    jint_b.set(-123213213);
     `FAIL_UNLESS(jint_a.compare(jint_b))
     // Fail
-    jint_a.value = 1232;
-    jint_b.value = 12333;
+    jint_a.set(1232);
+    jint_b.set(12333);
     `FAIL_IF(jint_a.compare(jint_b))
-    jint_a.value = -8232;
-    jint_b.value = 123;
+    jint_a.set(-8232);
+    jint_b.set(123);
     `FAIL_IF(jint_a.compare(jint_b))
   end
   `SVTEST_END
@@ -70,15 +70,15 @@ module json_values_compare_unit_test;
     // OK
     `FAIL_UNLESS(jreal_a.compare(jreal_a))
     `FAIL_UNLESS(jreal_a.compare(jreal_b))
-    jreal_a.value = -0.12321;
-    jreal_b.value = -0.12321;
+    jreal_a.set(-0.12321);
+    jreal_b.set(-0.12321);
     `FAIL_UNLESS(jreal_a.compare(jreal_b))
     // Fail
-    jreal_a.value = 0.12;
-    jreal_b.value = 0.13;
+    jreal_a.set(0.12);
+    jreal_b.set(0.13);
     `FAIL_IF(jreal_a.compare(jreal_b))
-    jreal_a.value = -123213.2;
-    jreal_b.value = 0.0002;
+    jreal_a.set(-123213.2);
+    jreal_b.set(0.0002);
     `FAIL_IF(jreal_a.compare(jreal_b))
   end
   `SVTEST_END
@@ -110,15 +110,15 @@ module json_values_compare_unit_test;
     // OK
     `FAIL_UNLESS(jbool_a.compare(jbool_a))
     `FAIL_UNLESS(jbool_a.compare(jbool_b))
-    jbool_a.value = 0;
-    jbool_b.value = 0;
+    jbool_a.set(0);
+    jbool_b.set(0);
     `FAIL_UNLESS(jbool_a.compare(jbool_b))
     // Fail
-    jbool_a.value = 1;
-    jbool_b.value = 0;
+    jbool_a.set(1);
+    jbool_b.set(0);
     `FAIL_IF(jbool_a.compare(jbool_b))
-    jbool_a.value = 0;
-    jbool_b.value = 1;
+    jbool_a.set(0);
+    jbool_b.set(1);
     `FAIL_IF(jbool_a.compare(jbool_b))
   end
   `SVTEST_END

@@ -5,7 +5,7 @@
 // This class covers integers.
 class json_int extends json_value implements json_int_encodable;
   // Internal raw value
-  longint value; // FIXME: need to make protected
+  protected longint value;
 
   // Normal constructor
   extern function new(longint value);
