@@ -44,9 +44,11 @@ package json_pkg;
       ) \
     )
 
+  // Utility classes
   `include "json_error.sv"
   `include "json_result.sv"
 
+  // Interface classes for encoding standard JSON value types
   `include "json_value_encodable.sv"
   `include "json_object_encodable.sv"
   `include "json_array_encodable.sv"
@@ -55,6 +57,7 @@ package json_pkg;
   `include "json_real_encodable.sv"
   `include "json_bool_encodable.sv"
 
+  // Wrapper classes to represent standard JSON value types
   `include "json_value.sv"
   `include "json_object.sv"
   `include "json_array.sv"
@@ -63,8 +66,11 @@ package json_pkg;
   `include "json_real.sv"
   `include "json_bool.sv"
 
+  // Extension classes to handle SV specific types
   `include "json_enum.sv"
+  `include "json_bits.sv"
 
+  // JSON processors
   `include "json_decoder.sv"
   `include "json_encoder.sv"
 
