@@ -211,7 +211,7 @@ endfunction : convert_string
 
 
 function json_result#(string) json_encoder::convert_int(json_int_encodable obj);
-  return json_result#(string)::ok($sformatf("%0d", obj.get_value()));
+  return json_result#(string)::ok($sformatf("%0d", obj.to_json_encodable()));
 endfunction : convert_int
 
 

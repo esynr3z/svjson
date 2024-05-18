@@ -1,6 +1,11 @@
-// JSON number value - integer
+// JSON integer number.
+// This wrapper class represens standard JSON number value using SV longint.
+// JSON does not specify requirements for number types, but it is more
+// convenient to operate with integers and real numbers separately.
+// This class covers integers.
 class json_int extends json_value implements json_int_encodable;
-  longint value;
+  // Internal raw value
+  longint value; // FIXME: need to make protected
 
   // Normal constructor
   extern function new(longint value);
@@ -11,11 +16,18 @@ class json_int extends json_value implements json_int_encodable;
   // Create a deep copy of an instance
   extern virtual function json_value clone();
 
-  // Compare with another instance
+  // Compare with another instance.
+  // Return 1 if instances are equal and 0 otherwise.
   extern virtual function bit compare(json_value value);
 
-  // Interface json_int_encodable
-  extern virtual function longint get_value();
+  // Get internal longint value
+  extern virtual function longint get();
+
+  // Set internal longint value
+  extern virtual function void set(longint value);
+
+  // Get value encodable as JSON integer number (for interface json_int_encodable)
+  extern virtual function longint to_json_encodable();
 endclass : json_int
 
 
@@ -31,7 +43,7 @@ endfunction : from
 
 
 function json_value json_int::clone();
-  return json_int::from(this.value);
+  return json_int::from(get());
 endfunction : clone
 
 
@@ -47,11 +59,21 @@ function bit json_int::compare(json_value value);
   casted = value.as_json_int();
   case (1)
     casted.matches_err(err): return 0;
-    casted.matches_ok(rhs): return this.value == rhs.value;
+    casted.matches_ok(rhs): return get() == rhs.get();
   endcase
 endfunction : compare
 
 
-function longint json_int::get_value();
+function longint json_int::get();
   return this.value;
-endfunction : get_value
+endfunction : get
+
+
+function void json_int::set(longint value);
+  this.value = value;
+endfunction : set
+
+
+function longint json_int::to_json_encodable();
+  return get();
+endfunction : to_json_encodable
