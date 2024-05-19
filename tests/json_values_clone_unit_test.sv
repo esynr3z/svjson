@@ -59,7 +59,7 @@ module json_values_clone_unit_test;
     json_string orig = json_string::from("Hello world");
     json_string clone = orig.clone().as_json_string().unwrap();
     `FAIL_IF(orig == clone)
-    `FAIL_UNLESS(orig.value == clone.value)
+    `FAIL_UNLESS(orig.get() == clone.get())
   end
   `SVTEST_END
 
@@ -70,7 +70,7 @@ module json_values_clone_unit_test;
     json_dummy_enum clone;
     $cast(clone, orig.clone());
     `FAIL_IF(orig == clone)
-    `FAIL_UNLESS(orig.value == clone.value)
+    `FAIL_UNLESS(orig.get() == clone.get())
     `FAIL_UNLESS(orig.enum_value == clone.enum_value)
   end
   `SVTEST_END

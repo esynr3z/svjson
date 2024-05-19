@@ -150,15 +150,15 @@ module json_values_compare_unit_test;
     // OK
     `FAIL_UNLESS(jstring_a.compare(jstring_a))
     `FAIL_UNLESS(jstring_a.compare(jstring_b))
-    jstring_a.value = "bar";
-    jstring_b.value = "bar";
+    jstring_a.set("bar");
+    jstring_b.set("bar");
     `FAIL_UNLESS(jstring_a.compare(jstring_b))
     // Fail
-    jstring_a.value = "";
-    jstring_b.value = "lalala";
+    jstring_a.set("");
+    jstring_b.set("lalala");
     `FAIL_IF(jstring_a.compare(jstring_b))
-    jstring_a.value = "0";
-    jstring_b.value = "1";
+    jstring_a.set("0");
+    jstring_b.set("1");
     `FAIL_IF(jstring_a.compare(jstring_b))
   end
   `SVTEST_END

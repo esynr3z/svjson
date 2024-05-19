@@ -1,6 +1,8 @@
-// JSON string value
+// JSON string.
+// This wrapper class represens standard JSON string value type using SV string.
 class json_string extends json_value implements json_string_encodable;
-  string value;
+  // Internal raw value
+  protected string value;
 
   // Normal constructor
   extern function new(string value);
@@ -11,11 +13,18 @@ class json_string extends json_value implements json_string_encodable;
   // Create a deep copy of an instance
   extern virtual function json_value clone();
 
-  // Compare with another instance
+  // Compare with another instance.
+  // Return 1 if instances are equal and 0 otherwise.
   extern virtual function bit compare(json_value value);
 
-  // Interface json_string_encodable
-  extern virtual function string get_value();
+  // Get internal string value
+  extern virtual function string get();
+
+  // Set internal string value
+  extern virtual function void set(string value);
+
+  // Get value encodable as JSON string (for interface json_string_encodable)
+  extern virtual function string to_json_encodable();
 endclass : json_string
 
 
@@ -31,7 +40,7 @@ endfunction : from
 
 
 function json_value json_string::clone();
-  return json_string::from(this.value);
+  return json_string::from(get());
 endfunction : clone
 
 
@@ -47,11 +56,21 @@ function bit json_string::compare(json_value value);
   casted = value.as_json_string();
   case (1)
     casted.matches_err(err): return 0;
-    casted.matches_ok(rhs): return this.value == rhs.value;
+    casted.matches_ok(rhs): return get() == rhs.get();
   endcase
 endfunction : compare
 
 
-function string json_string::get_value();
+function string json_string::get();
   return this.value;
-endfunction : get_value
+endfunction : get
+
+
+function void json_string::set(string value);
+  this.value = value;
+endfunction : set
+
+
+function string json_string::to_json_encodable();
+  return get();
+endfunction : to_json_encodable

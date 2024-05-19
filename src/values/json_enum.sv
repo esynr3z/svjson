@@ -1,6 +1,9 @@
-// JSON enum value
+// JSON enum.
+// This wrapper class represens SV enum value as standard JSON string.
+// Purpose of this class is to facilitate using SV enum with JSON decoder/encoder.
 class json_enum #(type ENUM_T) extends json_string;
-  ENUM_T enum_value;
+  // Internal raw value of enum
+  protected ENUM_T enum_value;
 
   // Normal constructor
   extern function new(ENUM_T value);
@@ -23,6 +26,7 @@ class json_enum #(type ENUM_T) extends json_string;
         break;
       end
     end
+
     return json_result#(json_enum#(ENUM_T))::err(json_error::create(json_error::TYPE_CONVERSION));
   endfunction : from_string
 
@@ -32,38 +36,59 @@ class json_enum #(type ENUM_T) extends json_string;
   // Compare with another instance
   extern virtual function bit compare(json_value value);
 
-  // Interface json_string_encodable
-  extern virtual function string get_value();
+  // Get internal string value
+  extern virtual function string get();
+
+  // Set internal string value.
+  // Important: error propagation is not expected here, so if string cannot be converted to valid enum,
+  // fatal error is thrown.
+  extern virtual function void set(string value);
+
+  // Get internal enum value
+  virtual function ENUM_T get_enum();
+    // FIXME: extern is not used here, because verialtor does not work well with parametrized return type
+    return this.enum_value;
+  endfunction : get_enum
+
+  // Set internal enum value
+  extern virtual function void set_enum(ENUM_T value);
 endclass : json_enum
 
 
 function json_enum::new(ENUM_T value);
-  super.new(value.name());
+  super.new("");
   this.enum_value = value;
 endfunction : new
 
 
 function json_value json_enum::clone();
-  return json_enum#(ENUM_T)::from(this.enum_value);
+  return json_enum#(ENUM_T)::from(get_enum());
 endfunction : clone
 
 
 function bit json_enum::compare(json_value value);
   json_enum#(ENUM_T) rhs;
-  bit res = super.compare(value);
 
   if (value == null) begin
-    res = 0;
+    return 0;
   end else if ($cast(rhs, value)) begin
-    res &= this.enum_value == rhs.enum_value;
+    return get_enum() == rhs.get_enum();
   end else begin
-    res = 0;
+    return 0;
   end
-
-  return res;
 endfunction : compare
 
 
-function string json_enum::get_value();
-  return this.enum_value.name();
-endfunction : get_value
+function string json_enum::get();
+  return get_enum().name();
+endfunction : get
+
+
+function void json_enum::set(string value);
+  set_enum(json_enum#(ENUM_T)::from_string(value).unwrap().get_enum());
+endfunction : set
+
+
+function void json_enum::set_enum(ENUM_T value);
+  this.enum_value = value;
+endfunction : set_enum

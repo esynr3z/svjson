@@ -188,7 +188,7 @@ endfunction : convert_array
 
 
 function json_result#(string) json_encoder::convert_string(json_string_encodable obj);
-  string orig = obj.get_value();
+  string orig = obj.to_json_encodable();
   string converted = "\"";
 
   foreach (orig[i]) begin
