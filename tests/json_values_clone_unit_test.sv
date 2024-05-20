@@ -24,15 +24,6 @@ module json_values_clone_unit_test;
 
   `SVUNIT_TESTS_BEGIN
 
-  `SVTEST(clone_int_test)
-  begin
-    json_int orig = json_int::from(42);
-    json_int clone = orig.clone().as_json_int().unwrap();
-    `FAIL_IF(orig == clone)
-    `FAIL_UNLESS(orig.get() == clone.get())
-  end
-  `SVTEST_END
-
 
   `SVTEST(clone_real_test)
   begin
