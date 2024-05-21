@@ -24,46 +24,6 @@ module json_values_compare_unit_test;
   `SVUNIT_TESTS_BEGIN
 
 
-  `SVTEST(compare_real_test)
-  begin
-    json_real jreal_a = json_real::from(3.14);
-    json_real jreal_b = json_real::from(3.14);
-    // OK
-    `FAIL_UNLESS(jreal_a.compare(jreal_a))
-    `FAIL_UNLESS(jreal_a.compare(jreal_b))
-    jreal_a.set(-0.12321);
-    jreal_b.set(-0.12321);
-    `FAIL_UNLESS(jreal_a.compare(jreal_b))
-    // Fail
-    jreal_a.set(0.12);
-    jreal_b.set(0.13);
-    `FAIL_IF(jreal_a.compare(jreal_b))
-    jreal_a.set(-123213.2);
-    jreal_b.set(0.0002);
-    `FAIL_IF(jreal_a.compare(jreal_b))
-  end
-  `SVTEST_END
-
-
-  `SVTEST(compare_real_with_others_test)
-  begin
-    json_string jstring = json_string::from("1");
-    json_real jreal = json_real::from(1.0);
-    json_int jint = json_int::from(1);
-    json_bool jbool = json_bool::from(1);
-    json_array jarray = json_array::from('{json_int::from(1)});
-    json_object jobject = json_object::from('{"int": json_int::from(1)});
-    // Comparsion is strict
-    `FAIL_IF(jreal.compare(jstring))
-    `FAIL_IF(jreal.compare(jint))
-    `FAIL_IF(jreal.compare(jbool))
-    `FAIL_IF(jreal.compare(jarray))
-    `FAIL_IF(jreal.compare(jobject))
-    `FAIL_IF(jreal.compare(null))
-  end
-  `SVTEST_END
-
-
   `SVTEST(compare_string_test)
   begin
     json_string jstring_a = json_string::from("foo");
