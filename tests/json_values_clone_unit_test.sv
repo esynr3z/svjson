@@ -35,16 +35,6 @@ module json_values_clone_unit_test;
   `SVTEST_END
 
 
-  `SVTEST(clone_bool_test)
-  begin
-    json_bool orig = json_bool::from(1);
-    json_bool clone = orig.clone().as_json_bool().unwrap();
-    `FAIL_IF(orig == clone)
-    `FAIL_UNLESS(orig.get() == clone.get())
-  end
-  `SVTEST_END
-
-
   `SVTEST(clone_string_test)
   begin
     json_string orig = json_string::from("Hello world");

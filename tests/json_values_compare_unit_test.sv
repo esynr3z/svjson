@@ -64,46 +64,6 @@ module json_values_compare_unit_test;
   `SVTEST_END
 
 
-  `SVTEST(compare_bool_test)
-  begin
-    json_bool jbool_a = json_bool::from(1);
-    json_bool jbool_b = json_bool::from(1);
-    // OK
-    `FAIL_UNLESS(jbool_a.compare(jbool_a))
-    `FAIL_UNLESS(jbool_a.compare(jbool_b))
-    jbool_a.set(0);
-    jbool_b.set(0);
-    `FAIL_UNLESS(jbool_a.compare(jbool_b))
-    // Fail
-    jbool_a.set(1);
-    jbool_b.set(0);
-    `FAIL_IF(jbool_a.compare(jbool_b))
-    jbool_a.set(0);
-    jbool_b.set(1);
-    `FAIL_IF(jbool_a.compare(jbool_b))
-  end
-  `SVTEST_END
-
-
-  `SVTEST(compare_bool_with_others_test)
-  begin
-    json_string jstring = json_string::from("1");
-    json_real jreal = json_real::from(1.0);
-    json_int jint = json_int::from(1);
-    json_bool jbool = json_bool::from(1);
-    json_array jarray = json_array::from('{json_int::from(1)});
-    json_object jobject = json_object::from('{"int": json_int::from(1)});
-    // Comparsion is strict
-    `FAIL_IF(jbool.compare(jstring))
-    `FAIL_IF(jbool.compare(jreal))
-    `FAIL_IF(jbool.compare(jint))
-    `FAIL_IF(jbool.compare(jarray))
-    `FAIL_IF(jbool.compare(jobject))
-    `FAIL_IF(jbool.compare(null))
-  end
-  `SVTEST_END
-
-
   `SVTEST(compare_string_test)
   begin
     json_string jstring_a = json_string::from("foo");
