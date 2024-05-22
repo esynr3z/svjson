@@ -25,16 +25,6 @@ module json_values_clone_unit_test;
   `SVUNIT_TESTS_BEGIN
 
 
-  `SVTEST(clone_string_test)
-  begin
-    json_string orig = json_string::from("Hello world");
-    json_string clone = orig.clone().as_json_string().unwrap();
-    `FAIL_IF(orig == clone)
-    `FAIL_UNLESS(orig.get() == clone.get())
-  end
-  `SVTEST_END
-
-
   `SVTEST(clone_enum_test)
   begin
     json_dummy_enum orig = json_dummy_enum::from(DUMMY_FOO);

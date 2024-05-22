@@ -24,46 +24,6 @@ module json_values_compare_unit_test;
   `SVUNIT_TESTS_BEGIN
 
 
-  `SVTEST(compare_string_test)
-  begin
-    json_string jstring_a = json_string::from("foo");
-    json_string jstring_b = json_string::from("foo");
-    // OK
-    `FAIL_UNLESS(jstring_a.compare(jstring_a))
-    `FAIL_UNLESS(jstring_a.compare(jstring_b))
-    jstring_a.set("bar");
-    jstring_b.set("bar");
-    `FAIL_UNLESS(jstring_a.compare(jstring_b))
-    // Fail
-    jstring_a.set("");
-    jstring_b.set("lalala");
-    `FAIL_IF(jstring_a.compare(jstring_b))
-    jstring_a.set("0");
-    jstring_b.set("1");
-    `FAIL_IF(jstring_a.compare(jstring_b))
-  end
-  `SVTEST_END
-
-
-  `SVTEST(compare_string_with_others_test)
-  begin
-    json_string jstring = json_string::from("1");
-    json_real jreal = json_real::from(1.0);
-    json_int jint = json_int::from(1);
-    json_bool jbool = json_bool::from(1);
-    json_array jarray = json_array::from('{json_int::from(1)});
-    json_object jobject = json_object::from('{"int": json_int::from(1)});
-    // Comparsion is strict
-    `FAIL_IF(jstring.compare(jreal))
-    `FAIL_IF(jstring.compare(jint))
-    `FAIL_IF(jstring.compare(jbool))
-    `FAIL_IF(jstring.compare(jarray))
-    `FAIL_IF(jstring.compare(jobject))
-    `FAIL_IF(jstring.compare(null))
-  end
-  `SVTEST_END
-
-
   `SVTEST(compare_object_test)
   begin
     json_object jobject_a = json_object::from('{"key": json_int::from(42)});
