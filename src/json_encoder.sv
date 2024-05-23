@@ -160,7 +160,7 @@ endfunction : convert_object
 
 function json_result#(string) json_encoder::convert_array(json_array_encodable obj, int unsigned nesting_lvl);
   string converted = {"[", this.is_compact() ? "" : "\n"};
-  json_array_encodable::values_t values = obj.get_values();
+  json_array_encodable::values_t values = obj.to_json_encodable();
   int unsigned values_num = values.size();
 
   foreach(values[i]) begin
