@@ -8,7 +8,7 @@ class json_object extends json_value implements json_object_encodable;
   typedef json_value values_t[string];
   typedef string keys_t[$];
 
-  values_t values; // FIXME: need make it protected
+  protected values_t values;
 
   // Normal constructor
   extern function new(values_t values);

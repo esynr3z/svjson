@@ -31,8 +31,8 @@ module json_values_compare_unit_test;
     // OK
     `FAIL_UNLESS(jobject_a.compare(jobject_a))
     `FAIL_UNLESS(jobject_a.compare(jobject_b))
-    jobject_a.values["bar"] = json_bool::from(0);
-    jobject_b.values["bar"] = json_bool::from(0);
+    jobject_a.set("bar", json_bool::from(0));
+    jobject_b.set("bar", json_bool::from(0));
     `FAIL_UNLESS(jobject_a.compare(jobject_b))
     // Fail
     jobject_a = json_object::from('{"key": json_int::from(41)});
@@ -73,11 +73,11 @@ module json_values_compare_unit_test;
     `FAIL_UNLESS(jobject_a.compare(jobject_b))
 
     // Fail
-    jobject_b.values["key2"] = null;
+    jobject_b.set("key2", null);
     `FAIL_IF(jobject_a.compare(jobject_b))
     jobject_b = jobject_a.clone().as_json_object().unwrap();
 
-    jobject_b.values["key3"].as_json_object().unwrap().values["baz"] = json_int::from(42);
+    jobject_b.get("key3").as_json_object().unwrap().set("baz", json_int::from(42));
     `FAIL_IF(jobject_a.compare(jobject_b))
   end
   `SVTEST_END
@@ -109,8 +109,8 @@ module json_values_compare_unit_test;
     // OK
     `FAIL_UNLESS(jarray_a.compare(jarray_a))
     `FAIL_UNLESS(jarray_a.compare(jarray_b))
-    jarray_a.values.push_back(json_bool::from(0));
-    jarray_b.values.push_back(json_bool::from(0));
+    jarray_a.push_back(json_bool::from(0));
+    jarray_b.push_back(json_bool::from(0));
     `FAIL_UNLESS(jarray_a.compare(jarray_b))
     // Fail
     jarray_a = json_array::from('{json_int::from(41)});
@@ -154,11 +154,11 @@ module json_values_compare_unit_test;
     `FAIL_UNLESS(jarray_a.compare(jarray_b))
 
     // Fail
-    jarray_b.values[1] = null;
+    jarray_b.set(1, null);
     `FAIL_IF(jarray_a.compare(jarray_b))
     jarray_b = jarray_a.clone().as_json_array().unwrap();
 
-    jarray_b.values[2].as_json_object().unwrap().values["baz"] = json_int::from(42);
+    jarray_b.get(2).as_json_object().unwrap().set("baz", json_int::from(42));
     `FAIL_IF(jarray_a.compare(jarray_b))
   end
   `SVTEST_END

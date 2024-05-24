@@ -42,9 +42,9 @@ module json_values_clone_unit_test;
     json_array orig = json_array::from('{json_bool::from(0), json_int::from(-13)});
     json_array clone = orig.clone().as_json_array().unwrap();
     `FAIL_IF(orig == clone)
-    `FAIL_UNLESS(clone.values.size() == 2)
-    `FAIL_UNLESS(clone.values[0].as_json_bool().unwrap().get() == 0)
-    `FAIL_UNLESS(clone.values[1].as_json_int().unwrap().get() == -13)
+    `FAIL_UNLESS(clone.size() == 2)
+    `FAIL_UNLESS(clone.get(0).as_json_bool().unwrap().get() == 0)
+    `FAIL_UNLESS(clone.get(1).as_json_int().unwrap().get() == -13)
   end
   `SVTEST_END
 
@@ -54,7 +54,7 @@ module json_values_clone_unit_test;
     json_array orig = json_array::from('{});
     json_array clone = orig.clone().as_json_array().unwrap();
     `FAIL_IF(orig == clone)
-    `FAIL_UNLESS(clone.values.size() == 0)
+    `FAIL_UNLESS(clone.size() == 0)
   end
   `SVTEST_END
 
@@ -65,10 +65,10 @@ module json_values_clone_unit_test;
     json_array orig = json_array::from('{null, json_string::from(str), null});
     json_array clone = orig.clone().as_json_array().unwrap();
     `FAIL_IF(orig == clone)
-    `FAIL_UNLESS(clone.values.size() == 3)
-    `FAIL_UNLESS(clone.values[0] == null)
-    `FAIL_UNLESS(clone.values[1].as_json_string().unwrap().value == str)
-    `FAIL_UNLESS(clone.values[2] == null)
+    `FAIL_UNLESS(clone.size() == 3)
+    `FAIL_UNLESS(clone.get(0) == null)
+    `FAIL_UNLESS(clone.get(1).as_json_string().unwrap().value == str)
+    `FAIL_UNLESS(clone.get(2) == null)
   end
   `SVTEST_END
 
@@ -83,15 +83,15 @@ module json_values_clone_unit_test;
     });
     json_array clone = orig.clone().as_json_array().unwrap();
     `FAIL_IF(orig == clone)
-    `FAIL_UNLESS(clone.values.size() == 3)
-    `FAIL_UNLESS(clone.values[0].as_json_real().unwrap().get() == 0.008)
-    `FAIL_UNLESS(clone.values[1].is_json_array())
-    `FAIL_UNLESS(clone.values[1].as_json_array().unwrap().values.size() == 2)
-    `FAIL_UNLESS(clone.values[1].as_json_array().unwrap().values[0].as_json_int().unwrap().get() == 0)
-    `FAIL_UNLESS(clone.values[1].as_json_array().unwrap().values[1].as_json_array().unwrap().values.size() == 0)
-    `FAIL_UNLESS(clone.values[2].is_json_object())
-    `FAIL_UNLESS(clone.values[2].as_json_object().unwrap().values.size() == 1)
-    `FAIL_UNLESS(clone.values[2].as_json_object().unwrap().values[str].as_json_bool().unwrap().get() == 1)
+    `FAIL_UNLESS(clone.size() == 3)
+    `FAIL_UNLESS(clone.get(0).as_json_real().unwrap().get() == 0.008)
+    `FAIL_UNLESS(clone.get(1).is_json_array())
+    `FAIL_UNLESS(clone.get(1).as_json_array().unwrap().size() == 2)
+    `FAIL_UNLESS(clone.get(1).as_json_array().unwrap().get(0).as_json_int().unwrap().get() == 0)
+    `FAIL_UNLESS(clone.get(1).as_json_array().unwrap().get(1).as_json_array().unwrap().size() == 0)
+    `FAIL_UNLESS(clone.get(2).is_json_object())
+    `FAIL_UNLESS(clone.get(2).as_json_object().unwrap().size() == 1)
+    `FAIL_UNLESS(clone.get(2).as_json_object().unwrap().get(str).as_json_bool().unwrap().get() == 1)
   end
   `SVTEST_END
 
@@ -102,8 +102,8 @@ module json_values_clone_unit_test;
     json_object orig = json_object::from('{"foo": json_int::from(12345)});
     json_object clone = orig.clone().as_json_object().unwrap();
     `FAIL_IF(orig == clone)
-    `FAIL_UNLESS(clone.values.size() == 1)
-    `FAIL_UNLESS(clone.values[str].as_json_int().unwrap().get() == 12345)
+    `FAIL_UNLESS(clone.size() == 1)
+    `FAIL_UNLESS(clone.get(str).as_json_int().unwrap().get() == 12345)
   end
   `SVTEST_END
 
@@ -114,10 +114,10 @@ module json_values_clone_unit_test;
     json_object orig = json_object::from('{"foo": json_string::from("blabla"), "bar": null});
     json_object clone = orig.clone().as_json_object().unwrap();
     `FAIL_IF(orig == clone)
-    `FAIL_UNLESS(clone.values.size() == 2)
-     jvalue = clone.values["foo"];
+    `FAIL_UNLESS(clone.size() == 2)
+     jvalue = clone.get("foo");
     `FAIL_UNLESS_STR_EQUAL(jvalue.as_json_string().unwrap().value, "blabla")
-    jvalue = clone.values["bar"];
+    jvalue = clone.get("bar");
     `FAIL_UNLESS(jvalue == null)
   end
   `SVTEST_END
@@ -138,18 +138,18 @@ module json_values_clone_unit_test;
     });
     json_object clone = orig.clone().as_json_object().unwrap();
     `FAIL_IF(orig == clone)
-    `FAIL_UNLESS(clone.values.size() == 2)
+    `FAIL_UNLESS(clone.size() == 2)
 
-    jreal = clone.values["real"].as_json_real().unwrap();
+    jreal = clone.get("real").as_json_real().unwrap();
     `FAIL_UNLESS(jreal.get() == 0.002)
 
-    jarray = clone.values["array"].as_json_array().unwrap();
-    `FAIL_UNLESS(jarray.values.size() == 2)
-    `FAIL_UNLESS(jarray.values[0].as_json_array().unwrap().values.size() == 0)
+    jarray = clone.get("array").as_json_array().unwrap();
+    `FAIL_UNLESS(jarray.size() == 2)
+    `FAIL_UNLESS(jarray.get(0).as_json_array().unwrap().size() == 0)
 
-    jobject = jarray.values[1].as_json_object().unwrap();
-    `FAIL_UNLESS(jobject.values.size() == 1)
-    `FAIL_UNLESS(jobject.values[str].as_json_bool().unwrap().get() == 1)
+    jobject = jarray.get(1).as_json_object().unwrap();
+    `FAIL_UNLESS(jobject.size() == 1)
+    `FAIL_UNLESS(jobject.get(str).as_json_bool().unwrap().get() == 1)
   end
   `SVTEST_END
 

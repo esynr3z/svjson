@@ -6,7 +6,7 @@
 class json_array extends json_value implements json_array_encodable;
   typedef json_value values_t[$];
 
-  values_t values; // FIXME: add protected
+  protected values_t values;
 
   // Normal constructor
   extern function new(values_t values);
