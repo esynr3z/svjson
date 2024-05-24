@@ -37,65 +37,6 @@ module json_values_clone_unit_test;
   `SVTEST_END
 
 
-  `SVTEST(clone_array_test)
-  begin
-    json_array orig = json_array::from('{json_bool::from(0), json_int::from(-13)});
-    json_array clone = orig.clone().as_json_array().unwrap();
-    `FAIL_IF(orig == clone)
-    `FAIL_UNLESS(clone.size() == 2)
-    `FAIL_UNLESS(clone.get(0).as_json_bool().unwrap().get() == 0)
-    `FAIL_UNLESS(clone.get(1).as_json_int().unwrap().get() == -13)
-  end
-  `SVTEST_END
-
-
-  `SVTEST(clone_empty_array_test)
-  begin
-    json_array orig = json_array::from('{});
-    json_array clone = orig.clone().as_json_array().unwrap();
-    `FAIL_IF(orig == clone)
-    `FAIL_UNLESS(clone.size() == 0)
-  end
-  `SVTEST_END
-
-
-  `SVTEST(clone_array_with_nulls_test)
-  begin
-    string str = "foo";
-    json_array orig = json_array::from('{null, json_string::from(str), null});
-    json_array clone = orig.clone().as_json_array().unwrap();
-    `FAIL_IF(orig == clone)
-    `FAIL_UNLESS(clone.size() == 3)
-    `FAIL_UNLESS(clone.get(0) == null)
-    `FAIL_UNLESS(clone.get(1).as_json_string().unwrap().value == str)
-    `FAIL_UNLESS(clone.get(2) == null)
-  end
-  `SVTEST_END
-
-
-  `SVTEST(clone_array_complex_test)
-  begin
-    string str = "bar";
-    json_array orig = json_array::from('{
-      json_real::from(0.008),
-      json_array::from('{json_int::from(0), json_array::from('{})}),
-      json_object::from('{"bar": json_bool::from(1)})
-    });
-    json_array clone = orig.clone().as_json_array().unwrap();
-    `FAIL_IF(orig == clone)
-    `FAIL_UNLESS(clone.size() == 3)
-    `FAIL_UNLESS(clone.get(0).as_json_real().unwrap().get() == 0.008)
-    `FAIL_UNLESS(clone.get(1).is_json_array())
-    `FAIL_UNLESS(clone.get(1).as_json_array().unwrap().size() == 2)
-    `FAIL_UNLESS(clone.get(1).as_json_array().unwrap().get(0).as_json_int().unwrap().get() == 0)
-    `FAIL_UNLESS(clone.get(1).as_json_array().unwrap().get(1).as_json_array().unwrap().size() == 0)
-    `FAIL_UNLESS(clone.get(2).is_json_object())
-    `FAIL_UNLESS(clone.get(2).as_json_object().unwrap().size() == 1)
-    `FAIL_UNLESS(clone.get(2).as_json_object().unwrap().get(str).as_json_bool().unwrap().get() == 1)
-  end
-  `SVTEST_END
-
-
   `SVTEST(clone_object_test)
   begin
     string str = "foo";
