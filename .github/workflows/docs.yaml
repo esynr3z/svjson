@@ -24,7 +24,7 @@ jobs:
 
       - name: Build and run Antora
         run: |
-            docker run -u $(id -u) -v $PWD:/antora:Z --rm -t antora/antora antora-playbook.yml
+            docker run -u $(id -u) -v $PWD:/antora:Z --rm -t antora/antora antora-playbook.yml --cache-dir=/tmp/.antora-cache
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
