@@ -13,7 +13,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Build and run Antora
+      - name: Build site with Antora
         uses: addnab/docker-run-action@v3
         with:
           image: antora/antora:2.3.1
