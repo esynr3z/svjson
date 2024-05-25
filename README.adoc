@@ -1,0 +1,68 @@
+= JSON encoder and decoder in SystemVerilog
+
+image:https://github.com/esynr3z/sv-json/actions/workflows/tests.yaml/badge.svg?branch=main[Tests] image:https://github.com/esynr3z/sv-json/actions/workflows/docs.yaml/badge.svg?branch=main[Documentation]
+
+The project introduces JSON decoder and encoder in pure SystemVerilog without any external dependencies.
+
+== Features
+
+Implementation follows https://ecma-international.org/publications-and-standards/standards/ecma-404/[ECMA standard] and provides SV package `json_pkg` for convenient integration into any HDL project.
+
+* JSON decoder can parse values from string or file
+* JSON encoder can dump values to string or file
+* JSON values (object, array, string, number, bool) are represented with collection of wrapper classes
+* JSON encoding capability can be added to user classes with collection of interface classes
+* Additional classes for encoding SystemVerilog enums and bit vectors of any width
+* Error reporting and propagation system inspired by Rust
+
+Known limitations:
+
+* `\b` and `\u` escape sequences are not supported for decoder/encoder
+* Nesting depth is limited for decoder (1024 by default, limit is controllable)
+* No recursion detection for encoder
+
+Detailed documentaion can be found on https://esynr3z.github.io/sv-json[project's site].
+
+== Integration
+
+* Any simulator with extensive SystemVerilog OOP support required
+* No external dependencies
+* No defines
+* No plusargs
+
+IMPORTANT: The package developed and tested using Verilator 5.24 only. Support of other simulators is planned, but Verilator still will be the main simulator for project as it is the only viable option to organize CI.
+
+Include directories and sources are expressed as filelists (.f files):
+
+* `incdirs.f` - all include directories
+*  `package.f` - all packages (single package, actually)
+
+For convenient integration they are united into single `filelist.f`.
+
+To integrate the package into your code you need:
+
+* Clone `sv-json` repository
+* Set environment variable `SV_JSON_ROOT` with a path to `sv-json` root on your filesystem
+* Add filelist to your simulator using according arguments, e.g. `-f ${SV_JSON_ROOT}/src/filelist.f` or `-file ${SV_JSON_ROOT}/src/filelist.f` depending on your simulator.
+
+Then follow https://esynr3z.github.io/sv-json[User guide] section to get instructions on how to use JSON encoder and decoder in practice.
+
+== Development
+
+HDL flows:
+
+* Code tested with https://github.com/svunit/svunit[SVUnit] using https://github.com/nst/JSONTestSuite[JSONTestSuite] and custom tests
+* Main simulator for development is Verilator 5.24
+* [TODO] No linting and code formating tools are used yet
+
+Documentation flows:
+
+* All documentation is written in https://asciidoc.org/[Asciidoc]
+* Documentation site (https://pages.github.com/[Github Pages]) is generated via https://antora.org/[Antora]
+* [TODO] NaturalDocs generated class reference documentation
+
+Repository flows:
+
+* Git messages follows https://www.conventionalcommits.org/en/v1.0.0/[Conventional Commits] specification
+* Changelog format follows https://keepachangelog.com/en/1.1.0/[Keep a Changelog] specification
+* Versioning is based on https://semver.org/spec/v2.0.0.html[Semantic Versioning].
