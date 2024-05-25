@@ -17,7 +17,7 @@ jobs:
         uses: addnab/docker-run-action@v3
         with:
           image: antora/antora:2.3.1
-          options: -u $(id -u) -v ${{ github.workspace }}:/antora:Z --rm -t
+          options: -v ${{ github.workspace }}:/antora:Z
           run: antora antora-playbook.yml --cache-dir=/tmp/.antora-cache
 
       - name: Deploy to GitHub Pages
