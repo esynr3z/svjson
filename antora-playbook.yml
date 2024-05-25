@@ -1,0 +1,15 @@
+site:
+  title: SystemVerilog JSON Package Documentation
+  start_page: json_pkg::overview.adoc
+content:
+  sources:
+    - url: .
+      start_path: docs
+asciidoc:
+  attributes:
+    toc: 'true'
+    toclevels: 3
+ui:
+  bundle:
+    url: https://gitlab.com/antora/antora-ui-default/-/jobs/artifacts/HEAD/raw/build/ui-bundle.zip?job=bundle-stable
+    snapshot: true

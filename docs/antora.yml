@@ -1,0 +1,10 @@
+name: json_pkg
+title: JSON Package
+version: true
+start_page: overview.adoc
+asciidoc:
+  attributes:
+    source-language: asciidoc@
+    table-caption: false
+nav:
+- modules/ROOT/nav.adoc
