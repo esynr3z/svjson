@@ -13,18 +13,12 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
-      - name: Cache Docker layers
-        uses: actions/cache@v4
-        with:
-          path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-buildx-${{ github.sha }}
-
       - name: Build and run Antora
-        run: |
-            docker run -u $(id -u) -v $PWD:/antora:Z --rm -t antora/antora antora-playbook.yml --cache-dir=/tmp/.antora-cache
+        uses: addnab/docker-run-action@v3
+        with:
+          image: antora/antora:2.3.1
+          options: -u $(id -u) -v $PWD:/antora:Z --rm -t
+          run: antora antora-playbook.yml --cache-dir=/tmp/.antora-cache
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
