@@ -1,3 +1,5 @@
 = Overview
 
-TODO
+The project introduces JSON decoder and encoder in pure SystemVerilog without any external dependencies.
+
+include::overview_body.adoc[]
