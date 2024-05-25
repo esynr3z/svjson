@@ -3,9 +3,8 @@ site:
   start_page: json_pkg::overview.adoc
 content:
   sources:
-    - url: https://github.com/esynr3z/sv-json.git
+    - url: .
       start_path: docs
-      branches: [main]
 asciidoc:
   attributes:
     toc: 'true'
