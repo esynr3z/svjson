@@ -1,1 +1,45 @@
-docs/modules/ROOT/pages/overview.adoc
+:url-json: https://www.json.org
+:url-ecma-404: https://ecma-international.org/publications-and-standards/standards/ecma-404
+:url-svjson-pages: https://esynr3z.github.io/svjson
+:url-svunit: https://github.com/svunit/svunit
+:url-json-test-suite: https://github.com/nst/JSONTestSuite
+:url-verilator-github: https://github.com/verilator/verilator
+:url-antora: https://antora.org
+:url-asciidoc: https://asciidoc.org
+:url-conventional-commits: https://www.conventionalcommits.org/en/v1.0.0
+:url-tests-badge: https://github.com/esynr3z/svjson/actions/workflows/tests.yaml/badge.svg?branch=main
+:url-documentation-badge: https://github.com/esynr3z/svjson/actions/workflows/docs.yaml/badge.svg?branch=main
+:url-json-pkg: src/json_pkg.sv
+
+= JSON encoder and decoder in SystemVerilog
+
+image:{url-tests-badge}[Tests] image:{url-documentation-badge}[Documentation]
+
+The project introduces {url-json}[JSON] decoder and encoder implementation in pure SystemVerilog without any external dependencies.
+It provides SystemVerilog package xref:{url-json-pkg}[`json_pkg`] for convenient integration into any HDL project.
+
+The package allows decoding and encoding JSON values from or to string (file).
+It also provides rich capabilities for values manipulation, including creation of encoding-friendly user classes via special interface classes.
+It has convenient error propagation and reporting system inspired by Rust.
+
+Implementation follows {url-ecma-404}[ECMA standard] almost completely - only several cases of escape values are not supported.
+
+Code tested intensively in {url-verilator-github}[Verilator 5.24] with {url-svunit}[SVUnit] using {url-json-test-suite}[JSONTestSuite] and custom tests. **Support of other simulators is planned, but not guaranteed at the moment**.
+
+== Documentation
+
+Documentation is hosted at {url-svjson-pages}[Github Pages].
+
+All documentation is written in {url-asciidoc}[Asciidoc] and transformed into static site via {url-antora}[Antora].
+
+== Integration
+
+* Setup environment variable `SV_JSON_ROOT` with a path to `svjson` root on your filesystem
+* Add filelist to your simulator using according arguments, e.g. `-f ${SV_JSON_ROOT}/src/filelist.f`
+* Use classes within package to decode or encode JSON files: `json_pkg::json_decoder::load_file()` or `json_pkg::json_encoder::dump_file()`
+
+For more details please refer to {url-svjson-pages}[documentation].
+
+== Development
+
+Please refer to developer guide in {url-svjson-pages}[documentation].
