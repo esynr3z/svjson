@@ -34,8 +34,8 @@ All documentation is written in {url-asciidoc}[Asciidoc] and transformed into st
 
 == Integration
 
-* Setup environment variable `SV_JSON_ROOT` with a path to `svjson` root on your filesystem
-* Add filelist to your simulator using according arguments, e.g. `-f ${SV_JSON_ROOT}/src/filelist.f`
+* Setup environment variable `SVJSON_ROOT` with a path to `svjson` root on your filesystem
+* Add filelist to your simulator using according arguments, e.g. `-f ${SVJSON_ROOT}/src/filelist.f`
 * Use classes within package to decode or encode JSON files: `json_pkg::json_decoder::load_file()` or `json_pkg::json_encoder::dump_file()`
 
 For more details please refer to {url-svjson-pages}[documentation].

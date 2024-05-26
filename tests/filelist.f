@@ -1,2 +1,2 @@
-+incdir+${SV_JSON_ROOT}/tests
-${SV_JSON_ROOT}/tests/test_utils_pkg.sv
++incdir+${SVJSON_ROOT}/tests
+${SVJSON_ROOT}/tests/test_utils_pkg.sv
