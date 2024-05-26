@@ -6,7 +6,6 @@
 :url-verilator-github: https://github.com/verilator/verilator
 :url-antora: https://antora.org
 :url-asciidoc: https://asciidoc.org
-:url-conventional-commits: https://www.conventionalcommits.org/en/v1.0.0
 :url-tests-badge: https://github.com/esynr3z/svjson/actions/workflows/tests.yaml/badge.svg?branch=main
 :url-documentation-badge: https://github.com/esynr3z/svjson/actions/workflows/docs.yaml/badge.svg?branch=main
 :url-json-pkg: src/json_pkg.sv
@@ -19,8 +18,9 @@ The project introduces {url-json}[JSON] decoder and encoder implementation in pu
 It provides SystemVerilog package xref:{url-json-pkg}[`json_pkg`] for convenient integration into any HDL project.
 
 The package allows decoding and encoding JSON values from or to string (file).
-It also provides rich capabilities for values manipulation, including creation of encoding-friendly user classes via special interface classes.
-It has convenient error propagation and reporting system inspired by Rust.
+It also provides rich capabilities for values manipulation, traversing ans inspection.
+Special interface classes can be used for creation of encoding-friendly user classes.
+Additionally, there is an error propagation and reporting system inspired by some ideas of Rust.
 
 Implementation follows {url-ecma-404}[ECMA standard] almost completely - only several cases of escape values are not supported.
 
