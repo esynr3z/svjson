@@ -1,4 +1,5 @@
-:url-svjson-github: https://github.com/esynr3z/svjson
+:url-svjson-github: https://github.com/esynr3z/svjson/tree/{page-origin-refname}
+:url-svjson-github-blob: https://github.com/esynr3z/svjson/blob/{page-origin-refname}
 
 = User guide
 
@@ -11,13 +12,9 @@
 
 IMPORTANT: The package is developed and tested using Verilator 5.24 only. Support of other simulators is planned, but Verilator still will be the main simulator for project as it is the only viable option to organize CI and opensource flow.
 
-Sources and include directories are expressed as filelists (`.f` files), which are quite standard way of describing sources, include directories, defines, etc. fot many EDA tools. There are three of them:
+Sources and include directories are expressed as filelist (`.f` file), which are quite standard way of describing compilation unit for many EDA tools. Filelist of the project is {url-svjson-github}/src/filelist.f[`src/filelist.f`].
 
-* `src/incdirs.f` - filelist with all include directories
-* `src/package.f` - filelist with a SV package
-* `src/filelist.f` - filelist, which is a union of both above for convenient integration
-
-In order to make filelists portable, all paths are relative to `SVJSON_ROOT` environment variable. It should point to {url-svjson-github}[svjson] repository root in your filesystem.
+In order to make filelist portable, all paths are relative to `SVJSON_ROOT` environment variable. It should point to {url-svjson-github}[svjson] repository root in your filesystem.
 
 As a result, integration process consists of several simple steps:
 

@@ -1,5 +1,5 @@
 :url-ecma-404: https://ecma-international.org/publications-and-standards/standards/ecma-404
-:url-svjson-github: https://github.com/esynr3z/svjson
+:url-svjson-github: https://github.com/esynr3z/svjson/tree/{page-origin-refname}
 :url-verilator-github: https://github.com/verilator/verilator
 
 = Welcome
