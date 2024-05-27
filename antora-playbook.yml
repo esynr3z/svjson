@@ -1,6 +1,6 @@
 site:
   title: SystemVerilog JSON Package Documentation
-  start_page: json_pkg::overview.adoc
+  start_page: json_pkg::welcome.adoc
 content:
   sources:
     - url: https://github.com/esynr3z/svjson.git

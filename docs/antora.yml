@@ -1,7 +1,7 @@
 name: json_pkg
 title: JSON Package
 version: true
-start_page: overview.adoc
+start_page: welcome.adoc
 asciidoc:
   attributes:
     source-language: asciidoc@

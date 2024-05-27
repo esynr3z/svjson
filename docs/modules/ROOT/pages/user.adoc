@@ -1,3 +1,7 @@
 = User guide
 
-TODO
+== Integration
+
+== JSON Decoding
+
+== JSON Encoding

@@ -1,0 +1,93 @@
+:url-ecma-404: https://ecma-international.org/publications-and-standards/standards/ecma-404
+:url-svjson-github: https://github.com/esynr3z/svjson
+:url-verilator-github: https://github.com/verilator/verilator
+
+= Welcome
+
+Welcome to the homepage of {url-svjson-github}[`svjson`] project!
+
+The project introduces JSON decoder and encoder in pure SystemVerilog without any external dependencies.
+
+* JSON decoder can parse values from string or file
+* JSON encoder can dump values to string or file
+* JSON values (object, array, string, number, bool) are represented with collection of wrapper classes
+* JSON encoding capability can be added to user classes with collection of interface classes
+* Additional classes for encoding SystemVerilog enums and bit vectors of any width
+* Error reporting and propagation system inspired by Rust
+
+Implementation follows {url-ecma-404}[ECMA standard] with some limitations:
+
+* `\b` and `\u` escape sequences are not supported for decoder/encoder
+* Nesting depth is limited for decoder (1024 by default, limit is controllable)
+* No recursion detection for encoder
+
+IMPORTANT: The package is developed and tested using {url-verilator-github}[Verilator 5.24] only. Support of other simulators is planned, but Verilator still will be the main simulator for project as it is the only viable option to organize CI and opensource flow.
+
+== How to setup and compile the code?
+
+Please refer to xref:user.adoc#integration[User Guide: Integration] section.
+
+== How to parse JSON file or string?
+
+Please refer to xref:user.adoc#json-decoding[User Guide: JSON decoding] section.
+
+== How to dump JSON file or string?
+
+Please refer to xref:user.adoc#json-decoding[User Guide: JSON encoding] section.
+
+== Where complete API is described?
+
+Please refer to xref:classref.adoc[Class Reference Manual].
+
+== How to contribute, run tests, etc.?
+
+Please refer to xref:developer.adoc[Developer Guide].
+
+== What has changed for version x.y.z?
+
+Please refer to xref:changelog.adoc[Changelog].
+
+== Are there any alternatives?
+
+:url-ieee-compatible-uvm-2018: https://www.accellera.org/images/resources/videos/IEEE_Compatible_UVM_2018.pdf
+:url-custom-uvm-report-servers: http://www.fivecomputers.com/static/images/papers/snug_custom_uvm_report_servers.pdf
+:url-verilab-uvm-structured-logs: https://bitbucket.org/verilab/uvm_structured_logs
+:url-uvm-tutorial-for-candy-lovers-defining-do_print: https://cluelogic.com/2016/05/uvm-tutorial-for-candy-lovers-defining-do_print
+:url-milestone12-json: https://github.com/milestone12/JSON.sv
+:url-quinnwerks-jsonpacketparser: https://github.com/quinnwerks/JSONPacketParser
+:url-jsmn: https://zserge.com/jsmn/
+:url-zhouchuanrui-jsoninsv: https://github.com/zhouchuanrui/JSONinSV
+:url-json-for-vhdl: https://github.com/Paebbels/JSON-for-VHDL
+:url-json-test-suite: https://github.com/nst/JSONTestSuite
+
+[cols="3s,1,10"]
+|===
+| DVCon US 2018, IEEE-Compatible UVM Reference Implementation and Verification Components: Objects and Policies, Mark Peryer.
+| {url-ieee-compatible-uvm-2018}[Slides]
+| Slides contain references to a JSON `uvm_printer`` with some code.
+
+| SNUG 2013, Applications of Custom UVM Report Servers, Gordon Mc Gregor
+| {url-custom-uvm-report-servers}[Artice], {url-verilab-uvm-structured-logs}[sources]
+| Article mentions JSON implementation of UVM server, however, link to the code doesn't work.
+
+| UVM Tutorial for Candy Lovers – 33. Defining do_print
+| {url-uvm-tutorial-for-candy-lovers-defining-do_print}[Link]
+| Famous UVM tutorial shows how to implement simple JSON uvm_printer with code.
+
+| JSON.sv
+| {url-milestone12-json}[Github]
+| Implementation of JSON encoder/decoder in SystemVerilog. Integrated into FuseSoc ecosystem.
+It has only few tests and almost no documentation.
+
+| JSONPacketParser
+| {url-quinnwerks-jsonpacketparser}[Github]
+| Project uses {url-jsmn}[the JSMN library] to parse a JSON file into a C data structure. This data structure is then passed to a SystemVerilog testbench via DPI.
+
+| JSONinSV
+| {url-zhouchuanrui-jsoninsv}[Github]
+| JSON encoder and decoder in SystemVerilog. It is well tested (own framework is introduced). Project comes with well structured documentation (on Chinese, though).
+
+| JSON-for-VHDL
+| {url-json-for-vhdl}[Github]
+| JSON decoder in VHDL. Tested against well-known {url-json-test-suite}[JSON Test Suite].
+|===

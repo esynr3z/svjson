@@ -1,5 +1,5 @@
-* xref:overview.adoc[]
+* xref:welcome.adoc[]
 * xref:user.adoc[]
 * xref:classref.adoc[]
-* xref:development.adoc[]
+* xref:developer.adoc[]
 * xref:changelog.adoc[]
