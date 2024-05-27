@@ -1,27 +1,44 @@
 name: Documentation
-
 on:
   push:
-    branches:
-      - main
+    branches: [main]
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
 
 jobs:
   docs-antora:
     runs-on: ubuntu-latest
 
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+    - name: Checkout repository
+      uses: actions/checkout@v4
 
-      - name: Build site with Antora
-        uses: addnab/docker-run-action@v3
-        with:
-          image: antora/antora:2.3.1
-          options: -v ${{ github.workspace }}:/antora:Z
-          run: antora antora-playbook.yml --cache-dir=/tmp/.antora-cache
+    - name: Configure Pages
+      uses: actions/configure-pages@v3
 
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v4
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./build/site
+    - name: Install Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+
+    - name: Install Antora
+      run: npm i antora
+
+    - name: Generate Site
+      run: npx antora antora-playbook.yml
+
+    - name: Upload Artifacts
+      uses: actions/upload-pages-artifact@v2
+      with:
+        path: build/site
+
+    - name: Deploy to GitHub Pages
+      id: deployment
+      uses: actions/deploy-pages@v2
