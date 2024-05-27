@@ -1,5 +1,6 @@
 name: json_pkg
 title: JSON Package
+version: true
 start_page: welcome.adoc
 asciidoc:
   attributes:
