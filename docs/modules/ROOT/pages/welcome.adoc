@@ -59,12 +59,13 @@ Please refer to xref:changelog.adoc[Changelog].
 :url-zhouchuanrui-jsoninsv: https://github.com/zhouchuanrui/JSONinSV
 :url-json-for-vhdl: https://github.com/Paebbels/JSON-for-VHDL
 :url-json-test-suite: https://github.com/nst/JSONTestSuite
+:url-fusesoc: https://github.com/olofk/fusesoc
 
 [cols="3s,1,10"]
 |===
 | DVCon US 2018, IEEE-Compatible UVM Reference Implementation and Verification Components: Objects and Policies, Mark Peryer.
 | {url-ieee-compatible-uvm-2018}[Slides]
-| Slides contain references to a JSON `uvm_printer`` with some code.
+| Slides contain references to a JSON `uvm_printer` with some code.
 
 | SNUG 2013, Applications of Custom UVM Report Servers, Gordon Mc Gregor
 | {url-custom-uvm-report-servers}[Artice], {url-verilab-uvm-structured-logs}[sources]
@@ -72,11 +73,11 @@ Please refer to xref:changelog.adoc[Changelog].
 
 | UVM Tutorial for Candy Lovers – 33. Defining do_print
 | {url-uvm-tutorial-for-candy-lovers-defining-do_print}[Link]
-| Famous UVM tutorial shows how to implement simple JSON uvm_printer with code.
+| Famous UVM tutorial shows how to implement simple JSON `uvm_printer` with code.
 
 | JSON.sv
 | {url-milestone12-json}[Github]
-| Implementation of JSON encoder/decoder in SystemVerilog. Integrated into FuseSoc ecosystem.
+| Implementation of JSON encoder/decoder in SystemVerilog. Integrated into {url-fusesoc}[FuseSoc] ecosystem.
 It has only few tests and almost no documentation.
 
 | JSONPacketParser
@@ -85,7 +86,7 @@ It has only few tests and almost no documentation.
 
 | JSONinSV
 | {url-zhouchuanrui-jsoninsv}[Github]
-| JSON encoder and decoder in SystemVerilog. It is well tested (own framework is introduced). Project comes with well structured documentation (on Chinese, though).
+| JSON encoder and decoder in SystemVerilog. It is well tested (own framework is introduced). Project comes with a nicely structured README (on Chinese, though).
 
 | JSON-for-VHDL
 | {url-json-for-vhdl}[Github]
