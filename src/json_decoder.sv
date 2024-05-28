@@ -4,7 +4,7 @@ class json_decoder;
   // Public methods
   //----------------------------------------------------------------------------
   // Try to load and decode string into JSON value
-  extern static function json_result load_string(const ref string str);
+  extern static function json_result load_string(string str);
 
   // Try to load and decode file into JSON value
   extern static function json_result load_file(string path);
@@ -97,7 +97,7 @@ function json_decoder::new();
 endfunction : new
 
 
-function json_result json_decoder::load_string(const ref string str);
+function json_result json_decoder::load_string(string str);
   parsed_s parsed;
   json_error error;
   parser_result result;
