@@ -8,7 +8,7 @@ content:
       branches: [main]
 asciidoc:
   extensions:
-    - asciidoctor-diagram
+    - asciidoctor-kroki
   attributes:
     toc: 'true'
     toclevels: 3
