@@ -1,5 +1,6 @@
 :url-svjson-github: https://github.com/esynr3z/svjson/tree/{page-origin-refname}
 :url-svjson-github-src: https://github.com/esynr3z/svjson/blob/{page-origin-refname}/src
+:url-ecma-404: https://ecma-international.org/publications-and-standards/standards/ecma-404
 // Common classes
 :class-json-decoder: {url-svjson-github-src}/json_decoder.sv[json_decoder]
 :class-json-encoder: {url-svjson-github-src}/json_encoder.sv[json_encoder]
@@ -48,8 +49,80 @@ As a result, integration process consists of several simple steps:
 
 == JSON Values
 
+{url-ecma-404}[JSON specification] states that there are 6 JSON value types.
+
+The implementation follows the specification - these types are represented as a special wrapper classes of underlying SV types. However, there are some nuances. Summary table is below.
+
+.JSON values summary
+[cols="1,1,1,3"]
+|===
+| JSON value | Class | Underlying SV type | Note
+
+| - | `{class-json-value}` | - | Generic JSON value. Base class for all other values.
+
+| Object | `{class-json-object}` | Associative array | Class representation of JSON object.
+
+| Array | `{class-json-array}` | Queue | Class representation of JSON array.
+
+.2+| Number
+| `{class-json-int}` | `longint` | Class representation of JSON integer number.
+| `{class-json-real}` | `real` | Class representation of JSON real number.
+
+| Bool | `{class-json-bool}` | `bit` | Class representation of JSON bool.
+
+.3+| String
+
+| `{class-json-string}` | `string` | Class representation of JSON string.
+| `{class-json-enum}` | Parameterized enum | Class is inherited from JSON string. Can be used to convert custom enum type to and from string during JSON manipulations.
+| `{class-json-bits}` | Parameterized bit vector | Class is inherited from JSON string. Can be used to convert bit vector of custom width to and from string during JSON manipulations. This allows to use numbers of any width represented as strings in JSON.
+
+| Null | - | `null` | There is no special class to represent JSON null. Native `null` is used for this.
+|===
+
+Inheritance tree for JSON values is shown below.
+
+[plantuml,svg]
+....
+abstract json_value
+
+json_value <|-- json_object
+json_value <|-- json_array
+json_value <|-- json_string
+
+class json_enum<ENUM_T>
+json_string <|-- json_enum
+
+class json_bits<BITS_T>
+json_string <|-- json_bits
+
+json_value <|-- json_int
+json_value <|-- json_real
+json_value <|-- json_bool
+....
+
+
+=== Base JSON Value
+
+=== JSON Object
+
 [[note-object-keys-order]]
 NOTE: SystemVerilog associative array is used to implement JSON object. As a consequence, all keys are stored in a lexicographical order (IEEE IEEE-1800-2023, ch. 7.8.2) and original order of keys within source JSON is lost. This also affects encoder, so it always prints keys in a lexicographical order.
+
+=== JSON Array
+
+=== JSON String
+
+==== Extension: enum
+
+==== Extension: bit vector
+
+=== JSON Number
+
+==== Integer
+
+==== Real
+
+=== JSON Bool
 
 == JSON Decoder
 
