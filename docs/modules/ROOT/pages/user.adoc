@@ -101,28 +101,28 @@ json_value <|-- json_bool
 ....
 
 
-=== Base JSON Value
+=== Base Value
 
-=== JSON Object
+=== Object
 
 [[note-object-keys-order]]
 NOTE: SystemVerilog associative array is used to implement JSON object. As a consequence, all keys are stored in a lexicographical order (IEEE IEEE-1800-2023, ch. 7.8.2) and original order of keys within source JSON is lost. This also affects encoder, so it always prints keys in a lexicographical order.
 
-=== JSON Array
+=== Array
 
-=== JSON String
+=== String
 
-==== Extension: enum
+==== Extension: Enum
 
-==== Extension: bit vector
+==== Extension: Bit Vector
 
-=== JSON Number
+=== Number
 
-==== Integer
+==== Integer Number
 
-==== Real
+==== Real Number
 
-=== JSON Bool
+=== Bool
 
 == JSON Decoder
 
