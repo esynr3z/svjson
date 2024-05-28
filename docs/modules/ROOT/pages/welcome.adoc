@@ -29,11 +29,11 @@ Please refer to xref:user.adoc#integration[User Guide: Integration] section.
 
 == How to parse JSON file or string?
 
-Please refer to xref:user.adoc#json-decoding[User Guide: JSON decoding] section.
+Please refer to xref:user.adoc#json-decoder[User Guide: JSON Decoder] section.
 
 == How to dump JSON file or string?
 
-Please refer to xref:user.adoc#json-decoding[User Guide: JSON encoding] section.
+Please refer to xref:user.adoc#json-encoder[User Guide: JSON Encoder] section.
 
 == Where complete API is described?
 
