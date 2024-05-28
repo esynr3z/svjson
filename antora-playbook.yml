@@ -8,7 +8,7 @@ content:
       branches: [main]
 asciidoc:
   extensions:
-    - require('asciidoctor-diagram')
+    - asciidoctor-diagram
   attributes:
     toc: 'true'
     toclevels: 3
