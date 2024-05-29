@@ -1,6 +1,8 @@
 :url-svjson-github: https://github.com/esynr3z/svjson/tree/{page-origin-refname}
 :url-svjson-github-src: https://github.com/esynr3z/svjson/blob/{page-origin-refname}/src
 :url-ecma-404: https://ecma-international.org/publications-and-standards/standards/ecma-404
+:url-rust-result: https://doc.rust-lang.org/rust-by-example/error/result.html
+:url-tagged-unions: https://prbs23.com/blog/posts/considering-systemverilog-tagged-unions/
 // Common classes
 :class-json-decoder: {url-svjson-github-src}/json_decoder.sv[json_decoder]
 :class-json-encoder: {url-svjson-github-src}/json_encoder.sv[json_encoder]
@@ -334,4 +336,127 @@ TODO
 
 == JSON Error and Result
 
-TODO
+Classes `{class-json-result}#(VAL_T)` and `{class-json-error}` provide a robust way to manage success and error states during JSON manipulations. These classes are inspired by {url-rust-result}[Rust's Result enumeration], allowing for a clear and concise way to propagate and handle errors in SystemVerilog.
+
+=== Result
+
+The `{class-json-result}#(VAL_T)` class represents the result of an operation that can either succeed with a value (Rust's `Ok`) or fail with an error (Rust's `Err`). This class is parametrized with a value type (`VAL_T`) for successful results, while errors are hardcoded to use the `{class-json-error}` type. By default, `VAL_T` is `{class-json-value}`.
+
+The error handling mechanism is designed with pattern matching in mind to enable handling different outcomes in a structured manner. However, SystemVerilog provides true pattern matching only for {url-tagged-unions}[tagged unions], which are still quite exotic, so pattern matching emulation with "reverse case" is suggested:
+
+.Pattern matching using "reverse case"
+[source,systemverilog]
+----
+json_result#(json_value) result = json_decoder::load_file("foo.json");
+json_value value;
+json_error error;
+
+case (1)
+  result.matches_err(error): begin
+    // Handle error
+  end
+
+  result.matches_ok(value): begin
+    // Use value
+  end
+endcase
+----
+
+Pattern matching can be also more strict:
+
+.Stricter pattern matching with specific errors
+[source,systemverilog]
+----
+json_result#(string) result = json_encoder::dump_file(obj, path);
+string value;
+json_error error;
+
+case (1)
+  result.matches_err_eq(json_error::TYPE_CONVERSION, error): begin
+    // Handle "type conversion" error
+  end
+
+  result.matches_err_eq(json_error::FILE_NOT_OPENED, error): begin
+    // Handle "file not opened" error
+  end
+
+  result.matches_ok(value): begin
+    // Use value if needed
+  end
+endcase
+----
+
+The class provides methods to check whether the result is successful `is_ok()` or not `is_err()` without pattern matching.
+Also, there is a way to skip graceful error handling and get a value immediately using `unwrap()` method. However, this may lead to fatal error and stoping simulation in case of error being unwrapped.
+
+.json_result methods outline
+[cols="1,1"]
+|===
+| `json_result#(VAL_T) ok(VAL_T value)` | Static method to create an OK result.
+| `json_result#(VAL_T) err(json_error error)` | Static method to create an error result.
+| `bit is_ok()` | Checks if the result is an OK.
+| `bit is_err()` | Checks if the result is an error.
+| `bit matches_ok(output VAL_T value)` | Matches the result with an OK value and retrieves the value if successful. Return 1 on successful match, 0 otherwise.
+| `bit matches_err(output json_error error)` | Matches the result with any error and retrieves the error if successful. Return 1 on successful match, 0 otherwise.
+| `bit matches_err_eq(input json_error::kind_e kind, output json_error error)` | Matches the result with a specific error kind and retrieves the error if successful. Return 1 on successful match, 0 otherwise.
+| `VAL_T unwrap()`: Returns the value from an OK result or throws a fatal error if it is an error.
+|===
+
+=== Error
+
+The `{class-json-error}` class encapsulates various types of errors that can occur during JSON operations.
+Each error is characterized by an error kind (`json_error::kind_e`) and additional context such as a description, file, line number, and the JSON string that caused the error.
+
+The `json_error::kind_e` enumeration defines the following error types:
+
+.json_error types
+[cols="1,4"]
+|===
+| Error Type | Description
+| `EOF_VALUE` |                    EOF while parsing some JSON value
+| `EOF_OBJECT` |                   EOF while parsing an object
+| `EOF_ARRAY` |                    EOF while parsing an array
+| `EOF_STRING` |                   EOF while parsing a string
+| `EOF_LITERAL` |                  EOF while parsing a literal
+| `EXPECTED_TOKEN` |               Current character should be some expected token
+| `EXPECTED_COLON` |               Current character should be ':'
+| `EXPECTED_OBJECT_COMMA_OR_END` | Current character should be either ',' or '}'
+| `EXPECTED_ARRAY_COMMA_OR_END` |  Current character should be either ',' or ']'
+| `EXPECTED_DOUBLE_QUOTE` |        Current character should be '\"'
+| `EXPECTED_VALUE` |               Current character should start some JSON value
+| `INVALID_ESCAPE` |               Invaid escape code
+| `INVALID_CHAR` |                 Unexpected control character
+| `INVALID_LITERAL` |              Invaid literal that should be 'true', 'false', or 'null'
+| `INVALID_NUMBER` |               Invaid number
+| `INVALID_OBJECT_KEY` |           String must be used as a key
+| `TRAILING_COMMA` |               Unexpected comma after the last value
+| `TRAILING_CHARS` |               Unexpected characters after the JSON value
+| `DEEP_NESTING` |                 This JSON value exceeds nesing limit for a decoder
+| `TYPE_CONVERSION` |              Type conversion failed
+| `FILE_NOT_OPENED` |              File opening failed
+| `NOT_IMPLEMENTED` |              Feature is not implemented
+| `INTERNAL` |                     Unspecified internal error
+|===
+
+The class have a few public methods, which can facilitate error handling and debugging.
+
+.json_error methods outline
+[cols="1,1"]
+|===
+a| 
+[source,systemverilog]
+----
+json_error create(
+  kind_e kind,
+  string description="",
+  string json_str="",
+  int json_pos=-1,
+  string source_file="",
+  int source_line=-1
+);
+----
+| Creates a new error with the specified kind and context.
+| `void throw_error()`  | Logs the error.
+| `void throw_fatal()`  | Logs the error and finishes simulation.
+| `string to_string()`  | Converts the error to a human readable string.
+|===
