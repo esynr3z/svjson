@@ -130,10 +130,10 @@ NOTE: SystemVerilog associative array is used to implement JSON object. As a con
 | `new(values_t values)` | Create an instance from an associative array.
 | `json_object from(values_t values)` | Static method to create an instance from an associative array. Alternative to standard constructor.
 | `json_value get(string key)` | Get a value at the provided key.
-| `set(string key, json_value value)` | Set the given value for the provided key.
+| `void set(string key, json_value value)` | Set the given value for the provided key.
 | `values_t get_values()` | Get all internal values as associative array.
 | `keys_t get_keys()` | Get all keys for internal values as queue.
-| `flush()` | Remove all stored values.
+| `void flush()` | Remove all stored values.
 | `size()`, `exists()`, `delete()`, `first()`, `last()`, `next()`, `prev()` | Thin wrappers over the standard associative array methods which also mimic their signature and return values.
 |===
 
@@ -151,17 +151,67 @@ so you can expect that this class will operate according to behavior of an origi
 | `new(values_t values)` | Create an instance from a queue.
 | `json_array from(values_t values)` | Static method to create an instance from a queue. Alternative to standard constructor.
 | `json_value get(int index)` | Get a value at the provided index.
-| `set(int index, json_value value)` | Set the given value for the provided index.
+| `void set(int index, json_value value)` | Set the given value for the provided index.
 | `values_t get_values()` | Get all internal values as queue.
-| `flush()` | Remove all stored values.
+| `void flush()` | Remove all stored values.
 | `size()`, `insert()`, `delete()`, `push_front()`, `push_back()`, `pop_front()`, `pop_back()` | Thin wrappers over the standard queue methods which also mimic their signature and return values.
 |===
 
 === String
 
+`{class-json-string}` wrapper class represens standard JSON string value type using SV string.
+
+IMPORTANT: `\b` and `\u` escape sequences are not supported.
+
+.json_string methods outline
+[cols="1,1"]
+|===
+| `new(string value)` | Create an instance from a string.
+| `json_string from(string value)` | Static method to create an instance from a string. Alternative to standard constructor.
+| `string get()` | Get internal string value.
+| `void set(string value)` | Set internal string value.
+|===
+
 ==== Extension: Enum
 
+`{class-json-enum}#(ENUM_T)` wrapper class, that inherits from `{class-json-string}` and represens SV `enum` value as standard JSON string.
+The class is parametrized with type `ENUM_T` to work with any enumeration.
+
+Purpose of this class is to facilitate using SV enum with JSON decoder/encoder. For example, JSON values tree can be created with `{class-json-enum}` instances and then they can be seamlessly converted to strings during encoding. And vice versa for decoding.
+
+.json_enum#(ENUM_T) methods outline
+[cols="1,1"]
+|===
+| `new(ENUM_T value)` | Create an instance from an `enum`.
+| `json_enum#(ENUM_T) from(ENUM_T value)` | Static method to create an instance from an `enum`. Alternative to standard constructor.
+| json_result#(json_enum#(ENUM_T)) from_string(string value) | Static method to create an instance from a `string`. Alternative to standard constructor. This option is failable, because only specific string (enumeration variants) can be used to create valid `json_enum`.
+| `string get()` | Get internal enum value as a string.
+| `void set(string value)` | Set internal enum value from a string. This function may fail due to wrong value is provided, and this fail is unrecoverable (fatal).
+| `ENUM_T get_enum()` | Get internal enum value.
+| `void set_enum(ENUM_T value)` | Set internal enum value.
+|===
+
 ==== Extension: Bit Vector
+
+`{class-json-bits}#(BITS_T)` wrapper class, that inherits from `{class-json-string}` and represens SV bit vector value (e.g. `bit[511:0]`) as standard JSON string.
+The class is parametrized with type `BITS_T` to work with any bit vector - any width, signed or unsigned. Packed structures can be used as well.
+
+Purpose of this class is to facilitate using SV bit vectors of arbitrary size with JSON decoder/encoder.
+As a result, any number, that cannot be represented as JSON number using `longint` or `real`, can be represented as a string.
+
+There is an internal property `preferred_radix`, that can take values: `json_bits::RADIX_DEC`, `json_bits::RADIX_BIN` or `json_bits::RADIX_HEX`. This property can be changed any time and affects how bit vector is converted to the string - what base is used.
+
+.json_bits#(BITS_T) methods outline
+[cols="1,1"]
+|===
+| `new(BITS_T value, radix_e preferred_radix=RADIX_DEC)` | Create an instance from a bit vector.
+| `json_bits#(BITS_T) from(BITS_T value, radix_e preferred_radix=RADIX_DEC)` | Static method to create an instance from a bit vector. Alternative to standard constructor.
+| `json_result#(json_bits#(BITS_T)) from_string(string value)` | Static method to create an instance from a `string`. Alternative to standard constructor. This option is failable, because only specific string can be used to create valid `json_bits`. It should contain only numbers "0"-"9", letters "a"-"f". Prefix "0x" is allowed for hexadecimal values and "0b" for binary ones. Radix is discovered automatically and saved into `preferred_radix`.
+| `string get()` | Get internal bit vector value as a string.
+| `void set(string value)` | Set internal bit vector value from a string. This function may fail due to wrong value is provided, and this fail is unrecoverable (fatal).
+| `BITS_T get_bits()` | Get internal bit vector value.
+| `set_bits(BITS_T value)` | Set internal bit vector value.
+|===
 
 === Number
 
