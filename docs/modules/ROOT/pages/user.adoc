@@ -100,7 +100,6 @@ json_value <|-- json_real
 json_value <|-- json_bool
 ....
 
-
 === Base Value
 
 Class `{class-json-value}` is a base abstract class for all JSON values. This class is mainly used for polymorphism goals - to represent any value while decoding/encoding JSON. It has no parameters or attributes and almost all of its methods are for introspection and convenient casting to one of concrete classes.
@@ -215,11 +214,46 @@ There is an internal property `preferred_radix`, that can take values: `json_bit
 
 === Number
 
+JSON standard does not specify requirements for number types, but usually it is more convenient to operate with integers and real numbers separately. Hence, several classes are used to represent JSON number.
+
 ==== Integer Number
+
+`{class-json-int}` wrapper class represens JSON integer number value using SV `longint`.
+
+.json_int methods outline
+[cols="1,1"]
+|===
+| `new(longint value)` | Create an instance from a `longint`.
+| `json_int from(longint value)` | Static method to create an instance from a `longint`. Alternative to standard constructor.
+| `longint get()` | Get internal `longint` value.
+| `void set(longint value)` | Set internal `longint` value.
+|===
 
 ==== Real Number
 
+`{class-json-real}` wrapper class represens JSON real number value using SV `real`.
+
+.json_real methods outline
+[cols="1,1"]
+|===
+| `new(real value)` | Create an instance from a `real`.
+| `json_real from(real value)` | Static method to create an instance from a `real`. Alternative to standard constructor.
+| `real get()` | Get internal `real` value.
+| `void set(real value)` | Set internal `real` value.
+|===
+
 === Bool
+
+`{class-json-bool}` wrapper class represens standard JSON bool value type using SV `bit`.
+
+.json_bool methods outline
+[cols="1,1"]
+|===
+| `new(bit value)` | Create an instance from a `bit`.
+| `json_bit from(bit value)` | Static method to create an instance from a `bit`. Alternative to standard constructor.
+| `bit get()` | Get internal `bit` value.
+| `void set(bit value)` | Set internal `bit` value.
+|===
 
 == JSON Decoder
 
