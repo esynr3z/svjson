@@ -49,7 +49,7 @@ As a result, integration process consists of several simple steps:
 
 == JSON Values
 
-{url-ecma-404}[JSON specification] states that there are 6 JSON value types.
+According to the {url-ecma-404}[JSON specification] there are 6 JSON value types.
 
 The implementation follows the specification - these types are represented as a special wrapper classes of underlying SV types. However, there are some nuances. Summary table is below.
 
@@ -103,12 +103,59 @@ json_value <|-- json_bool
 
 === Base Value
 
+Class `{class-json-value}` is a base abstract class for all JSON values. This class is mainly used for polymorphism goals - to represent any value while decoding/encoding JSON. It has no parameters or attributes and almost all of its methods are for introspection and convenient casting to one of concrete classes.
+
+.json_value methods outline
+[cols="1,1"]
+|===
+| `bit compare(json_value value)` | Perform compare with another instance. Return 1 if instances are equal and 0 otherwise.
+| `json_value clone()` | Create a deep copy of an instance.
+| `bit is_json_<val>` (e.g. `is_json_object`, `is_json_array`, etc.) | Check if current instance is specified type.
+| `json_result#(json_<val>) as_json_<val>()` (e.g. `as_json_object`, `as_json_array`, etc.) | Try to cast to specified concrete class.
+| `bit matches_json_<val>(output json_<val> value)` (e.g. `matches_json_object`, `matches_json_array`, etc.) | Another option of trying to cast to specified concrete class. In this case, instance is an `output` argument, and returned result is 1 for success, 0 otherwise.
+|===
+
 === Object
+
+`{class-json-object}` wrapper class represens standard JSON object value using SV `string`-indexed associative array of `{class-json-value}`. The class basically wraps standard SV associative array methods with some additional methods required to operate as JSON value.
+
+No additional checks are implemented for "out-of-range" accesses and similar, so you can expect that this class will operate according to behavior of an original underlying SV associative array.
 
 [[note-object-keys-order]]
 NOTE: SystemVerilog associative array is used to implement JSON object. As a consequence, all keys are stored in a lexicographical order (IEEE IEEE-1800-2023, ch. 7.8.2) and original order of keys within source JSON is lost. This also affects encoder, so it always prints keys in a lexicographical order.
 
+.json_object methods outline
+[cols="1,1"]
+|===
+| `new(values_t values)` | Create an instance from an associative array.
+| `json_object from(values_t values)` | Static method to create an instance from an associative array. Alternative to standard constructor.
+| `json_value get(string key)` | Get a value at the provided key.
+| `set(string key, json_value value)` | Set the given value for the provided key.
+| `values_t get_values()` | Get all internal values as associative array.
+| `keys_t get_keys()` | Get all keys for internal values as queue.
+| `flush()` | Remove all stored values.
+| `size()`, `exists()`, `delete()`, `first()`, `last()`, `next()`, `prev()` | Thin wrappers over the standard associative array methods which also mimic their signature and return values.
+|===
+
 === Array
+
+`{class-json-array}` wrapper class represens standard JSON array value using SV queue of `{class-json-value}`.
+The class basically wraps standard SV queue methods with some additional methods required to operate as JSON value.
+
+No additional checks are implemented for "out-of-range" accesses and similar,
+so you can expect that this class will operate according to behavior of an original underlying SV queue.
+
+.json_array methods outline
+[cols="1,1"]
+|===
+| `new(values_t values)` | Create an instance from a queue.
+| `json_array from(values_t values)` | Static method to create an instance from a queue. Alternative to standard constructor.
+| `json_value get(int index)` | Get a value at the provided index.
+| `set(int index, json_value value)` | Set the given value for the provided index.
+| `values_t get_values()` | Get all internal values as queue.
+| `flush()` | Remove all stored values.
+| `size()`, `insert()`, `delete()`, `push_front()`, `push_back()`, `pop_front()`, `pop_back()` | Thin wrappers over the standard queue methods which also mimic their signature and return values.
+|===
 
 === String
 

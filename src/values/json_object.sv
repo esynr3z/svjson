@@ -1,9 +1,9 @@
 // JSON object.
 // This wrapper class represens standard JSON object value using SV associative array.
-// The class basicly wraps standard SV associative array methods with some additional methods
+// The class basically wraps standard SV associative array methods with some additional methods
 // required to operate as JSON value.
 // No additional checks are implemented for "out-of-range" accesses and similar,
-// so you can expect that this class will operate according to behaviour of an original underlying SV ssociative array.
+// so you can expect that this class will operate according to behavior of an original underlying SV associative array.
 class json_object extends json_value implements json_object_encodable;
   typedef json_value values_t[string];
   typedef string keys_t[$];

@@ -1,8 +1,8 @@
 // JSON array.
 // This wrapper class represens standard JSON array value using SV queue.
-// The class basicly wraps standard SV queue methods with some additional methods required to operate as JSON value.
+// The class basically wraps standard SV queue methods with some additional methods required to operate as JSON value.
 // No additional checks are implemented for "out-of-range" accesses and similar,
-// so you can expect that this class will operate according to behaviour of an original underlying SV queue.
+// so you can expect that this class will operate according to behavior of an original underlying SV queue.
 class json_array extends json_value implements json_array_encodable;
   typedef json_value values_t[$];
 
