@@ -268,9 +268,9 @@ IMPORTANT: For the compatibility of EDA tools only pure ASCII character set has 
 
 Parsing result is returned as `{class-json-result}` instance, that wraps either `{class-json-error}` or `{class-json-value}`.
 To avoid error handling and get parsed value immediately method `unwrap()` can be used.
-However, `$fatal()` is thrown, when try to unwrap underlying error. This is described in details in <<json-error-and-result,JSON Error and Result>> section below.
+However, `$fatal()` is thrown, when try to unwrap underlying error. This is described in details in <<_json_error_and_result,JSON Error and Result>> section below.
 
-In case of successful parsing, after `json_value` is extracted out from the result, it can be inspected and casted to any known JSON value class. More details in <<json-values,JSON Values>> section.
+In case of successful parsing, after `json_value` is extracted out from the result, it can be inspected and casted to any known JSON value class. More details in <<_json_values,JSON Values>> section.
 
 IMPORTANT: Key order of any object being parsed is not preserved due to internal implementation, see <<note-object-keys-order,the note>>.
 
@@ -279,7 +279,7 @@ Decoder is recursive, therefore nesting depth is limited. The limit is 1024 by d
 Below are several examples of JSON decoding.
 
 .Parse JSON file without processing of possible errors
-[source,systemverilog]
+[source,verilog]
 ----
 initial begin
   // TODO
@@ -287,7 +287,7 @@ end
 ----
 
 .Parse JSON string with processing of possible errors
-[source,systemverilog]
+[source,verilog]
 ----
 initial begin
   // TODO
@@ -303,18 +303,18 @@ JSON encoder designed as an abstract class `{class-json-encoder}`. It allows to 
 
 NOTE: There is no recursion detection for encoder.
 
-Class {url-svjson-github-src}/encodable/json_value_encodable.sv[`json_value_encodable`] is a base interface class, that defines a tree of related <<json-encodable-interfaces,encodable classes>>. Any other class can implement one of these classes to use `json_encoder` for dumping into JSON. Default <<json-values,JSON value classes>> implement them out of the box.
+Class `{class-json-value-encodable}` is a base interface class, that defines a tree of related <<_json_encodable_interfaces,encodable classes>>. Any other class can implement one of these classes to use `json_encoder` for dumping into JSON. Default <<_json_values,JSON value classes>> implement them out of the box.
 
 Dumping result is returned as `{class-json-result}` instance, that wraps either `string` or `{class-json-error}`.
 To avoid error handling and get parsed value immediately method `unwrap()` can be used.
-However, `$fatal()` is thrown, when try to unwrap underlying error. This is described in details in <<json-error-and-result,JSON Error and Result>> section below.
+However, `$fatal()` is thrown, when try to unwrap underlying error. This is described in details in <<_json_error_and_result,JSON Error and Result>> section below.
 
 IMPORTANT: Keys of any object always follow lexicographical order while dumping due to internal implementation, see <<note-object-keys-order,the note>>.
 
 Below are several examples of JSON encoding.
 
 .Dump JSON file with processing of possible errors
-[source,systemverilog]
+[source,verilog]
 ----
 initial begin
   // TODO
@@ -322,7 +322,7 @@ end
 ----
 
 .Dump JSON string without processing of possible errors
-[source,systemverilog]
+[source,verilog]
 ----
 initial begin
   // TODO
@@ -345,7 +345,7 @@ The `{class-json-result}#(VAL_T)` class represents the result of an operation th
 The error handling mechanism is designed with pattern matching in mind to enable handling different outcomes in a structured manner. However, SystemVerilog provides true pattern matching only for {url-tagged-unions}[tagged unions], which are still quite exotic, so pattern matching emulation with "reverse case" is suggested:
 
 .Pattern matching using "reverse case"
-[source,systemverilog]
+[source,verilog]
 ----
 json_result#(json_value) result = json_decoder::load_file("foo.json");
 json_value value;
@@ -365,7 +365,7 @@ endcase
 Pattern matching can be also more strict:
 
 .Stricter pattern matching with specific errors
-[source,systemverilog]
+[source,verilog]
 ----
 json_result#(string) result = json_encoder::dump_file(obj, path);
 string value;
@@ -444,7 +444,7 @@ The class have a few public methods, which can facilitate error handling and deb
 [cols="1,1"]
 |===
 a| 
-[source,systemverilog]
+[source,verilog]
 ----
 json_error create(
   kind_e kind,
