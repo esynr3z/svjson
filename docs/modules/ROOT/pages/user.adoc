@@ -24,6 +24,7 @@
 :class-json-enum-encodable: {url-svjson-github-src}/encodable/json_enum_encodable.sv[json_enum_encodable]
 :class-json-int-encodable: {url-svjson-github-src}/encodable/json_int_encodable.sv[json_int_encodable]
 :class-json-object-encodable: {url-svjson-github-src}/encodable/json_object_encodable.sv[json_object_encodable]
+:class-json-array-encodable: {url-svjson-github-src}/encodable/json_array_encodable.sv[json_array_encodable]
 :class-json-real-encodable: {url-svjson-github-src}/encodable/json_real_encodable.sv[json_real_encodable]
 :class-json-string-encodable: {url-svjson-github-src}/encodable/json_string_encodable.sv[json_string_encodable]
 
@@ -331,8 +332,66 @@ end
 
 === JSON Encodable Interfaces
 
-TODO
+The encoder designed in such way, that it accepts object of any class if it implements one of "encodable" interface classes.
+Inheritance tree for these classes is shown below.
 
+[plantuml,svg]
+....
+interface json_value_encodable
+interface json_object_encodable
+interface json_array_encodable
+interface json_string_encodable
+interface json_int_encodable
+interface json_real_encodable
+interface json_bool_encodable
+
+json_value_encodable <|-- json_object_encodable
+json_value_encodable <|-- json_array_encodable
+json_value_encodable <|-- json_string_encodable
+json_value_encodable <|-- json_int_encodable
+json_value_encodable <|-- json_real_encodable
+json_value_encodable <|-- json_bool_encodable
+....
+
+All classes require only single method `to_json_encodable()` to be implemented.
+It is expected that the only one of that interfaces is implemented in any other class.
+Default <<_json_values,JSON value classes>> implement these interfaces out of the box.
+
+Method signatures are shown in the table below.
+
+.Interface methods fot json_value_encodable derived classes
+[cols="1,3"]
+|===
+| Class | Method
+
+| `{class-json-object-encodable}` | `json_object_encodable::values_t to_json_encodable()`
+| `{class-json-array-encodable}` | `json_object_encodable::values_t to_json_encodable()`
+| `{class-json-string-encodable}` | `string to_json_encodable()`
+| `{class-json-int-encodable}` | `longint to_json_encodable()`
+| `{class-json-real-encodable}` | `real to_json_encodable()`
+| `{class-json-bool-encodable}` | `bit to_json_encodable()`
+|===
+
+For example, there is a class `foo_cfg` that inherits `uvm_object` and stores some configuration values.
+This class can also implement `{class-json-object-encodable}` interface, and as a result it will become encodable into JSON object.
+
+.Make custom class encodable as JSON object
+[source,verilog]
+----
+initial begin
+  // TODO
+end
+----
+
+Then any instance of that class can be easily dumped to JSON using `{class-json-encoder}`
+
+.Dump custom class to JSON string
+[source,verilog]
+----
+initial begin
+  // TODO
+end
+----
 
 == JSON Error and Result
 
