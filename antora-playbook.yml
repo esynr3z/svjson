@@ -12,6 +12,7 @@ asciidoc:
   attributes:
     toc: 'true'
     toclevels: 3
+    source-highlighter: highlight.js
 ui:
   bundle:
     url: https://gitlab.com/antora/antora-ui-default/-/jobs/artifacts/HEAD/raw/build/ui-bundle.zip?job=bundle-stable
