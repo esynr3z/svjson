@@ -8,7 +8,8 @@
 json_error jerror;
 json_value jvalue;
 
-// Try to load file and get `json_result`, which can be either `json_error` or `json_value`.
+// Try to load file and get `json_result`,
+// which can be either `json_error` or `json_value`.
 json_result#(json_value) load_res = json_decoder::load_file("example.json");
 
 // Use "pattern matching" to get value
