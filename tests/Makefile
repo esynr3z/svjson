@@ -1,4 +1,4 @@
-.PHONY: all clean test
+.PHONY: all clean test test_verilator
 
 extra_args ?=
 
@@ -10,7 +10,9 @@ export PATH := $(SVUNIT_INSTALL)/bin:$(PATH)
 
 all: test
 
-test:
+test: test_verilator
+
+test_verilator:
 	runSVUnit \
 		-s verilator \
 		-l run.log \
@@ -20,7 +22,7 @@ test:
 		-f $(SVJSON_ROOT)/src/filelist.f \
 		-f $(SVJSON_ROOT)/tests/filelist.f \
 		$(extra_args) \
-		-o work
+		-o work_verilator
 
 clean:
-	rm -rf work
+	rm -rf work_*

@@ -282,55 +282,13 @@ Below are several examples of JSON decoding.
 .Parse JSON string without processing of possible errors
 [source,verilog]
 ----
-string data = "{\"recipeName\":\"Vegetarian Pizza\",\"servings\":4,\"isVegan\":true}";
-
-initial begin
-  // Try to load string and get `json_result`, which can be either `json_error` or `json_value`.
-  // First unwrap is required to get `json_value` from load result and avoid error handling.
-  // Second unwrap is required to avoid error handling of possible unsuccessfull cast to `json_object`.
-  json_object jobject = json_decoder::load_string(data).unwrap().as_json_object().unwrap();
-
-  // Try to get a string for recipe name.
-  // Unwrap is here to avoid error handling of possible unsuccessfull cast to `json_string`.
-  string recipe_name = jobject.get("recipeName").as_json_string().unwrap().get();
-  $display("Recipe name is %s", recipe_name);
-end
+include::example$decoder0.svh[]
 ----
 
 .Parse JSON file with processing of possible errors
 [source,verilog]
 ----
-// Content of example.json:
-// {
-//     "recipeName": "Vegetarian Pizza",
-//     "servings": 4,
-//     "isVegan": true
-// }
-
-initial begin
-  json_error jerror;
-  json_value jvalue;
-
-  // Try to load file and get `json_result`, which can be either `json_error` or `json_value`.
-  json_result#(json_value) load_res = json_decoder::load_file("example.json");
-
-  // Use "pattern matching" to get value
-  case (1)
-    load_res.matches_err(jerror): $fatal(jerror.to_string());
-
-    load_res.matches_ok(jvalue): begin
-      json_object jobject;
-      json_result#(json_object) cast_res = jvalue.as_json_object();
-
-      // Traditional if..else can be used as well
-      if (cast_res.matches_err(jerror)) begin
-        $fatal(jerror.to_string());
-      end else if (cast_res.matches_ok(jobject)) begin
-        $display("Keys of an object: %p", jobject.get_keys());
-      end
-    end
-  endcase
-end
+include::example$decoder1.svh[]
 ----
 
 == JSON Encoder
