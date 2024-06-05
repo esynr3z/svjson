@@ -459,6 +459,22 @@ case (1)
 endcase
 ----
 
+Traditional `if..else` can be also used
+
+.Pattern matching using if..else
+[source,verilog]
+----
+json_result#(json_value) result = json_decoder::load_file("foo.json");
+json_value value;
+json_error error;
+
+if (result.matches_err(error)) begin
+  // Handle error
+end else if (result.matches_ok(value)) begin
+  // Use value
+end
+----
+
 Pattern matching can be also more strict:
 
 .Stricter pattern matching with specific errors
@@ -540,7 +556,7 @@ The class have a few public methods, which can facilitate error handling and deb
 .json_error methods outline
 [cols="1,1"]
 |===
-a| 
+a|
 [source,verilog]
 ----
 json_error create(
