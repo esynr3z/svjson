@@ -18,7 +18,7 @@ case (1)
 
   load_res.matches_ok(jvalue): begin
     json_object jobject;
-    json_result#(json_object) cast_res = jvalue.as_json_object();
+    json_result#(json_object) cast_res = jvalue.as_object();
 
     // Traditional if..else can be used as well
     if (cast_res.matches_err(jerror)) begin

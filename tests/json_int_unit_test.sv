@@ -43,7 +43,7 @@ module json_int_unit_test;
   // Clone json_int instance
   `SVTEST(clone_test) begin
     json_int orig = json_int::from(42);
-    json_int clone = orig.clone().as_json_int().unwrap();
+    json_int clone = orig.clone().as_int().unwrap();
     `FAIL_IF(orig == clone)
     `FAIL_UNLESS(orig.get() == clone.get())
   end `SVTEST_END
@@ -109,12 +109,12 @@ module json_int_unit_test;
     json_int jint = json_int::from(42);
     json_value jvalue = jint;
 
-    `FAIL_IF(jvalue.is_json_object())
-    `FAIL_IF(jvalue.is_json_array())
-    `FAIL_IF(jvalue.is_json_string())
-    `FAIL_UNLESS(jvalue.is_json_int())
-    `FAIL_IF(jvalue.is_json_real())
-    `FAIL_IF(jvalue.is_json_bool())
+    `FAIL_IF(jvalue.is_object())
+    `FAIL_IF(jvalue.is_array())
+    `FAIL_IF(jvalue.is_string())
+    `FAIL_UNLESS(jvalue.is_int())
+    `FAIL_IF(jvalue.is_real())
+    `FAIL_IF(jvalue.is_bool())
   end `SVTEST_END
 
 
@@ -130,12 +130,12 @@ module json_int_unit_test;
     json_int orig_jint = json_int::from(42);
     json_value jvalue = orig_jint;
 
-    `FAIL_IF(jvalue.matches_json_object(jobject))
-    `FAIL_IF(jvalue.matches_json_array(jarray))
-    `FAIL_IF(jvalue.matches_json_string(jstring))
-    `FAIL_UNLESS(jvalue.matches_json_int(jint))
-    `FAIL_IF(jvalue.matches_json_real(jreal))
-    `FAIL_IF(jvalue.matches_json_bool(jbool))
+    `FAIL_IF(jvalue.matches_object(jobject))
+    `FAIL_IF(jvalue.matches_array(jarray))
+    `FAIL_IF(jvalue.matches_string(jstring))
+    `FAIL_UNLESS(jvalue.matches_int(jint))
+    `FAIL_IF(jvalue.matches_real(jreal))
+    `FAIL_IF(jvalue.matches_bool(jbool))
 
     `FAIL_UNLESS(jint == orig_jint)
   end `SVTEST_END
@@ -153,12 +153,12 @@ module json_int_unit_test;
     json_int orig_jint = json_int::from(42);
     json_value jvalue = orig_jint;
 
-    res_jobject = jvalue.as_json_object();
-    res_jarray = jvalue.as_json_array();
-    res_jstring = jvalue.as_json_string();
-    res_jint = jvalue.as_json_int();
-    res_jreal = jvalue.as_json_real();
-    res_jbool = jvalue.as_json_bool();
+    res_jobject = jvalue.as_object();
+    res_jarray = jvalue.as_array();
+    res_jstring = jvalue.as_string();
+    res_jint = jvalue.as_int();
+    res_jreal = jvalue.as_real();
+    res_jbool = jvalue.as_bool();
 
     `FAIL_IF(res_jobject.is_ok())
     `FAIL_IF(res_jarray.is_ok())

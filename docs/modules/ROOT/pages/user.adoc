@@ -112,9 +112,9 @@ Class `{class-json-value}` is a base abstract class for all JSON values. This cl
 |===
 | `bit compare(json_value value)` | Perform compare with another instance. Return 1 if instances are equal and 0 otherwise.
 | `json_value clone()` | Create a deep copy of an instance.
-| `bit is_json_<val>` (e.g. `is_json_object`, `is_json_array`, etc.) | Check if current instance is specified type.
-| `json_result#(json_<val>) as_json_<val>()` (e.g. `as_json_object`, `as_json_array`, etc.) | Try to cast to specified concrete class.
-| `bit matches_json_<val>(output json_<val> value)` (e.g. `matches_json_object`, `matches_json_array`, etc.) | Another option of trying to cast to specified concrete class. In this case, instance is an `output` argument, and returned result is 1 for success, 0 otherwise.
+| `bit is_<val>` (e.g. `is_object`, `is_array`, etc.) | Check if current instance is specified type.
+| `json_result#(json_<val>) as_<val>()` (e.g. `as_object`, `as_array`, etc.) | Try to cast to specified concrete class.
+| `bit matches_<val>(output json_<val> value)` (e.g. `matches_object`, `matches_array`, etc.) | Another option of trying to cast to specified concrete class. In this case, instance is an `output` argument, and returned result is 1 for success, 0 otherwise.
 |===
 
 === Object
