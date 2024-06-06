@@ -400,25 +400,13 @@ Method signatures are shown in the table below.
 | `{class-json-bool-encodable}` | `bit to_json_encodable()`
 |===
 
-For example, there is a class `foo_cfg` that inherits `uvm_object` and stores some configuration values.
-This class can also implement `{class-json-object-encodable}` interface, and as a result it will become encodable into JSON object.
+For example, there is a class `some_cfg` that stores some configuration values and can be a part of any inheritance tree.
+This class can implement `{class-json-object-encodable}` interface, and as a result it will become encodable into JSON object.
 
 .Make custom class encodable as JSON object
 [source,verilog]
 ----
-initial begin
-  // TODO
-end
-----
-
-Then any instance of that class can be easily dumped to JSON using `{class-json-encoder}`
-
-.Dump custom class to JSON string
-[source,verilog]
-----
-initial begin
-  // TODO
-end
+include::example$encodable.svh[]
 ----
 
 == JSON Error and Result

@@ -26,6 +26,8 @@ module examples_unit_test;
     $fclose(file_descr);
   endfunction : write_file
 
+  `include "encodable.svh"
+
   `SVUNIT_TESTS_BEGIN
 
   `SVTEST(decoder0_test) begin
@@ -59,6 +61,18 @@ module examples_unit_test;
     `include "encoder1.svh"
   end `SVTEST_END
 
+
+  `SVTEST(encodable_test) begin
+    some_config cfg = new();
+
+    cfg.max_addr = 32768;
+    cfg.is_active = 0;
+    cfg.id = "super_agent";
+
+    dump_config(cfg);
+  end `SVTEST_END
+
   `SVUNIT_TESTS_END
+
 
 endmodule : examples_unit_test
