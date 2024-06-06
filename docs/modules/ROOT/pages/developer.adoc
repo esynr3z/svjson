@@ -1,3 +1,29 @@
+:url-svunit: https://github.com/svunit/svunit
+:url-json-test-suite: https://github.com/nst/JSONTestSuite
+:url-verilator-github: https://github.com/verilator/verilator
+:url-antora: https://antora.org
+:url-asciidoc: https://asciidoc.org
+:url-github-pages: https://pages.github.com
+:url-conventional-commits: https://www.conventionalcommits.org/en/v1.0.0
+:url-keep-a-changelog: https://keepachangelog.com/en/1.1.0
+:url-semantic-versioning: https://semver.org/spec/v2.0.0.html
+
 = Developer guide
 
-TODO
+== HDL
+
+* Code tested with {url-svunit}[SVUnit] using {url-json-test-suite}[JSONTestSuite] and custom tests
+* Main simulator for development is {url-verilator-github}[Verilator 5.24]
+* [TODO] No linting and code formating tools are used yet
+
+== Documentation
+
+* All documentation is written in {url-asciidoc}[Asciidoc]
+* Documentation site ({url-github-pages}[Github Pages]) is generated via {url-antora}[Antora]
+* [TODO] NaturalDocs generated class reference documentation
+
+== Git
+
+* Git messages follows {url-conventional-commits}[Conventional Commits] specification
+* Changelog format follows {url-keep-a-changelog}[Keep a Changelog] specification
+* Versioning is based on {url-semantic-versioning}[Semantic Versioning].

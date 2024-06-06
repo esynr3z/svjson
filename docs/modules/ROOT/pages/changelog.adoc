@@ -1,3 +1,23 @@
+:url-keep-a-changelog: https://keepachangelog.com/en/1.1.0
+:url-semantic-versioning: https://semver.org/spec/v2.0.0.html
+
 = Changelog
 
-TODO
+All notable changes to this project will be documented in this file.
+
+The format is based on {url-keep-a-changelog}[Keep a Changelog],
+and this project adheres to {url-semantic-versioning}[Semantic Versioning].
+
+== [Unreleased]
+=== Added
+=== Fixed
+=== Changed
+=== Removed
+
+== [1.0.0] - 2024-06-06
+
+### Added
+
+- Implement JSON library
+- Implement infrastructure
+- Write documentation
