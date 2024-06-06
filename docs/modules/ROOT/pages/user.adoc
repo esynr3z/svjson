@@ -355,9 +355,7 @@ include::example$encoder0.svh[]
 .Dump JSON file with processing of possible errors
 [source,verilog]
 ----
-initial begin
-  // TODO
-end
+include::example$encoder1.svh[]
 ----
 
 === JSON Encodable Interfaces

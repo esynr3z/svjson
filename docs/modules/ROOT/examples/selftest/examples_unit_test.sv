@@ -54,6 +54,11 @@ module examples_unit_test;
     `include "encoder0.svh"
   end `SVTEST_END
 
+
+  `SVTEST(encoder1_test) begin
+    `include "encoder1.svh"
+  end `SVTEST_END
+
   `SVUNIT_TESTS_END
 
 endmodule : examples_unit_test
