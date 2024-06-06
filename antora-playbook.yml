@@ -5,7 +5,8 @@ content:
   sources:
     - url: https://github.com/esynr3z/svjson.git
       start_path: docs
-      branches: [main, v1.0.0]
+      branches: [main]
+      tags: v*
 asciidoc:
   extensions:
     - asciidoctor-kroki
