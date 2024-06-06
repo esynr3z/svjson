@@ -25,22 +25,40 @@ virtual class json_value implements json_value_encodable;
   extern virtual function bit matches_bool(output json_bool value);
 
   // Try to represent current value as `json_object`
-  extern virtual function json_result#(json_object) as_object();
+  extern virtual function json_result#(json_object) try_into_object();
 
   // Try to represent current value as `json_array`
-  extern virtual function json_result#(json_array) as_array();
+  extern virtual function json_result#(json_array) try_into_array();
 
   // Try to represent current value as `json_string`
-  extern virtual function json_result#(json_string) as_string();
+  extern virtual function json_result#(json_string) try_into_string();
 
   // Try to represent current value as `json_int`
-  extern virtual function json_result#(json_int) as_int();
+  extern virtual function json_result#(json_int) try_into_int();
 
   // Try to represent current value as `json_real`
-  extern virtual function json_result#(json_real) as_real();
+  extern virtual function json_result#(json_real) try_into_real();
 
   // Try to represent current value as `json_bool`
-  extern virtual function json_result#(json_bool) as_bool();
+  extern virtual function json_result#(json_bool) try_into_bool();
+
+  // Represent current value as `json_object`. Throw $fatal on failure.
+  extern virtual function json_result#(json_object) into_object();
+
+  // Represent current value as `json_array`. Throw $fatal on failure.
+  extern virtual function json_result#(json_array) into_array();
+
+  // Represent current value as `json_string`. Throw $fatal on failure.
+  extern virtual function json_result#(json_string) into_string();
+
+  // Represent current value as `json_int`. Throw $fatal on failure.
+  extern virtual function json_result#(json_int) into_int();
+
+  // Represent current value as `json_real`. Throw $fatal on failure.
+  extern virtual function json_result#(json_real) into_real();
+
+  // Represent current value as `json_bool`. Throw $fatal on failure.
+  extern virtual function json_result#(json_bool) into_bool();
 
   // Check if current value is `json_object`
   extern virtual function bit is_object();
@@ -92,64 +110,94 @@ function bit json_value::matches_bool(output json_bool value);
 endfunction : matches_bool
 
 
-function json_result#(json_object) json_value::as_object();
+function json_result#(json_object) json_value::try_into_object();
   json_object value;
   if (this.matches_object(value)) begin
     return json_result#(json_object)::ok(value);
   end else begin
     return json_result#(json_object)::err(json_error::create(json_error::TYPE_CONVERSION));
   end
-endfunction : as_object
+endfunction : try_into_object
 
 
-function json_result#(json_array) json_value::as_array();
+function json_result#(json_array) json_value::try_into_array();
   json_array value;
   if (this.matches_array(value)) begin
     return json_result#(json_array)::ok(value);
   end else begin
     return json_result#(json_array)::err(json_error::create(json_error::TYPE_CONVERSION));
   end
-endfunction : as_array
+endfunction : try_into_array
 
 
-function json_result#(json_string) json_value::as_string();
+function json_result#(json_string) json_value::try_into_string();
   json_string value;
   if (this.matches_string(value)) begin
     return json_result#(json_string)::ok(value);
   end else begin
     return json_result#(json_string)::err(json_error::create(json_error::TYPE_CONVERSION));
   end
-endfunction : as_string
+endfunction : try_into_string
 
 
-function json_result#(json_int) json_value::as_int();
+function json_result#(json_int) json_value::try_into_int();
   json_int value;
   if (this.matches_int(value)) begin
     return json_result#(json_int)::ok(value);
   end else begin
     return json_result#(json_int)::err(json_error::create(json_error::TYPE_CONVERSION));
   end
-endfunction : as_int
+endfunction : try_into_int
 
 
-function json_result#(json_real) json_value::as_real();
+function json_result#(json_real) json_value::try_into_real();
   json_real value;
   if (this.matches_real(value)) begin
     return json_result#(json_real)::ok(value);
   end else begin
     return json_result#(json_real)::err(json_error::create(json_error::TYPE_CONVERSION));
   end
-endfunction : as_real
+endfunction : try_into_real
 
 
-function json_result#(json_bool) json_value::as_bool();
+function json_result#(json_bool) json_value::try_into_bool();
   json_bool value;
   if (this.matches_bool(value)) begin
     return json_result#(json_bool)::ok(value);
   end else begin
     return json_result#(json_bool)::err(json_error::create(json_error::TYPE_CONVERSION));
   end
-endfunction : as_bool
+endfunction : try_into_bool
+
+
+function json_object json_value::into_object();
+  return this.try_into_object().unwrap();
+endfunction : into_object
+
+
+function json_array json_value::into_array();
+  return this.try_into_array().unwrap();
+endfunction : into_array
+
+
+function json_string json_value::into_string();
+  return this.try_into_string().unwrap();
+endfunction : into_string
+
+
+function json_int json_value::into_int();
+  return this.try_into_int().unwrap();
+endfunction : into_int
+
+
+function json_real json_value::into_real();
+  return this.try_into_real().unwrap();
+endfunction : into_real
+
+
+function json_bool json_value::into_bool();
+  return this.try_into_bool().unwrap();
+endfunction : into_bool
 
 
 function bit json_value::is_object();

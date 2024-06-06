@@ -43,7 +43,7 @@ module json_string_unit_test;
   // Clone json_string instance
   `SVTEST(clone_test) begin
     json_string orig = json_string::from("!@#");
-    json_string clone = orig.clone().as_string().unwrap();
+    json_string clone = orig.clone().into_string();
     `FAIL_IF(orig == clone)
     `FAIL_UNLESS(orig.get() == clone.get())
   end `SVTEST_END
@@ -141,8 +141,8 @@ module json_string_unit_test;
   end `SVTEST_END
 
 
-  // Test as_* methods
-  `SVTEST(as_something_test) begin
+  // Test try_into_* methods
+  `SVTEST(try_into_something_test) begin
     json_result#(json_object) res_jobject;
     json_result#(json_array) res_jarray;
     json_result#(json_string) res_jstring;
@@ -153,12 +153,12 @@ module json_string_unit_test;
     json_string orig_jstring = json_string::from("baz");
     json_value jvalue = orig_jstring;
 
-    res_jobject = jvalue.as_object();
-    res_jarray = jvalue.as_array();
-    res_jstring = jvalue.as_string();
-    res_jint = jvalue.as_int();
-    res_jreal = jvalue.as_real();
-    res_jbool = jvalue.as_bool();
+    res_jobject = jvalue.try_into_object();
+    res_jarray = jvalue.try_into_array();
+    res_jstring = jvalue.try_into_string();
+    res_jint = jvalue.try_into_int();
+    res_jreal = jvalue.try_into_real();
+    res_jbool = jvalue.try_into_bool();
 
     `FAIL_IF(res_jobject.is_ok())
     `FAIL_IF(res_jarray.is_ok())
@@ -168,6 +168,16 @@ module json_string_unit_test;
     `FAIL_IF(res_jbool.is_ok())
 
     `FAIL_UNLESS(res_jstring.unwrap() == orig_jstring)
+  end `SVTEST_END
+
+
+  // Test into_* method
+  `SVTEST(into_something_test) begin
+    json_string res_jstring;
+    json_string orig_jstring = json_string::from("");
+    json_value jvalue = orig_jstring;
+
+    res_jstring = jvalue.into_string();
   end `SVTEST_END
 
   `SVUNIT_TESTS_END

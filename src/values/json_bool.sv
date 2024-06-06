@@ -53,7 +53,7 @@ function bit json_bool::compare(json_value value);
     return 0;
   end
 
-  casted = value.as_bool();
+  casted = value.try_into_bool();
   case (1)
     casted.matches_err(err): return 0;
     casted.matches_ok(rhs): return get() == rhs.get();

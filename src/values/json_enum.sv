@@ -16,7 +16,7 @@ class json_enum #(type ENUM_T) extends json_string;
   endfunction : from
 
   // Try to create `json_enum` from string
-  static function json_result#(json_enum#(ENUM_T)) from_string(string value);
+  static function json_result#(json_enum#(ENUM_T)) try_from(string value);
     // FIXME: extern is not used here, because verialtor does not work well with parametrized return type
     for (ENUM_T e = e.first();; e = e.next()) begin
       if (e.name() == value) begin
@@ -28,7 +28,7 @@ class json_enum #(type ENUM_T) extends json_string;
     end
 
     return json_result#(json_enum#(ENUM_T))::err(json_error::create(json_error::TYPE_CONVERSION));
-  endfunction : from_string
+  endfunction : try_from
 
   // Create a deep copy of an instance
   extern virtual function json_value clone();
@@ -85,7 +85,7 @@ endfunction : get
 
 
 function void json_enum::set(string value);
-  set_enum(json_enum#(ENUM_T)::from_string(value).unwrap().get_enum());
+  set_enum(json_enum#(ENUM_T)::try_from(value).unwrap().get_enum());
 endfunction : set
 
 

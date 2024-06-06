@@ -27,7 +27,7 @@ class json_bits #(type BITS_T) extends json_string;
   endfunction : from
 
   // Try to create `json_bits` from string
-  static function json_result#(json_bits#(BITS_T)) from_string(string value);
+  static function json_result#(json_bits#(BITS_T)) try_from(string value);
     // FIXME: extern is not used here, because verilator does not work well with parametrized return type
     BITS_T bits_value;
     radix_e preferred_radix;
@@ -43,7 +43,7 @@ class json_bits #(type BITS_T) extends json_string;
     end
 
     return json_result#(json_bits#(BITS_T))::ok(json_bits#(BITS_T)::from(bits_value, preferred_radix));
-  endfunction : from_string
+  endfunction : try_from
 
   // Create a deep copy of an instance
   extern virtual function json_value clone();
@@ -104,7 +104,7 @@ endfunction : get
 
 
 function void json_bits::set(string value);
-  set_bits(json_bits#(BITS_T)::from_string(value).unwrap().get_bits());
+  set_bits(json_bits#(BITS_T)::try_from(value).unwrap().get_bits());
 endfunction : set
 
 

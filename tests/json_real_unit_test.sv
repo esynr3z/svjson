@@ -43,7 +43,7 @@ module json_real_unit_test;
   // Clone json_real instance
   `SVTEST(clone_test) begin
     json_real orig = json_real::from(0.234);
-    json_real clone = orig.clone().as_real().unwrap();
+    json_real clone = orig.clone().into_real();
     `FAIL_IF(orig == clone)
     `FAIL_UNLESS(orig.get() == clone.get())
   end `SVTEST_END
@@ -141,8 +141,8 @@ module json_real_unit_test;
   end `SVTEST_END
 
 
-  // Test as_* methods
-  `SVTEST(as_something_test) begin
+  // Test try_into_* methods
+  `SVTEST(try_into_something_test) begin
     json_result#(json_object) res_jobject;
     json_result#(json_array) res_jarray;
     json_result#(json_string) res_jstring;
@@ -153,12 +153,12 @@ module json_real_unit_test;
     json_real orig_jreal = json_real::from(-3e5);
     json_value jvalue = orig_jreal;
 
-    res_jobject = jvalue.as_object();
-    res_jarray = jvalue.as_array();
-    res_jstring = jvalue.as_string();
-    res_jint = jvalue.as_int();
-    res_jreal = jvalue.as_real();
-    res_jbool = jvalue.as_bool();
+    res_jobject = jvalue.try_into_object();
+    res_jarray = jvalue.try_into_array();
+    res_jstring = jvalue.try_into_string();
+    res_jint = jvalue.try_into_int();
+    res_jreal = jvalue.try_into_real();
+    res_jbool = jvalue.try_into_bool();
 
     `FAIL_IF(res_jobject.is_ok())
     `FAIL_IF(res_jarray.is_ok())
@@ -168,6 +168,16 @@ module json_real_unit_test;
     `FAIL_IF(res_jbool.is_ok())
 
     `FAIL_UNLESS(res_jreal.unwrap() == orig_jreal)
+  end `SVTEST_END
+
+
+  // Test into_* method
+  `SVTEST(into_something_test) begin
+    json_real res_jreal;
+    json_real orig_jreal = json_real::from(1.0);
+    json_value jvalue = orig_jreal;
+
+    res_jreal = jvalue.into_real();
   end `SVTEST_END
 
   `SVUNIT_TESTS_END

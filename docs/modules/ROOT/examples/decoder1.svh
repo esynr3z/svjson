@@ -1,4 +1,4 @@
-// Content of example.json:
+// Content of pizza.json:
 // {
 //     "recipeName": "Vegetarian Pizza",
 //     "servings": 4,
@@ -10,7 +10,7 @@ json_value jvalue;
 
 // Try to load file and get `json_result`,
 // which can be either `json_error` or `json_value`.
-json_result#(json_value) load_res = json_decoder::load_file("example.json");
+json_result#(json_value) load_res = json_decoder::load_file("pizza.json");
 
 // Use "pattern matching" to get value
 case (1)
@@ -18,7 +18,7 @@ case (1)
 
   load_res.matches_ok(jvalue): begin
     json_object jobject;
-    json_result#(json_object) cast_res = jvalue.as_object();
+    json_result#(json_object) cast_res = jvalue.try_into_object();
 
     // Traditional if..else can be used as well
     if (cast_res.matches_err(jerror)) begin

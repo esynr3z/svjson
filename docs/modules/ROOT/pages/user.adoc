@@ -108,13 +108,48 @@ json_value <|-- json_bool
 Class `{class-json-value}` is a base abstract class for all JSON values. This class is mainly used for polymorphism goals - to represent any value while decoding/encoding JSON. It has no parameters or attributes and almost all of its methods are for introspection and convenient casting to one of concrete classes.
 
 .json_value methods outline
-[cols="1,1"]
+[cols="2,1"]
 |===
-| `bit compare(json_value value)` | Perform compare with another instance. Return 1 if instances are equal and 0 otherwise.
-| `json_value clone()` | Create a deep copy of an instance.
-| `bit is_<val>` (e.g. `is_object`, `is_array`, etc.) | Check if current instance is specified type.
-| `json_result#(json_<val>) as_<val>()` (e.g. `as_object`, `as_array`, etc.) | Try to cast to specified concrete class.
-| `bit matches_<val>(output json_<val> value)` (e.g. `matches_object`, `matches_array`, etc.) | Another option of trying to cast to specified concrete class. In this case, instance is an `output` argument, and returned result is 1 for success, 0 otherwise.
+
+a| `bit compare(json_value value)` | Perform compare with another instance. Return 1 if instances are equal and 0 otherwise.
+
+a| `json_value clone()` | Create a deep copy of an instance.
+
+a|
+* `bit is_object()`
+* `bit is_array()`
+* `bit is_string()`
+* `bit is_int()`
+* `bit is_real()`
+* `bit is_bool()`
+| Check if current instance is specified type.
+
+a|
+* `json_result#(json_object) try_into_object()`
+* `json_result#(json_array) try_into_array()`
+* `json_result#(json_string) try_into_string()`
+* `json_result#(json_int) try_into_int()`
+* `json_result#(json_real) try_into_real()`
+* `json_result#(json_bool) try_into_bool()`
+| Try to cast to specified concrete class.
+
+a|
+* `json_object into_object()`
+* `json_array into_array()`
+* `json_string into_string()`
+* `json_int into_int()`
+* `json_real into_real()`
+* `json_bool into_bool()`
+| Cast to specified concrete class and throw fatal in case of failure.
+
+a|
+* `bit matches_object(output json_object value)`
+* `bit matches_array(output json_array value)`
+* `bit matches_string(output json_string value)`
+* `bit matches_int(output json_int value)`
+* `bit matches_real(output json_real value)`
+* `bit matches_bool(output json_bool value)`
+| Another option of trying to cast to specified concrete class. In this case, instance is an `output` argument, and returned result is 1 for success, 0 otherwise.
 |===
 
 === Object
@@ -186,7 +221,7 @@ Purpose of this class is to facilitate using SV enum with JSON decoder/encoder. 
 |===
 | `new(ENUM_T value)` | Create an instance from an `enum`.
 | `json_enum#(ENUM_T) from(ENUM_T value)` | Static method to create an instance from an `enum`. Alternative to standard constructor.
-| json_result#(json_enum#(ENUM_T)) from_string(string value) | Static method to create an instance from a `string`. Alternative to standard constructor. This option is failable, because only specific string (enumeration variants) can be used to create valid `json_enum`.
+| json_result#(json_enum#(ENUM_T)) try_from(string value) | Static method to create an instance from a `string`. Alternative to standard constructor. This option is failable, because only specific string (enumeration variants) can be used to create valid `json_enum`.
 | `string get()` | Get internal enum value as a string.
 | `void set(string value)` | Set internal enum value from a string. This function may fail due to wrong value is provided, and this fail is unrecoverable (fatal).
 | `ENUM_T get_enum()` | Get internal enum value.
@@ -208,7 +243,7 @@ There is an internal property `preferred_radix`, that can take values: `json_bit
 |===
 | `new(BITS_T value, radix_e preferred_radix=RADIX_DEC)` | Create an instance from a bit vector.
 | `json_bits#(BITS_T) from(BITS_T value, radix_e preferred_radix=RADIX_DEC)` | Static method to create an instance from a bit vector. Alternative to standard constructor.
-| `json_result#(json_bits#(BITS_T)) from_string(string value)` | Static method to create an instance from a `string`. Alternative to standard constructor. This option is failable, because only specific string can be used to create valid `json_bits`. It should contain only numbers "0"-"9", letters "a"-"f". Prefix "0x" is allowed for hexadecimal values and "0b" for binary ones. Radix is discovered automatically and saved into `preferred_radix`.
+| `json_result#(json_bits#(BITS_T)) try_from(string value)` | Static method to create an instance from a `string`. Alternative to standard constructor. This option is failable, because only specific string can be used to create valid `json_bits`. It should contain only numbers "0"-"9", letters "a"-"f". Prefix "0x" is allowed for hexadecimal values and "0b" for binary ones. Radix is discovered automatically and saved into `preferred_radix`.
 | `string get()` | Get internal bit vector value as a string.
 | `void set(string value)` | Set internal bit vector value from a string. This function may fail due to wrong value is provided, and this fail is unrecoverable (fatal).
 | `BITS_T get_bits()` | Get internal bit vector value.
@@ -308,17 +343,16 @@ However, `$fatal()` is thrown, when try to unwrap underlying error. This is desc
 
 IMPORTANT: Keys of any object always follow lexicographical order while dumping due to internal implementation, see <<note-object-keys-order,the note>>.
 
-Below are several examples of JSON encoding.
-
-.Dump JSON file with processing of possible errors
-[source,verilog]
-----
-initial begin
-  // TODO
-end
-----
+Below are several examples of JSON encoding. By default, the most compact representation style is used.
+However, `indent_spaces` argument can be provided to perform multiline encoding.
 
 .Dump JSON string without processing of possible errors
+[source,verilog]
+----
+include::example$encoder0.svh[]
+----
+
+.Dump JSON file with processing of possible errors
 [source,verilog]
 ----
 initial begin

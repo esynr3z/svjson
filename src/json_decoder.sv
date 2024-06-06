@@ -244,7 +244,7 @@ function json_decoder::parser_result json_decoder::parse_object(
           result.matches_err(error): return result;
 
           result.matches_ok(parsed): begin
-            key = parsed.value.as_string().unwrap().value;
+            key = parsed.value.into_string().get();
             curr_pos = parsed.end_pos + 1; // move from last string token
             state = EXPECT_COLON;
           end

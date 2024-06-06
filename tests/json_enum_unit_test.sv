@@ -43,30 +43,30 @@ module json_enum_unit_test;
   end `SVTEST_END
 
 
-  `SVTEST(create_from_string_test) begin
+  `SVTEST(create_try_from_test) begin
     json_dummy_enum jenum;
     json_result#(json_dummy_enum) jres;
 
-    jres = json_dummy_enum::from_string("DUMMY_BAR");
+    jres = json_dummy_enum::try_from("DUMMY_BAR");
     `FAIL_IF(jres.is_err)
     `FAIL_UNLESS(jres.unwrap().get_enum() == DUMMY_BAR)
 
-    jres = json_dummy_enum::from_string("DUMMY_FOO");
+    jres = json_dummy_enum::try_from("DUMMY_FOO");
     `FAIL_IF(jres.is_err)
     `FAIL_UNLESS(jres.unwrap().get_enum() == DUMMY_FOO)
 
-    jres = json_dummy_enum::from_string("DUMMY_BAZ");
+    jres = json_dummy_enum::try_from("DUMMY_BAZ");
     `FAIL_IF(jres.is_err)
     `FAIL_UNLESS(jres.unwrap().get_enum() == DUMMY_BAZ)
   end `SVTEST_END
 
 
-  `SVTEST(create_from_string_err_test) begin
+  `SVTEST(create_try_from_err_test) begin
     json_dummy_enum jenum;
     json_result#(json_dummy_enum) jres;
     json_error error;
 
-    jres = json_dummy_enum::from_string("DUMMY_EGGS");
+    jres = json_dummy_enum::try_from("DUMMY_EGGS");
     `FAIL_IF(jres.is_ok)
     `FAIL_UNLESS(jres.matches_err_eq(json_error::TYPE_CONVERSION, error))
   end `SVTEST_END

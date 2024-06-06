@@ -108,7 +108,7 @@ function bit json_object::compare(json_value value);
     return 0;
   end
 
-  casted = value.as_object();
+  casted = value.try_into_object();
   case (1)
     casted.matches_err(err): return 0;
     casted.matches_ok(rhs): begin
