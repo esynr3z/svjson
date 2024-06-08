@@ -1,12 +1,14 @@
 include scripts/common.mk
 
-.PHONY: all lint lint_verilator test test_src test_examples
+.PHONY: all \
+	lint lint_verilator lint_modelsim \
+	test test_src test_examples
 
 export SVJSON_ROOT := $(realpath .)
 
 all: lint test
 
-lint: lint_verilator
+lint: lint_verilator lint_modelsim
 
 # VARHIDDEN - too strict, method arguments may overlap with class property names
 # UNDRIVEN - has false positives on interface classes and custom constructors
