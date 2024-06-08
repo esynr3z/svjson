@@ -1,5 +1,7 @@
 // JSON decoder
 class json_decoder;
+  localparam byte CR = 8'd13; // 13=\r=CR - not in SV standard
+
   //----------------------------------------------------------------------------
   // Public methods
   //----------------------------------------------------------------------------
@@ -19,7 +21,7 @@ class json_decoder;
 
   protected typedef json_result#(parsed_s) parser_result;
 
-  protected const byte whitespace_chars[] = '{" ", "\t", "\n", "\r"};
+  protected const byte whitespace_chars[] = '{" ", "\t", "\n", CR};
 
   protected const byte escape_lut[string] = '{
     "\\\"": "\"",
@@ -27,7 +29,7 @@ class json_decoder;
     "\\/": "/",
     "\\f": "\f",
     "\\n": "\n",
-    "\\r" : "\r",
+    "\\r" : CR,
     "\\t": "\t"
   };
 
