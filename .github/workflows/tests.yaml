@@ -87,6 +87,7 @@ jobs:
           save-always: true
 
       - name: Install Modelsim
+        if: steps.cache-modelsim.outputs.cache-hit != 'true'
         run: |
           sudo dpkg --add-architecture i386
           sudo apt update
@@ -102,6 +103,9 @@ jobs:
 
       - name: Prepare evinronment
         run: |
+          sudo dpkg --add-architecture i386
+          sudo apt update
+          sudo apt install -y libc6:i386 libxtst6:i386 libncurses5:i386 libxft2:i386 libstdc++6:i386 libc6-dev-i386 lib32z1 libqt5xml5 liblzma-dev
           echo "${{ env.MODELSIM_INSTALL }}/modelsim_ase/bin" >> $GITHUB_PATH
           echo "${{ github.workspace }}/contrib/svunit/bin" >> $GITHUB_PATH
 
