@@ -1,5 +1,7 @@
 // JSON encoder
 class json_encoder;
+  localparam byte CR = 8'd13; // 13=\r=CR - not in SV standard
+
   //----------------------------------------------------------------------------
   // Public methods
   //----------------------------------------------------------------------------
@@ -198,7 +200,7 @@ function json_result#(string) json_encoder::convert_string(json_string_encodable
       "\\" : sym = "\\\\";
       "\f" : sym = "\\f";
       "\n" : sym = "\\n";
-      "\r" : sym = "\\r";
+      CR   : sym = "\\r";
       "\t" : sym = "\\t";
       default: sym = string'(orig[i]);
     endcase
