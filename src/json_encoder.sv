@@ -132,7 +132,7 @@ function json_result#(string) json_encoder::convert_object(json_object_encodable
   json_object_encodable::values_t values = obj.to_json_encodable();
   string last_key;
 
-  values.last(last_key);
+  void'(values.last(last_key));
   foreach(values[key]) begin
     json_error err;
     string ok;
@@ -200,7 +200,7 @@ function json_result#(string) json_encoder::convert_string(json_string_encodable
       "\n" : sym = "\\n";
       "\r" : sym = "\\r";
       "\t" : sym = "\\t";
-      default: sym = orig[i];
+      default: sym = string'(orig[i]);
     endcase
     converted = {converted, sym};
   end

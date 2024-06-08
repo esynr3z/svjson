@@ -44,7 +44,7 @@ class json_error;
   int json_pos;
 
   // Create empty error
-  extern function new();
+  extern function new(kind_e kind);
 
   // Create error
   extern static function json_error create(
