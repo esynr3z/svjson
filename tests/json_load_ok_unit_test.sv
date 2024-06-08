@@ -4,6 +4,7 @@
 // Basic tests of `json_decoder` is used to parse JSON succesfuly
 module json_load_ok_unit_test;
   import svunit_pkg::svunit_testcase;
+  import test_utils_pkg::*;
   import json_pkg::*;
 
   string name = "json_load_ok_ut";
@@ -106,7 +107,7 @@ module json_load_ok_unit_test;
 
   `SVTEST(empty_object_test)
   begin
-    json_object golden = json_object::from('{});
+    json_object golden = json_object::from(empty_jvalue_map);
     `EXPECT_OK_LOAD_STR("{}", golden)
     `EXPECT_OK_LOAD_STR("{ }", golden)
     `EXPECT_OK_LOAD_STR("{\n}", golden)
@@ -154,7 +155,7 @@ module json_load_ok_unit_test;
     json_object golden = json_object::from('{
       "jbool": json_bool::from(1),
       "jobj1": json_object::from('{
-        "jobj2": json_object::from('{}),
+        "jobj2": json_object::from(empty_jvalue_map),
         "jnull": null
       })
     });

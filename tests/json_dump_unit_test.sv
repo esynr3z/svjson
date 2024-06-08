@@ -4,6 +4,7 @@
 // Basic tests of `json_encoder` is used to dump JSON succesfuly
 module json_dump_unit_test;
   import svunit_pkg::svunit_testcase;
+  import test_utils_pkg::*;
   import json_pkg::*;
 
   string name = "json_dump_ut";
@@ -38,7 +39,7 @@ module json_dump_unit_test;
 
     while (!$feof(file_descr)) begin
       string line;
-      $fgets(line, file_descr);
+      void'($fgets(line, file_descr));
       file_text = {file_text, line};
     end
     $fclose(file_descr);
@@ -92,14 +93,14 @@ module json_dump_unit_test;
     `EXPECT_OK_DUMP_STR(json_array::from('{json_int::from(42)}), "[42]")
     `EXPECT_OK_DUMP_STR(json_array::from('{json_bool::from(1), json_bool::from(0)}), "[true,false]")
     `EXPECT_OK_DUMP_STR(json_array::from('{json_array::from('{}), json_string::from("foo")}), "[[],\"foo\"]")
-    `EXPECT_OK_DUMP_STR(json_array::from('{json_object::from('{})}), "[{}]")
+    `EXPECT_OK_DUMP_STR(json_array::from('{json_object::from(empty_jvalue_map)}), "[{}]")
   end
   `SVTEST_END
 
 
   `SVTEST(dump_object_test)
   begin
-    `EXPECT_OK_DUMP_STR(json_object::from('{}), "{}")
+    `EXPECT_OK_DUMP_STR(json_object::from(empty_jvalue_map), "{}")
     `EXPECT_OK_DUMP_STR(json_object::from('{"bar" : json_int::from(42)}), "{\"bar\":42}")
     `EXPECT_OK_DUMP_STR(
       json_object::from('{"bar": json_int::from(42), "foo" : json_int::from(-1)}),

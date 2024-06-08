@@ -130,4 +130,7 @@ package test_utils_pkg;
 
   typedef json_enum#(dummy_e) json_dummy_enum;
 
+  // Some simulators do not support '{} for empty associative arrays, so this a workaround
+  json_value empty_jvalue_map [string];
+
 endpackage : test_utils_pkg
