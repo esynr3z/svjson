@@ -25,29 +25,24 @@ module json_load_ok_unit_test;
   `SVUNIT_TESTS_BEGIN
 
 
-  `SVTEST(null_test)
-  begin
+  `SVTEST(null_test) begin
     `EXPECT_OK_LOAD_STR("null", null)
     `EXPECT_OK_LOAD_STR(" null ", null)
     `EXPECT_OK_LOAD_STR(" \nnull\n \t ", null)
-  end
-  `SVTEST_END
+  end `SVTEST_END
 
 
-  `SVTEST(bool_test)
-  begin
+  `SVTEST(bool_test) begin
     `EXPECT_OK_LOAD_STR("true", json_bool::from(1))
     `EXPECT_OK_LOAD_STR("false", json_bool::from(0))
     `EXPECT_OK_LOAD_STR(" true ", json_bool::from(1))
     `EXPECT_OK_LOAD_STR(" false ", json_bool::from(0))
     `EXPECT_OK_LOAD_STR(" \n\n\t true\n \n ", json_bool::from(1))
     `EXPECT_OK_LOAD_STR(" \n false\n    \t", json_bool::from(0))
-  end
-  `SVTEST_END
+  end `SVTEST_END
 
 
-  `SVTEST(int_test)
-  begin
+  `SVTEST(int_test) begin
     `EXPECT_OK_LOAD_STR("42", json_int::from(42))
     `EXPECT_OK_LOAD_STR("0", json_int::from(0))
     `EXPECT_OK_LOAD_STR("-1", json_int::from(-1))
@@ -55,12 +50,10 @@ module json_load_ok_unit_test;
     `EXPECT_OK_LOAD_STR("-213787953472", json_int::from(-64'd213787953472))
     `EXPECT_OK_LOAD_STR(" 123213 ", json_int::from(123213))
     `EXPECT_OK_LOAD_STR(" \n-123213\n\n\t   ", json_int::from(-123213))
-  end
-  `SVTEST_END
+  end `SVTEST_END
 
 
-  `SVTEST(real_test)
-  begin
+  `SVTEST(real_test) begin
     `EXPECT_OK_LOAD_STR("3.14", json_real::from(3.14))
     `EXPECT_OK_LOAD_STR("0.02132", json_real::from(0.02132))
     `EXPECT_OK_LOAD_STR("-0.6", json_real::from(-0.6))
@@ -71,13 +64,11 @@ module json_load_ok_unit_test;
     `EXPECT_OK_LOAD_STR("0.3E3", json_real::from(0.3E3))
     `EXPECT_OK_LOAD_STR("-0.001E-4", json_real::from(-0.001E-4))
     `EXPECT_OK_LOAD_STR(" 0.1234 ", json_real::from(0.1234))
-    `EXPECT_OK_LOAD_STR(" \n\t\r-10.875\n \n ", json_real::from(-10.875))
-  end
-  `SVTEST_END
+    `EXPECT_OK_LOAD_STR(replace_cr(" \n\t\\r-10.875\n \n "), json_real::from(-10.875))
+  end `SVTEST_END
 
 
-  `SVTEST(string_test)
-  begin
+  `SVTEST(string_test) begin
     `EXPECT_OK_LOAD_STR("\"\"", json_string::from(""))
     `EXPECT_OK_LOAD_STR("\" \"", json_string::from(" "))
     `EXPECT_OK_LOAD_STR("\"\\n\"", json_string::from("\n"))
@@ -86,27 +77,23 @@ module json_load_ok_unit_test;
     `EXPECT_OK_LOAD_STR("\"true, false, null\"", json_string::from("true, false, null"))
     `EXPECT_OK_LOAD_STR("\"1234abcABC!@#$^&*\"", json_string::from("1234abcABC!@#$^&*"))
     `EXPECT_OK_LOAD_STR(" \n\n\t \"hello\"\n \n ", json_string::from("hello"))
-  end
-  `SVTEST_END
+  end `SVTEST_END
 
 
-  `SVTEST(string_escapes_test)
-  begin
+  `SVTEST(string_escapes_test) begin
     `EXPECT_OK_LOAD_STR("\" \\n \"", json_string::from(" \n "))
     `EXPECT_OK_LOAD_STR("\" \\t \"", json_string::from(" \t "))
-    `EXPECT_OK_LOAD_STR("\" \\r \"", json_string::from(" \r "))
+    `EXPECT_OK_LOAD_STR("\" \\r \"", json_string::from(replace_cr(" \\r ")))
     `EXPECT_OK_LOAD_STR("\" \\f \"", json_string::from(" \f "))
     `EXPECT_OK_LOAD_STR("\" \\\\ \"", json_string::from(" \\ "))
     `EXPECT_OK_LOAD_STR("\" \\\" \"", json_string::from(" \" "))
     `EXPECT_OK_LOAD_STR("\" \\/ \"", json_string::from(" / "))
-    `EXPECT_OK_LOAD_STR("\"\\n \\t \\r \\f \\\\ \\/ \\\"\"", json_string::from("\n \t \r \f \\ / \""))
+    `EXPECT_OK_LOAD_STR("\"\\n \\t \\r \\f \\\\ \\/ \\\"\"", json_string::from(replace_cr("\n \t \\r \f \\ / \"")))
     `EXPECT_OK_LOAD_STR("\" \\u1234\\uabcd \\b \"", json_string::from(" \\u1234\\uabcd \\b "))
-  end
-  `SVTEST_END
+  end `SVTEST_END
 
 
-  `SVTEST(empty_object_test)
-  begin
+  `SVTEST(empty_object_test) begin
     json_object golden = json_object::from(empty_jvalue_map);
     `EXPECT_OK_LOAD_STR("{}", golden)
     `EXPECT_OK_LOAD_STR("{ }", golden)
@@ -115,25 +102,21 @@ module json_load_ok_unit_test;
     `EXPECT_OK_LOAD_STR("{ \n \n \n   }", golden)
     `EXPECT_OK_LOAD_STR(" {}   \n\n", golden)
     `EXPECT_OK_LOAD_STR("\n\n{\n}\n\n", golden)
-    `EXPECT_OK_LOAD_STR("\n\r{  }  \n", golden)
-  end
-  `SVTEST_END
+    `EXPECT_OK_LOAD_STR("\n {  }  \n", golden)
+  end `SVTEST_END
 
 
-  `SVTEST(simple_object_test)
-  begin
+  `SVTEST(simple_object_test) begin
     json_object golden = json_object::from('{"the_answer": json_int::from(42)});
     `EXPECT_OK_LOAD_STR("{\"the_answer\":42}", golden)
     `EXPECT_OK_LOAD_STR(" {\n  \"the_answer\": 42\n}\n\n ", golden)
     `EXPECT_OK_LOAD_STR(" {\n  \"the_answer\": 42   \n}  \n\n ", golden)
     `EXPECT_OK_LOAD_STR(" {\n  \"the_answer\"  :   \t\n42\n}\n\n ", golden)
     `EXPECT_OK_LOAD_STR("\n{\n\"the_answer\"\n:\n42\n}\n", golden)
-  end
-  `SVTEST_END
+  end `SVTEST_END
 
 
-  `SVTEST(normal_object_test)
-  begin
+  `SVTEST(normal_object_test) begin
     json_object golden = json_object::from('{
       "jint": json_int::from(42),
       "jreal": json_real::from(3.14),
@@ -146,12 +129,10 @@ module json_load_ok_unit_test;
       "{\"jint\":42\n, \"jreal\" : 3.14\t, \"jstring\" :  \"XyZ\"\n,\n  \"jbool\" :true,   \"jnull\":   null}",
       golden
     )
-  end
-  `SVTEST_END
+  end `SVTEST_END
 
 
-  `SVTEST(nested_object_test)
-  begin
+  `SVTEST(nested_object_test) begin
     json_object golden = json_object::from('{
       "jbool": json_bool::from(1),
       "jobj1": json_object::from('{
@@ -161,12 +142,10 @@ module json_load_ok_unit_test;
     });
     `EXPECT_OK_LOAD_STR("{\"jbool\":true,\"jobj1\":{\"jobj2\":{},\"jnull\":null}}", golden)
     `EXPECT_OK_LOAD_STR("{\"jbool\":true , \"jobj1\" :\n{\n  \"jobj2\" : {   }\n , \"jnull\" : null}}", golden)
-  end
-  `SVTEST_END
+  end `SVTEST_END
 
 
-  `SVTEST(empty_array_test)
-  begin
+  `SVTEST(empty_array_test) begin
     json_array golden = json_array::from('{});
     `EXPECT_OK_LOAD_STR("[]", golden)
     `EXPECT_OK_LOAD_STR("[ ]", golden)
@@ -175,24 +154,20 @@ module json_load_ok_unit_test;
     `EXPECT_OK_LOAD_STR("[ \n \n \n   ]", golden)
     `EXPECT_OK_LOAD_STR(" []   \n\n", golden)
     `EXPECT_OK_LOAD_STR("\n\n[\n]\n\n", golden)
-    `EXPECT_OK_LOAD_STR("\n\r[  ]  \n", golden)
-  end
-  `SVTEST_END
+    `EXPECT_OK_LOAD_STR(replace_cr("\n\\r[  ]  \n"), golden)
+  end `SVTEST_END
 
 
-  `SVTEST(simple_array_test)
-  begin
+  `SVTEST(simple_array_test) begin
     json_array golden = json_array::from('{json_int::from(777)});
     `EXPECT_OK_LOAD_STR("[777]", golden)
     `EXPECT_OK_LOAD_STR(" [  777 ] ", golden)
     `EXPECT_OK_LOAD_STR(" \n[  777 ]\n  ", golden)
     `EXPECT_OK_LOAD_STR("\n[\n777\n]\n", golden)
-  end
-  `SVTEST_END
+  end `SVTEST_END
 
 
-  `SVTEST(normal_array_test)
-  begin
+  `SVTEST(normal_array_test) begin
     json_array golden = json_array::from('{
       json_int::from(42),
       json_real::from(3.14),
@@ -203,12 +178,10 @@ module json_load_ok_unit_test;
     `EXPECT_OK_LOAD_STR("[42,3.14,\"XyZ\",true,null]", golden)
     `EXPECT_OK_LOAD_STR(" [ 42 , 3.14 , \"XyZ\" , true , null ] ", golden)
     `EXPECT_OK_LOAD_STR("\n[\n42,\n3.14,\n\"XyZ\",\ntrue,\nnull\n]\n", golden)
-  end
-  `SVTEST_END
+  end `SVTEST_END
 
 
-  `SVTEST(nested_array_test)
-  begin
+  `SVTEST(nested_array_test) begin
     json_array golden = json_array::from('{
       json_bool::from(0),
       json_array::from('{
@@ -219,13 +192,11 @@ module json_load_ok_unit_test;
     });
     `EXPECT_OK_LOAD_STR("[false,[null,[],5]]", golden)
     `EXPECT_OK_LOAD_STR(" [ false , [  null ,  [  ] , 5 ]  ]", golden)
-    `EXPECT_OK_LOAD_STR("\r [ false\n, [\t null,\n  [\n\n] , \n5\t \r] \n]\n\n", golden)
-  end
-  `SVTEST_END
+    `EXPECT_OK_LOAD_STR("\t [ false\n, [\t null,\n  [\n\n] , \n5\t ] \n]\n\n", golden)
+  end `SVTEST_END
 
 
-  `SVTEST(mixed_test)
-  begin
+  `SVTEST(mixed_test) begin
     `EXPECT_OK_LOAD_STR(
       "[[1, 2, 3], { \"key\": \"value\" }]",
       json_array::from('{
@@ -252,8 +223,7 @@ module json_load_ok_unit_test;
         })
       })
     )
-  end
-  `SVTEST_END
+  end `SVTEST_END
 
 
   `SVUNIT_TESTS_END
