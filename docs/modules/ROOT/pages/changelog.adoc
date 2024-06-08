@@ -11,10 +11,16 @@ and this project adheres to {url-semantic-versioning}[Semantic Versioning].
 == [Unreleased]
 === Added
 
-*  Add a table of supported EDA tools
-*  Add Verilator as a linter
+* Add a table of supported EDA tools in documentation
+* Add Verilator as a linter
+* Add Modelsim as a linter
+* Add scripts to run tests in Modelsim
+* Update CI to run linting and tests in Modelsim
 
 === Fixed
+
+* Fix minor issues within `json_pkg` to support Modelsim
+
 === Changed
 === Removed
 

@@ -32,7 +32,7 @@ The project's code is provided as a SystemVerilog package. Various EDA tools hav
 | {url-verilator-github}[Verilator 5.24] | ✅ | ✅ | ✅
 | Synopsys VCS | ❌ | ❌ | ❌
 | Cadence Xcelium | ❌ | ❌ | ❌
-| Siemens Modelsim | ❌ | ❌ | ❌
+| Siemens Modelsim | ✅ | ✅ | ✅
 | Siemens Questa | ❌ | ❌ | ❌
 |===
 
