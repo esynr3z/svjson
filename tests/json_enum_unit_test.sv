@@ -78,7 +78,7 @@ module json_enum_unit_test;
     $cast(clone, orig.clone());
     `FAIL_IF(orig == clone)
     `FAIL_UNLESS(orig.get() == clone.get())
-    `FAIL_UNLESS(orig.enum_value == clone.enum_value)
+    `FAIL_UNLESS(orig.get_enum() == clone.get_enum())
   end `SVTEST_END
 
   `SVUNIT_TESTS_END

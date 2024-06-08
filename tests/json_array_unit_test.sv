@@ -134,7 +134,7 @@ module json_array_unit_test;
   `SVTEST(compare_array_nested_test) begin
     json_array jarray_a = json_array::from('{
       json_int::from(42),
-      json_object::from('{}),
+      json_object::from(empty_jvalue_map),
       json_object::from('{
         "bar": json_string::from("hello"),
         "baz": json_array::from('{null, json_int::from(0)})

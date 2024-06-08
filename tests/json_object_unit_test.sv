@@ -115,9 +115,9 @@ module json_object_unit_test;
     jobject_b = json_object::from('{"keyy": json_int::from(41)});
     `FAIL_IF(jobject_a.compare(jobject_b))
     jobject_a = json_object::from('{"key": json_int::from(41)});
-    jobject_b = json_object::from('{});
+    jobject_b = json_object::from(empty_jvalue_map);
     `FAIL_IF(jobject_a.compare(jobject_b))
-    jobject_a = json_object::from('{});
+    jobject_a = json_object::from(empty_jvalue_map);
     jobject_b = json_object::from('{"key": json_int::from(42)});
     `FAIL_IF(jobject_a.compare(jobject_b))
     jobject_a = json_object::from('{"key": json_int::from(42)});
@@ -133,7 +133,7 @@ module json_object_unit_test;
   `SVTEST(compare_object_nested_test) begin
     json_object jobject_a = json_object::from('{
       "key1": json_int::from(42),
-      "key2": json_object::from('{}),
+      "key2": json_object::from(empty_jvalue_map),
       "key3": json_object::from('{
         "bar": json_string::from("hello"),
         "baz": json_array::from('{null, json_int::from(0)})
@@ -214,7 +214,7 @@ module json_object_unit_test;
 
   // Test is_* methods
   `SVTEST(is_something_test) begin
-    json_object jobject = json_object::from('{});
+    json_object jobject = json_object::from(empty_jvalue_map);
     json_value jvalue = jobject;
 
     `FAIL_UNLESS(jvalue.is_object())
@@ -235,7 +235,7 @@ module json_object_unit_test;
     json_real jreal;
     json_bool jbool;
 
-    json_object orig_jobject = json_object::from('{});
+    json_object orig_jobject = json_object::from(empty_jvalue_map);
     json_value jvalue = orig_jobject;
 
     `FAIL_UNLESS(jvalue.matches_object(jobject))
@@ -258,7 +258,7 @@ module json_object_unit_test;
     json_result#(json_real) res_jreal;
     json_result#(json_bool) res_jbool;
 
-    json_object orig_jobject = json_object::from('{});
+    json_object orig_jobject = json_object::from(empty_jvalue_map);
     json_value jvalue = orig_jobject;
 
     res_jobject = jvalue.try_into_object();
@@ -282,7 +282,7 @@ module json_object_unit_test;
   // Test into_* method
   `SVTEST(into_something_test) begin
     json_object res_jobject;
-    json_object orig_jobject = json_object::from('{});
+    json_object orig_jobject = json_object::from(empty_jvalue_map);
     json_value jvalue = orig_jobject;
 
     res_jobject = jvalue.into_object();

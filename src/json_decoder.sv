@@ -131,7 +131,7 @@ function json_result json_decoder::load_file(string path);
   // Read lines until the end of the file
   while (!$feof(file_descr)) begin
     string line;
-    $fgets(line, file_descr);
+    void'($fgets(line, file_descr));
     file_text = {file_text, line};
   end
   $fclose(file_descr);
