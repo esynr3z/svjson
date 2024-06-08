@@ -1,6 +1,6 @@
 :url-ecma-404: https://ecma-international.org/publications-and-standards/standards/ecma-404
 :url-svjson-github: https://github.com/esynr3z/svjson/tree/{page-origin-refname}
-:url-verilator-github: https://github.com/verilator/verilator
+:url-verilator-github: https://github.com/verilator/verilator/releases/tag/v5.024
 
 = Welcome
 
@@ -21,11 +21,30 @@ Implementation follows {url-ecma-404}[ECMA standard] with some limitations:
 * Nesting depth is limited for decoder (1024 by default, limit is controllable)
 * No recursion detection for encoder
 
-IMPORTANT: The package is developed and tested using {url-verilator-github}[Verilator 5.24] only. Support of other simulators is planned, but Verilator still will be the main simulator for project as it is the only viable option to organize CI and opensource flow.
+== Supported EDA
+
+The project's code is provided as a SystemVerilog package. Various EDA tools have different level of SV support, so below is a summary table.
+
+.Supported EDA tools
+[cols="3,1,1,1"]
+|===
+| Tool | Lint | Test | CI
+| {url-verilator-github}[Verilator 5.24] | ✅ | ✅ | ✅
+| Synopsys VCS | ❌ | ❌ | ❌
+| Cadence Xcelium | ❌ | ❌ | ❌
+| Siemens Modelsim | ❌ | ❌ | ❌
+| Siemens Questa | ❌ | ❌ | ❌
+|===
+
+* Lint - the package is compilable without warnings using this tool
+* Test - the package is tested using this tool via SVUnit
+* CI - this tool is used in CI to perform automatic checks
+
+IMPORTANT: Extending support of other simulators is planned, but Verilator is the main simulator for project as it is the only viable option to organize CI and opensource flow.
 
 == How to setup and compile the code?
 
-Please refer to xref:user.adoc#integration[User Guide: Integration] section.
+Please refer to xref:user.adoc#_integration[User Guide: Integration] section.
 
 == How to parse JSON file or string?
 

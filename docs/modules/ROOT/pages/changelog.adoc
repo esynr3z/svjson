@@ -10,6 +10,9 @@ and this project adheres to {url-semantic-versioning}[Semantic Versioning].
 
 == [Unreleased]
 === Added
+
+*  Add a table of supported EDA tools
+
 === Fixed
 === Changed
 === Removed
