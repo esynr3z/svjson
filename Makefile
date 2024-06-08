@@ -1,3 +1,5 @@
+include scripts/common.mk
+
 .PHONY: all lint lint_verilator test test_src test_examples
 
 export SVJSON_ROOT := $(realpath .)
@@ -15,10 +17,12 @@ lint_verilator:
 
 lint_modelsim:
 	@echo "Lint sources with Modelsim"
-	mkdir -p work_lint_modelsim && \
-	cd work_lint_modelsim && \
-	vlib work && \
-	vlog -l log.txt -sv -warning error -f $(SVJSON_ROOT)/src/filelist.f
+	$(call run_if_exist,vsim, \
+		mkdir -p work_lint_modelsim && \
+		cd work_lint_modelsim && \
+		vlib work && \
+		vlog -l log.txt -sv -warning error -f $(SVJSON_ROOT)/src/filelist.f \
+	)
 
 test: test_src test_examples
 
