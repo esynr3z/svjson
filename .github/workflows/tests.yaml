@@ -68,3 +68,52 @@ jobs:
       with:
         report_paths: '**/work_verilator/tests.xml'
         require_tests: true
+
+  test-modelsim:
+    runs-on: ubuntu-latest
+
+    env:
+      MODELSIM_INSTALLER: ModelSimSetup-20.1.0.711-linux.run
+      MODELSIM_INSTALLER_URL: https://download.altera.com/akdlm/software/acdsinst/20.1std/711/ib_installers/ModelSimSetup-20.1.0.711-linux.run
+      MODELSIM_INSTALL: /opt/modelsim
+
+    steps:
+      - name: Cache Modelsim
+        id: cache-modelsim
+        uses: actions/cache@v4
+        with:
+          path: ${{ env.MODELSIM_INSTALL }}
+          key: ${{ env.MODELSIM_INSTALLER }}-${{ runner.os }}
+          save-always: true
+
+      - name: Install Modelsim
+        run: |
+          sudo dpkg --add-architecture i386
+          sudo apt update
+          sudo apt install -y libc6:i386 libxtst6:i386 libncurses5:i386 libxft2:i386 libstdc++6:i386 libc6-dev-i386 lib32z1 libqt5xml5 liblzma-dev
+          wget ${{ env.MODELSIM_INSTALLER_URL }}
+          chmod +x ${{ env.MODELSIM_INSTALLER }}
+          ./${{ env.MODELSIM_INSTALLER }} --mode unattended --accept_eula 1 --installdir ${{ env.MODELSIM_INSTALL }} --unattendedmodeui none
+
+      - name: Checkout source code
+        uses: actions/checkout@v4
+        with:
+          submodules: "recursive"
+
+      - name: Prepare evinronment
+        run: |
+          echo "${{ env.MODELSIM_INSTALL }}/modelsim_ase/bin" >> $GITHUB_PATH
+          echo "${{ github.workspace }}/contrib/svunit/bin" >> $GITHUB_PATH
+
+      - name: Lint the package
+        run: make lint_modelsim
+
+      - name: Test the package
+        run: make -C tests test_modelsim
+
+      - name: Parse test results
+        uses: mikepenz/action-junit-report@v4
+        if: always()
+        with:
+          report_paths: '**/work_modelsim/tests.xml'
+          require_tests: true
