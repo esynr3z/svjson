@@ -53,10 +53,13 @@ jobs:
         echo "${{ env.VERILATOR_INSTALL }}/bin" >> $GITHUB_PATH
         echo "${{ github.workspace }}/contrib/svunit/bin" >> $GITHUB_PATH
 
-    - name: Run tests for package
+    - name: Lint the package
+      run: make lint_verilator
+
+    - name: Test the package
       run: make -C tests test_verilator
 
-    - name: Run tests for examples
+    - name: Test documentation examples
       run: make -C docs/modules/ROOT/examples/selftest test_verilator
 
     - name: Parse test results
