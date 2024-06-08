@@ -88,7 +88,7 @@ class json_decoder;
   extern protected function parser_result scan_until_token(
     const ref string str,
     input int unsigned start_pos,
-    input byte expected_tokens [] = '{}
+    input byte expected_tokens [$] = '{}
   );
 endclass : json_decoder
 
@@ -505,7 +505,10 @@ function json_decoder::parser_result json_decoder::parse_number(const ref string
   while(!exit_parsing_loop) begin
     case (state)
       EXPECT_MINUS_OR_DIGIT: begin
-        result = scan_until_token(str, curr_pos, '{this.digit_chars, "-"});
+        byte expected_tokens [$] = this.digit_chars;
+        expected_tokens.push_back("-");
+
+        result = scan_until_token(str, curr_pos, expected_tokens);
         case (1)
           result.matches_err(error): return `JSON_SYNTAX_ERR(json_error::INVALID_NUMBER, str, error.json_pos);
 
@@ -702,7 +705,7 @@ endfunction : parse_literal
 function json_decoder::parser_result json_decoder::scan_until_token(
   const ref string str,
   input int unsigned start_pos,
-  input byte expected_tokens [] = '{}
+  input byte expected_tokens [$] = '{}
 );
   int unsigned len = str.len();
   int unsigned idx = start_pos;

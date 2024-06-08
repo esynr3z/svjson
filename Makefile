@@ -13,6 +13,13 @@ lint_verilator:
 	verilator --lint-only -f $(SVJSON_ROOT)/src/filelist.f \
 	-Wall -Wno-VARHIDDEN -Wno-UNDRIVEN
 
+lint_modelsim:
+	@echo "Lint sources with Modelsim"
+	mkdir -p work_lint_modelsim && \
+	cd work_lint_modelsim && \
+	vlib work && \
+	vlog -l log.txt -sv -warning error -f $(SVJSON_ROOT)/src/filelist.f
+
 test: test_src test_examples
 
 test_src:
@@ -24,5 +31,6 @@ test_examples:
 	make -C docs/modules/ROOT/examples/selftest test
 
 clean:
+	rm -rf work_*
 	make -C tests clean
 	make -C docs/modules/ROOT/examples/selftest clean
