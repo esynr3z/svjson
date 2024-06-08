@@ -43,22 +43,22 @@ virtual class json_value implements json_value_encodable;
   extern virtual function json_result#(json_bool) try_into_bool();
 
   // Represent current value as `json_object`. Throw $fatal on failure.
-  extern virtual function json_result#(json_object) into_object();
+  extern virtual function json_object into_object();
 
   // Represent current value as `json_array`. Throw $fatal on failure.
-  extern virtual function json_result#(json_array) into_array();
+  extern virtual function json_array into_array();
 
   // Represent current value as `json_string`. Throw $fatal on failure.
-  extern virtual function json_result#(json_string) into_string();
+  extern virtual function json_string into_string();
 
   // Represent current value as `json_int`. Throw $fatal on failure.
-  extern virtual function json_result#(json_int) into_int();
+  extern virtual function json_int into_int();
 
   // Represent current value as `json_real`. Throw $fatal on failure.
-  extern virtual function json_result#(json_real) into_real();
+  extern virtual function json_real into_real();
 
   // Represent current value as `json_bool`. Throw $fatal on failure.
-  extern virtual function json_result#(json_bool) into_bool();
+  extern virtual function json_bool into_bool();
 
   // Check if current value is `json_object`
   extern virtual function bit is_object();
