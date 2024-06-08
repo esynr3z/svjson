@@ -107,9 +107,8 @@ function json_result json_decoder::load_string(string str);
   case (1)
     result.matches_ok(parsed): begin
       parser_result check_result = decoder.check_trailing_chars(str, parsed.end_pos + 1);
-      parsed_s ok;
       case (1)
-        check_result.matches_ok(ok): return json_result#()::ok(parsed.value);
+        check_result.is_ok(): return json_result#()::ok(parsed.value);
         check_result.matches_err(error): return json_result#()::err(error);
       endcase
     end

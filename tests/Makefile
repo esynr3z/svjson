@@ -13,6 +13,7 @@ all: test
 test: test_verilator
 
 test_verilator:
+	@echo Test sources with Verilator
 	runSVUnit \
 		-s verilator \
 		-l run.log \

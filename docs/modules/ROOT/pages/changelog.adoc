@@ -12,6 +12,7 @@ and this project adheres to {url-semantic-versioning}[Semantic Versioning].
 === Added
 
 *  Add a table of supported EDA tools
+*  Add Verilator as a linter
 
 === Fixed
 === Changed
