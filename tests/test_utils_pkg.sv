@@ -121,6 +121,27 @@ package test_utils_pkg;
   endfunction : expect_err_load_file
 
 
+  // SystemVerilog does not support \r escape code, however, for JSON testing it has to be used.
+  // So that function replace every two consecutive chars "\" and "r" with a single ASCII char 'd13 (CR).
+  // Note: it looks like Verilator actually supports \r, so replacing for it is not required.
+  function automatic string replace_cr(input string str);
+    string res = "";
+    byte prev_char = "";
+
+    for (int i = 0; i < str.len(); i++) begin
+      byte curr_char = str[i];
+      if ((prev_char == "\\") && (curr_char == "r")) begin
+        res[res.len() - 1] = 8'd13;
+      end else begin
+        res = {res, curr_char};
+      end
+      prev_char = curr_char;
+    end
+
+    return res;
+  endfunction : replace_cr
+
+
   // Dummy enum for testing purposes
   typedef enum {
     DUMMY_FOO,
