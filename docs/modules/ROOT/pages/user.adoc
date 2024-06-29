@@ -37,7 +37,7 @@
 * No defines
 * No plusargs
 
-IMPORTANT: The package is developed and tested mostly using Verilator 5.24 only. Support of other simulators is planned, but Verilator still will be the main simulator for project as it is the only viable option to organize CI and opensource flow.
+IMPORTANT: The package is developed and tested mostly using Verilator 5.24. Support of other simulators is planned, but Verilator still will be the main simulator for project as it is the only viable option to organize CI and opensource flow.
 
 Sources and include directories are expressed as filelist (`.f` file), which is quite standard way of describing compilation unit for many EDA tools. Filelist of the project is {url-svjson-github-src}/filelist.f[`src/filelist.f`].
 

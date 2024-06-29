@@ -14,12 +14,12 @@ class json_decoder;
   //----------------------------------------------------------------------------
   // Private properties
   //----------------------------------------------------------------------------
-  protected typedef struct {
+  typedef struct {
     json_value   value;
     int unsigned end_pos;
   } parsed_s;
 
-  protected typedef json_result#(parsed_s) parser_result;
+  typedef json_result#(parsed_s) parser_result;
 
   protected const byte whitespace_chars[] = '{" ", "\t", "\n", CR};
 
@@ -217,8 +217,8 @@ function json_decoder::parser_result json_decoder::parse_object(
   parsed_s parsed;
 
   int unsigned curr_pos = start_pos;
-  bit trailing_comma = 0;
-  bit exit_parsing_loop = 0;
+  bit trailing_comma = 1'b0;
+  bit exit_parsing_loop = 1'b0;
 
   nesting_lvl++;
   if (nesting_lvl >= this.nesting_limit) begin
@@ -236,7 +236,7 @@ function json_decoder::parser_result json_decoder::parse_object(
                 return `JSON_SYNTAX_ERR(json_error::TRAILING_COMMA, str, error.json_pos);
               end
               curr_pos = error.json_pos;
-              exit_parsing_loop = 1; // empty object parsed
+              exit_parsing_loop = 1'b1; // empty object parsed
             end else begin
               return result;
             end
@@ -297,9 +297,9 @@ function json_decoder::parser_result json_decoder::parse_object(
           result.matches_ok(parsed): begin
             curr_pos = parsed.end_pos;
             if (str[curr_pos] == "}") begin
-              exit_parsing_loop = 1; // end of object
+              exit_parsing_loop = 1'b1; // end of object
             end else begin
-              trailing_comma = 1;
+              trailing_comma = 1'b1;
               curr_pos++; // move to a symbol after comma
               state = PARSE_KEY;
             end
@@ -332,8 +332,8 @@ function json_decoder::parser_result json_decoder::parse_array(
   parsed_s parsed;
 
   int unsigned curr_pos = start_pos;
-  bit trailing_comma = 0;
-  bit exit_parsing_loop = 0;
+  bit trailing_comma = 1'b0;
+  bit exit_parsing_loop = 1'b0;
 
   nesting_lvl++;
   if (nesting_lvl >= this.nesting_limit) begin
@@ -351,7 +351,7 @@ function json_decoder::parser_result json_decoder::parse_array(
                 return `JSON_SYNTAX_ERR(json_error::TRAILING_COMMA, str, error.json_pos);
               end
               curr_pos = error.json_pos;
-              exit_parsing_loop = 1; // empty array parsed
+              exit_parsing_loop = 1'b1; // empty array parsed
             end else begin
               return result;
             end
@@ -381,9 +381,9 @@ function json_decoder::parser_result json_decoder::parse_array(
           result.matches_ok(parsed): begin
             curr_pos = parsed.end_pos;
             if (str[curr_pos] == "]") begin
-              exit_parsing_loop = 1; // end of array
+              exit_parsing_loop = 1'b1; // end of array
             end else begin
-              trailing_comma = 1;
+              trailing_comma = 1'b1;
               curr_pos++; // move to a symbol after comma
               state = PARSE_VALUE;
             end
@@ -414,7 +414,7 @@ function json_decoder::parser_result json_decoder::parse_string(const ref string
 
   int unsigned curr_pos = start_pos;
   int unsigned str_len = str.len();
-  bit exit_parsing_loop = 0;
+  bit exit_parsing_loop = 1'b0;
 
   while(!exit_parsing_loop) begin
     case (state)
@@ -443,9 +443,9 @@ function json_decoder::parser_result json_decoder::parse_string(const ref string
             state = PARSE_ESCAPE;
             break;
           end else if (str[curr_pos] == "\"") begin
-            exit_parsing_loop = 1;
+            exit_parsing_loop = 1'b1;
             break;
-          end else if (str[curr_pos] < 'h20) begin
+          end else if (str[curr_pos] < byte'('h20)) begin
             return `JSON_SYNTAX_ERR(json_error::INVALID_CHAR, str, curr_pos);
           end else begin
             value = {value, str[curr_pos++]};
@@ -502,7 +502,7 @@ function json_decoder::parser_result json_decoder::parse_number(const ref string
 
   int unsigned curr_pos = start_pos;
   int unsigned str_len = str.len();
-  bit exit_parsing_loop = 0;
+  bit exit_parsing_loop = 1'b0;
 
   while(!exit_parsing_loop) begin
     case (state)
@@ -531,7 +531,7 @@ function json_decoder::parser_result json_decoder::parse_number(const ref string
           if (str[curr_pos - 1] == "-") begin
             return `JSON_SYNTAX_ERR(json_error::INVALID_NUMBER, str, curr_pos - 1);
           end
-          exit_parsing_loop = 1;
+          exit_parsing_loop = 1'b1;
         end
       end
 
@@ -546,7 +546,7 @@ function json_decoder::parser_result json_decoder::parse_number(const ref string
 
         value = {value, str[curr_pos++]};
         if (curr_pos == str_len) begin
-          exit_parsing_loop = 1;
+          exit_parsing_loop = 1'b1;
         end
       end
 
@@ -556,7 +556,7 @@ function json_decoder::parser_result json_decoder::parse_number(const ref string
         end else if (str[curr_pos] inside {"e", "E"}) begin
           state = EXPECT_EXPONENT_SIGN;
         end else begin
-          exit_parsing_loop = 1;
+          exit_parsing_loop = 1'b1;
           break;
         end
 
@@ -579,7 +579,7 @@ function json_decoder::parser_result json_decoder::parse_number(const ref string
           end else if (str[curr_pos] inside {this.digit_chars}) begin
             value = {value, str[curr_pos++]};
           end else begin
-            exit_parsing_loop = 1;
+            exit_parsing_loop = 1'b1;
             break;
           end
         end
@@ -588,12 +588,12 @@ function json_decoder::parser_result json_decoder::parse_number(const ref string
           if (str[curr_pos - 1] inside {".", "e", "E"}) begin
             return `JSON_SYNTAX_ERR(json_error::INVALID_NUMBER, str, curr_pos - 1);
           end
-          exit_parsing_loop = 1;
+          exit_parsing_loop = 1'b1;
         end
       end
 
       PARSE_FRACTIONAL_DIGITS: begin
-        is_real = 1;
+        is_real = 1'b1;
 
         if (!(str[curr_pos] inside {this.digit_chars})) begin
           return `JSON_SYNTAX_ERR(json_error::INVALID_NUMBER, str, curr_pos);
@@ -607,7 +607,7 @@ function json_decoder::parser_result json_decoder::parse_number(const ref string
           end else if (str[curr_pos] inside {this.digit_chars}) begin
             value = {value, str[curr_pos++]};
           end else begin
-            exit_parsing_loop = 1;
+            exit_parsing_loop = 1'b1;
             break;
           end
         end
@@ -616,12 +616,12 @@ function json_decoder::parser_result json_decoder::parse_number(const ref string
           if (str[curr_pos - 1] inside {"e", "E"}) begin
             return `JSON_SYNTAX_ERR(json_error::INVALID_NUMBER, str, curr_pos - 1);
           end
-          exit_parsing_loop = 1;
+          exit_parsing_loop = 1'b1;
         end
       end
 
       EXPECT_EXPONENT_SIGN: begin
-        is_real = 1;
+        is_real = 1'b1;
         if (!(str[curr_pos] inside {"-", "+", this.digit_chars})) begin
           return `JSON_SYNTAX_ERR(json_error::INVALID_NUMBER, str, curr_pos);
         end
@@ -639,12 +639,12 @@ function json_decoder::parser_result json_decoder::parse_number(const ref string
           if (str[curr_pos] inside {this.digit_chars}) begin
             value = {value, str[curr_pos++]};
           end else begin
-            exit_parsing_loop = 1;
+            exit_parsing_loop = 1'b1;
             break;
           end
         end
         if (curr_pos == str_len) begin
-          exit_parsing_loop = 1;
+          exit_parsing_loop = 1'b1;
         end
       end
     endcase

@@ -16,6 +16,8 @@ and this project adheres to {url-semantic-versioning}[Semantic Versioning].
 * Add Modelsim as a linter
 * Add scripts to run tests in Modelsim
 * Update CI to run linting and tests in Modelsim
+* Add VCS as a linter
+* Add scripts to run tests in VCS
 
 === Fixed
 

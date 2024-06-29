@@ -1,7 +1,7 @@
 // JSON enum.
 // This wrapper class represens SV enum value as standard JSON string.
 // Purpose of this class is to facilitate using SV enum with JSON decoder/encoder.
-class json_enum #(type ENUM_T) extends json_string;
+class json_enum #(type ENUM_T=enum{DUMMY}) extends json_string;
   // Internal raw value of enum
   protected ENUM_T enum_value;
 

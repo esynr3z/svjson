@@ -76,29 +76,54 @@ endclass : json_error
 function json_error::new(kind_e kind);
   this.kind = kind;
 
-  this.info[EOF_VALUE] =                    "EOF while parsing some JSON value";
-  this.info[EOF_OBJECT] =                   "EOF while parsing an object";
-  this.info[EOF_ARRAY] =                    "EOF while parsing an array";
-  this.info[EOF_STRING] =                   "EOF while parsing a string";
-  this.info[EOF_LITERAL] =                  "EOF while parsing a literal";
-  this.info[EXPECTED_TOKEN] =               "Current character should be some expected token";
-  this.info[EXPECTED_COLON] =               "Current character should be ':'";
-  this.info[EXPECTED_OBJECT_COMMA_OR_END] = "Current character should be either ',' or '}'";
-  this.info[EXPECTED_ARRAY_COMMA_OR_END] =  "Current character should be either ',' or ']'";
-  this.info[EXPECTED_DOUBLE_QUOTE] =        "Current character should be '\"'";
-  this.info[EXPECTED_VALUE] =               "Current character should start some JSON value";
-  this.info[INVALID_ESCAPE] =               "Invaid escape code";
-  this.info[INVALID_CHAR] =                 "Unexpected control character";
-  this.info[INVALID_LITERAL] =              "Invaid literal that should be 'true', 'false', or 'null'";
-  this.info[INVALID_NUMBER] =               "Invaid number";
-  this.info[INVALID_OBJECT_KEY] =           "String must be used as a key";
-  this.info[TRAILING_COMMA] =               "Unexpected comma after the last value";
-  this.info[TRAILING_CHARS] =               "Unexpected characters after the JSON value";
-  this.info[DEEP_NESTING] =                 "This JSON value exceeds nesing limit for a decoder";
-  this.info[TYPE_CONVERSION] =              "Type conversion failed";
-  this.info[FILE_NOT_OPENED] =              "File opening failed";
-  this.info[NOT_IMPLEMENTED] =              "Feature is not implemented";
-  this.info[INTERNAL] =                     "Unspecified internal error";
+  this.info = '{
+    EOF_VALUE:                    "EOF while parsing some JSON value",
+    EOF_OBJECT:                   "EOF while parsing an object",
+    EOF_ARRAY:                    "EOF while parsing an array",
+    EOF_STRING:                   "EOF while parsing a string",
+    EOF_LITERAL:                  "EOF while parsing a literal",
+    EXPECTED_TOKEN:               "Current character should be some expected token",
+    EXPECTED_COLON:               "Current character should be ':'",
+    EXPECTED_OBJECT_COMMA_OR_END: "Current character should be either ',' or '}'",
+    EXPECTED_ARRAY_COMMA_OR_END:  "Current character should be either ',' or ']'",
+    EXPECTED_DOUBLE_QUOTE:        "Current character should be '\"'",
+    EXPECTED_VALUE:               "Current character should start some JSON value",
+    INVALID_ESCAPE:               "Invaid escape code",
+    INVALID_CHAR:                 "Unexpected control character",
+    INVALID_LITERAL:              "Invaid literal that should be 'true', 'false', or 'null'",
+    INVALID_NUMBER:               "Invaid number",
+    INVALID_OBJECT_KEY:           "String must be used as a key",
+    TRAILING_COMMA:               "Unexpected comma after the last value",
+    TRAILING_CHARS:               "Unexpected characters after the JSON value",
+    DEEP_NESTING:                 "This JSON value exceeds nesing limit for a decoder",
+    TYPE_CONVERSION:              "Type conversion failed",
+    FILE_NOT_OPENED:              "File opening failed",
+    NOT_IMPLEMENTED:              "Feature is not implemented",
+    INTERNAL:                     "Unspecified internal error",
+    EOF_VALUE:                    "EOF while parsing some JSON value"
+  };
+  //this.info[EOF_OBJECT] =                   "EOF while parsing an object";
+  //this.info[EOF_ARRAY] =                    "EOF while parsing an array";
+  //this.info[EOF_STRING] =                   "EOF while parsing a string";
+  //this.info[EOF_LITERAL] =                  "EOF while parsing a literal";
+  //this.info[EXPECTED_TOKEN] =               "Current character should be some expected token";
+  //this.info[EXPECTED_COLON] =               "Current character should be ':'";
+  //this.info[EXPECTED_OBJECT_COMMA_OR_END] = "Current character should be either ',' or '}'";
+  //this.info[EXPECTED_ARRAY_COMMA_OR_END] =  "Current character should be either ',' or ']'";
+  //this.info[EXPECTED_DOUBLE_QUOTE] =        "Current character should be '\"'";
+  //this.info[EXPECTED_VALUE] =               "Current character should start some JSON value";
+  //this.info[INVALID_ESCAPE] =               "Invaid escape code";
+  //this.info[INVALID_CHAR] =                 "Unexpected control character";
+  //this.info[INVALID_LITERAL] =              "Invaid literal that should be 'true', 'false', or 'null'";
+  //this.info[INVALID_NUMBER] =               "Invaid number";
+  //this.info[INVALID_OBJECT_KEY] =           "String must be used as a key";
+  //this.info[TRAILING_COMMA] =               "Unexpected comma after the last value";
+  //this.info[TRAILING_CHARS] =               "Unexpected characters after the JSON value";
+  //this.info[DEEP_NESTING] =                 "This JSON value exceeds nesing limit for a decoder";
+  //this.info[TYPE_CONVERSION] =              "Type conversion failed";
+  //this.info[FILE_NOT_OPENED] =              "File opening failed";
+  //this.info[NOT_IMPLEMENTED] =              "Feature is not implemented";
+  //this.info[INTERNAL] =                     "Unspecified internal error";
 endfunction : new
 
 

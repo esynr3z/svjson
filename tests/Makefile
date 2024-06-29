@@ -1,6 +1,6 @@
 include ../scripts/common.mk
 
-.PHONY: all clean test test_verilator test_modelsim
+.PHONY: all clean test test_verilator test_modelsim test_vcs
 
 extra_args ?=
 
@@ -12,7 +12,7 @@ export PATH := $(SVUNIT_INSTALL)/bin:$(PATH)
 
 all: test
 
-test: test_verilator test_modelsim
+test: test_verilator test_modelsim test_vcs
 
 test_verilator:
 	@echo Test sources with Verilator
@@ -40,6 +40,21 @@ test_modelsim:
 			-f $(SVJSON_ROOT)/tests/filelist.f \
 			$(extra_args) \
 			-o work_modelsim \
+	)
+
+test_vcs:
+	@echo Test sources with VCS
+	$(call run_if_exist,vcs, \
+		runSVUnit \
+			-s vcs \
+			-l run.log \
+			-c "-full64 \
+				+define+JSON_TEST_SUITE_INSTALL=$(JSON_TEST_SUITE_INSTALL) \
+				+define+GOLDEN_JSON_DIR=$(GOLDEN_JSON_DIR)" \
+			-f $(SVJSON_ROOT)/src/filelist.f \
+			-f $(SVJSON_ROOT)/tests/filelist.f \
+			$(extra_args) \
+			-o work_vcs \
 	)
 
 clean:

@@ -1,14 +1,14 @@
 include scripts/common.mk
 
 .PHONY: all \
-	lint lint_verilator lint_modelsim \
+	lint lint_verilator lint_modelsim lint_vcs \
 	test test_src test_examples
 
 export SVJSON_ROOT := $(realpath .)
 
 all: lint test
 
-lint: lint_verilator lint_modelsim
+lint: lint_verilator lint_modelsim lint_vcs lint_xcelium
 
 # VARHIDDEN - too strict, method arguments may overlap with class property names
 # UNDRIVEN - has false positives on interface classes and custom constructors
@@ -24,6 +24,15 @@ lint_modelsim:
 		cd work_lint_modelsim && \
 		vlib work && \
 		vlog -l log.txt -sv -warning error -f $(SVJSON_ROOT)/src/filelist.f \
+	)
+
+lint_vcs:
+	@echo "Lint sources with VCS"
+	$(call run_if_exist,vcs, \
+		mkdir -p work_lint_vcs && \
+		cd work_lint_vcs && \
+		vcs -full64 -sverilog -l log.txt +lint=all -error=all \
+			-f $(SVJSON_ROOT)/src/filelist.f \
 	)
 
 test: test_src test_examples

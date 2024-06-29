@@ -3,7 +3,7 @@
 // Purpose of this class is to facilitate using SV bit vectors of arbitrary size
 // with JSON decoder/encoder. As a result, any number, that cannot be represented
 // as JSON number using longint or real, can be represented as a string.
-class json_bits #(type BITS_T) extends json_string;
+class json_bits #(type BITS_T=bit) extends json_string;
   typedef enum {
     RADIX_DEC,  // Base 10, no prefix
     RADIX_BIN,  // Base 2, 0b prefix
