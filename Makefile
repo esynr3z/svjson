@@ -1,7 +1,7 @@
 include scripts/common.mk
 
 .PHONY: all \
-	lint lint_verilator lint_modelsim lint_vcs \
+	lint lint_verilator lint_modelsim lint_vcs lint_xcelium \
 	test test_src test_examples
 
 export SVJSON_ROOT := $(realpath .)
@@ -32,6 +32,15 @@ lint_vcs:
 		mkdir -p work_lint_vcs && \
 		cd work_lint_vcs && \
 		vcs -full64 -sverilog -l log.txt +lint=all -error=all \
+			-f $(SVJSON_ROOT)/src/filelist.f \
+	)
+
+lint_xcelium:
+	@echo "Lint sources with Xcelium"
+	$(call run_if_exist,xrun, \
+		mkdir -p work_lint_xrun && \
+		cd work_lint_xrun && \
+		xrun -64bit -clean -elaborate -disable_sem2009 -l log.txt -sv -xmallerror \
 			-f $(SVJSON_ROOT)/src/filelist.f \
 	)
 

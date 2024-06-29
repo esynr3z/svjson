@@ -18,6 +18,8 @@ and this project adheres to {url-semantic-versioning}[Semantic Versioning].
 * Update CI to run linting and tests in Modelsim
 * Add VCS as a linter
 * Add scripts to run tests in VCS
+* Add Xcelium as a linter
+* Add scripts to run tests in Xcelium
 
 === Fixed
 

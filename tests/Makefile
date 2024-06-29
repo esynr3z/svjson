@@ -1,6 +1,6 @@
 include ../scripts/common.mk
 
-.PHONY: all clean test test_verilator test_modelsim test_vcs
+.PHONY: all clean test test_verilator test_modelsim test_vcs test_xcelium
 
 extra_args ?=
 
@@ -12,7 +12,7 @@ export PATH := $(SVUNIT_INSTALL)/bin:$(PATH)
 
 all: test
 
-test: test_verilator test_modelsim test_vcs
+test: test_verilator test_modelsim test_vcs test_xcelium
 
 test_verilator:
 	@echo Test sources with Verilator
@@ -55,6 +55,21 @@ test_vcs:
 			-f $(SVJSON_ROOT)/tests/filelist.f \
 			$(extra_args) \
 			-o work_vcs \
+	)
+
+test_xcelium:
+	@echo Test sources with Xcelium
+	$(call run_if_exist,xrun, \
+		runSVUnit \
+			-s xcelium \
+			-l run.log \
+			-c "-64bit \
+				+define+JSON_TEST_SUITE_INSTALL=$(JSON_TEST_SUITE_INSTALL) \
+				+define+GOLDEN_JSON_DIR=$(GOLDEN_JSON_DIR)" \
+			-f $(SVJSON_ROOT)/src/filelist.f \
+			-f $(SVJSON_ROOT)/tests/filelist.f \
+			$(extra_args) \
+			-o work_xcelium \
 	)
 
 clean:
