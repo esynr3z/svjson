@@ -10,6 +10,13 @@ and this project adheres to {url-semantic-versioning}[Semantic Versioning].
 
 == [Unreleased]
 === Added
+=== Fixed
+=== Changed
+=== Removed
+
+== [1.1.0] - 2024-07-07
+
+=== Added
 
 * Add a table of supported EDA tools in documentation
 * Add Verilator as a linter
@@ -25,12 +32,9 @@ and this project adheres to {url-semantic-versioning}[Semantic Versioning].
 
 * Fix minor issues within `json_pkg` to support Modelsim
 
-=== Changed
-=== Removed
-
 == [1.0.0] - 2024-06-06
 
-### Added
+=== Added
 
 - Implement JSON library
 - Implement infrastructure
