@@ -1,5 +1,5 @@
 // JSON bit vector.
-// This wrapper class represens SV bit vector value as standard JSON string.
+// This wrapper class represents SV bit vector value as standard JSON string.
 // Purpose of this class is to facilitate using SV bit vectors of arbitrary size
 // with JSON decoder/encoder. As a result, any number, that cannot be represented
 // as JSON number using longint or real, can be represented as a string.
@@ -61,7 +61,7 @@ class json_bits #(type BITS_T=bit) extends json_string;
 
   // Get internal bit vector value
   virtual function BITS_T get_bits();
-    // FIXME: extern is not used here, because verialtor does not work well with parametrized return type
+    // FIXME: extern is not used here, because verilator does not work well with parametrized return type
     return this.bits_value;
   endfunction : get_bits
 

@@ -154,7 +154,7 @@ a|
 
 === Object
 
-`{class-json-object}` wrapper class represens standard JSON object value using SV `string`-indexed associative array of `{class-json-value}`. The class basically wraps standard SV associative array methods with some additional methods required to operate as JSON value.
+`{class-json-object}` wrapper class represents standard JSON object value using SV `string`-indexed associative array of `{class-json-value}`. The class basically wraps standard SV associative array methods with some additional methods required to operate as JSON value.
 
 No additional checks are implemented for "out-of-range" accesses and similar, so you can expect that this class will operate according to behavior of an original underlying SV associative array.
 
@@ -176,7 +176,7 @@ NOTE: SystemVerilog associative array is used to implement JSON object. As a con
 
 === Array
 
-`{class-json-array}` wrapper class represens standard JSON array value using SV queue of `{class-json-value}`.
+`{class-json-array}` wrapper class represents standard JSON array value using SV queue of `{class-json-value}`.
 The class basically wraps standard SV queue methods with some additional methods required to operate as JSON value.
 
 No additional checks are implemented for "out-of-range" accesses and similar,
@@ -196,7 +196,7 @@ so you can expect that this class will operate according to behavior of an origi
 
 === String
 
-`{class-json-string}` wrapper class represens standard JSON string value type using SV string.
+`{class-json-string}` wrapper class represents standard JSON string value type using SV string.
 
 IMPORTANT: `\b` and `\u` escape sequences are not supported.
 
@@ -211,7 +211,7 @@ IMPORTANT: `\b` and `\u` escape sequences are not supported.
 
 ==== Extension: Enum
 
-`{class-json-enum}#(ENUM_T)` wrapper class, that inherits from `{class-json-string}` and represens SV `enum` value as standard JSON string.
+`{class-json-enum}#(ENUM_T)` wrapper class, that inherits from `{class-json-string}` and represents SV `enum` value as standard JSON string.
 The class is parametrized with type `ENUM_T` to work with any enumeration.
 
 Purpose of this class is to facilitate using SV enum with JSON decoder/encoder. For example, JSON values tree can be created with `{class-json-enum}` instances and then they can be seamlessly converted to strings during encoding. And vice versa for decoding.
@@ -230,7 +230,7 @@ Purpose of this class is to facilitate using SV enum with JSON decoder/encoder. 
 
 ==== Extension: Bit Vector
 
-`{class-json-bits}#(BITS_T)` wrapper class, that inherits from `{class-json-string}` and represens SV bit vector value (e.g. `bit[511:0]`) as standard JSON string.
+`{class-json-bits}#(BITS_T)` wrapper class, that inherits from `{class-json-string}` and represents SV bit vector value (e.g. `bit[511:0]`) as standard JSON string.
 The class is parametrized with type `BITS_T` to work with any bit vector - any width, signed or unsigned. Packed structures can be used as well.
 
 Purpose of this class is to facilitate using SV bit vectors of arbitrary size with JSON decoder/encoder.
@@ -256,7 +256,7 @@ JSON standard does not specify requirements for number types, but usually it is 
 
 ==== Integer Number
 
-`{class-json-int}` wrapper class represens JSON integer number value using SV `longint`.
+`{class-json-int}` wrapper class represents JSON integer number value using SV `longint`.
 
 .json_int methods outline
 [cols="1,1"]
@@ -269,7 +269,7 @@ JSON standard does not specify requirements for number types, but usually it is 
 
 ==== Real Number
 
-`{class-json-real}` wrapper class represens JSON real number value using SV `real`.
+`{class-json-real}` wrapper class represents JSON real number value using SV `real`.
 
 .json_real methods outline
 [cols="1,1"]
@@ -282,7 +282,7 @@ JSON standard does not specify requirements for number types, but usually it is 
 
 === Bool
 
-`{class-json-bool}` wrapper class represens standard JSON bool value type using SV `bit`.
+`{class-json-bool}` wrapper class represents standard JSON bool value type using SV `bit`.
 
 .json_bool methods outline
 [cols="1,1"]

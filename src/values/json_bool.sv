@@ -1,5 +1,5 @@
 // JSON bool.
-// This wrapper class represens standard JSON bool value type using SV bit.
+// This wrapper class represents standard JSON bool value type using SV bit.
 class json_bool extends json_value implements json_bool_encodable;
   // Internal raw value
   protected bit value;

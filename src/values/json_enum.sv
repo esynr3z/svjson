@@ -1,5 +1,5 @@
 // JSON enum.
-// This wrapper class represens SV enum value as standard JSON string.
+// This wrapper class represents SV enum value as standard JSON string.
 // Purpose of this class is to facilitate using SV enum with JSON decoder/encoder.
 class json_enum #(type ENUM_T) extends json_string;
   // Internal raw value of enum
@@ -10,14 +10,14 @@ class json_enum #(type ENUM_T) extends json_string;
 
   // Create `json_enum` from enum
   static function json_enum#(ENUM_T) from(ENUM_T value);
-    // FIXME: extern is not used here, because verialtor does not work well with parametrized return type
+    // FIXME: extern is not used here, because verilator does not work well with parametrized return type
     json_enum#(ENUM_T) obj = new(value);
     return obj;
   endfunction : from
 
   // Try to create `json_enum` from string
   static function json_result#(json_enum#(ENUM_T)) try_from(string value);
-    // FIXME: extern is not used here, because verialtor does not work well with parametrized return type
+    // FIXME: extern is not used here, because verilator does not work well with parametrized return type
     for (ENUM_T e = e.first();; e = e.next()) begin
       if (e.name() == value) begin
         return json_result#(json_enum#(ENUM_T))::ok(json_enum#(ENUM_T)::from(e));
@@ -46,7 +46,7 @@ class json_enum #(type ENUM_T) extends json_string;
 
   // Get internal enum value
   virtual function ENUM_T get_enum();
-    // FIXME: extern is not used here, because verialtor does not work well with parametrized return type
+    // FIXME: extern is not used here, because verilator does not work well with parametrized return type
     return this.enum_value;
   endfunction : get_enum
 

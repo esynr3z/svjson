@@ -1,5 +1,5 @@
 // JSON real number.
-// This wrapper class represens standard JSON number value type using SV real.
+// This wrapper class represents standard JSON number value type using SV real.
 // JSON does not specify requirements for number types, but it is more
 // convenient to operate with integers and real numbers separately.
 // This class covers real numbers.

@@ -1,5 +1,5 @@
 // JSON string.
-// This wrapper class represens standard JSON string value type using SV string.
+// This wrapper class represents standard JSON string value type using SV string.
 class json_string extends json_value implements json_string_encodable;
   // Internal raw value
   protected string value;

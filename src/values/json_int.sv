@@ -1,5 +1,5 @@
 // JSON integer number.
-// This wrapper class represens standard JSON number value using SV longint.
+// This wrapper class represents standard JSON number value using SV longint.
 // JSON does not specify requirements for number types, but it is more
 // convenient to operate with integers and real numbers separately.
 // This class covers integers.
